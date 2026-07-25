@@ -1,4 +1,4 @@
-const VERSION = 'tamapoke-family-v02-20260725';
+const VERSION = 'tamapoke-family-v03-20260725';
 const CORE = [
   './',
   './index.html',
@@ -8,7 +8,14 @@ const CORE = [
   './js/storage.js',
   './js/sprite-engine.js',
   './js/game-engine.js',
+  './js/worlds.js',
   './data/species.json',
+  './assets/worlds/forest-day.svg',
+  './assets/worlds/forest-night.svg',
+  './assets/worlds/volcano-day.svg',
+  './assets/worlds/volcano-night.svg',
+  './assets/worlds/lagoon-day.svg',
+  './assets/worlds/lagoon-night.svg',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png'
 ];

@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family v0.2</title>
+  <title>TamaPoke Family v0.3</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -65,7 +65,9 @@
         <button id="openDexBtn" class="round-btn glass" type="button" aria-label="Pokédex öffnen">▦</button>
       </header>
 
-      <section id="habitat" class="habitat biome-0 day" aria-label="Lebensraum deines Pokémon">
+      <section id="habitat" class="habitat theme-meadow day" aria-label="Lebensraum deines Pokémon">
+        <div class="world-badge" aria-label="Aktuelle Pokémon-Welt"><span id="worldIcon" class="world-symbol symbol-star"></span><span><strong id="worldName">Pokémon-Wiese</strong><small id="worldPhase">TAG</small></span></div>
+        <div class="world-pixel-overlay" aria-hidden="true"></div>
         <div class="sky-decor" aria-hidden="true">
           <span class="sun-moon"></span>
           <span class="cloud cloud-one"></span>
@@ -160,10 +162,10 @@
       <div class="sheet-handle"></div>
       <div class="sheet-head"><div><p class="eyebrow">FÜTTERN</p><h2>Was darf es sein?</h2></div><button class="round-btn close-dialog" type="button">✕</button></div>
       <div class="food-grid">
-        <button type="button" data-berry="0"><span class="berry red">●</span><strong>Rote Beere</strong><small>Kräftig und süß</small></button>
-        <button type="button" data-berry="1"><span class="berry blue">●</span><strong>Blaue Beere</strong><small>Frisch und saftig</small></button>
-        <button type="button" data-berry="2"><span class="berry green">●</span><strong>Grüne Beere</strong><small>Mild und knackig</small></button>
-        <button type="button" id="candyBtn"><span class="candy">◆</span><strong>Bonbon</strong><small>Viel Freude, mehr Gewicht</small></button>
+        <button type="button" data-berry="0"><span class="food-icon berry-red"></span><strong>Rote Beere</strong><small>Kräftig und süß</small></button>
+        <button type="button" data-berry="1"><span class="food-icon berry-blue"></span><strong>Blaue Beere</strong><small>Frisch und saftig</small></button>
+        <button type="button" data-berry="2"><span class="food-icon berry-green"></span><strong>Grüne Beere</strong><small>Mild und knackig</small></button>
+        <button type="button" id="candyBtn"><span class="food-icon candy-star"></span><strong>Tama-Bonbon</strong><small>Viel Freude, mehr Gewicht</small></button>
       </div>
     </div>
   </dialog>
@@ -213,6 +215,7 @@
       <label class="setting-row" for="paceSelect"><span><strong>Spieltempo</strong><small>Familientempo läuft viermal langsamer</small></span><select id="paceSelect"><option value="family">Familientempo</option><option value="original">Originaltempo</option><option value="test">Testtempo (5 Sekunden)</option></select></label>
       <label class="setting-row switch-row" for="soundToggle"><span><strong>Ton</strong><small>Retro-Signale im Browser</small></span><input id="soundToggle" type="checkbox" checked></label>
       <label class="setting-row switch-row" for="motionToggle"><span><strong>Animationen</strong><small>Sprite- und Hintergrundbewegungen</small></span><input id="motionToggle" type="checkbox" checked></label>
+      <label class="setting-row" for="worldTimeSelect"><span><strong>Weltzeit</strong><small>Automatisch folgt der Uhrzeit des Geräts</small></span><select id="worldTimeSelect"><option value="auto">Automatisch</option><option value="day">Immer Tag</option><option value="night">Immer Nacht</option></select></label>
       <div class="credits-box">
         <strong>Credits & Nutzung</strong>
         <p>Privates, nicht kommerzielles Fanprojekt auf Grundlage von TamaPoke (Quique Tortosa, MIT). Sprites: PMD SpriteCollab, CC BY-NC 4.0. Pokémon © Nintendo / Game Freak / The Pokémon Company.</p>
@@ -222,12 +225,12 @@
   </dialog>
 
   <dialog id="miniGameDialog" class="game-dialog">
-    <div class="mini-card"><div class="mini-head"><div><p class="eyebrow">MINISPIEL</p><h2>Pokéball-Fangen</h2></div><button id="cancelMiniBtn" class="round-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="miniTime">20</strong></span><span>Punkte <strong id="miniScore">0</strong></span><span>Fehler <strong id="miniMisses">0/3</strong></span></div><div id="miniArena" class="mini-arena ball-game-arena"><div class="mini-sky-decor" aria-hidden="true"></div><div id="miniBall" class="mini-ball" hidden></div><div id="miniPet" class="mini-pet"><canvas id="miniPetCanvas" width="170" height="120"></canvas></div><p id="miniStartHint">Bewege dein Pokémon mit dem Finger und fange den Pokéball.</p></div><button id="startMiniBtn" class="primary-btn full" type="button">Start</button></div>
+    <div class="mini-card"><div class="mini-head"><div><p id="miniGameKicker" class="eyebrow">MINISPIEL</p><h2 id="miniGameTitle">Pokéball-Fangen</h2></div><button id="cancelMiniBtn" class="round-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="miniTime">20</strong></span><span>Punkte <strong id="miniScore">0</strong></span><span>Fehler <strong id="miniMisses">0/3</strong></span></div><div id="miniArena" class="mini-arena ball-game-arena"><div class="mini-sky-decor" aria-hidden="true"></div><div id="miniBall" class="mini-ball" hidden></div><div id="miniPet" class="mini-pet"><canvas id="miniPetCanvas" width="170" height="120"></canvas></div><p id="miniStartHint">Bewege dein Pokémon mit dem Finger und fange den Pokéball.</p></div><button id="startMiniBtn" class="primary-btn full" type="button">Start</button></div>
   </dialog>
 
   <dialog id="trainDialog" class="game-dialog">
     <div class="mini-card">
-      <div class="mini-head"><div><p class="eyebrow">KRAFTTRAINING</p><h2>Trainingssack</h2></div><button id="cancelTrainBtn" class="round-btn" type="button">✕</button></div>
+      <div class="mini-head"><div><p class="eyebrow">KRAFTTRAINING</p><h2 id="trainGameTitle">Trainingssack</h2></div><button id="cancelTrainBtn" class="round-btn" type="button">✕</button></div>
       <div class="mini-score"><span>Zeit <strong id="trainTime">10</strong></span><span>Treffer <strong id="trainHits">0</strong></span><span>Kombo <strong id="trainCombo">0</strong></span></div>
       <div class="bag-arena"><div id="trainPet" class="train-pet"><canvas id="trainPetCanvas" width="190" height="150"></canvas></div><button id="punchBag" type="button" aria-label="Trainingssack schlagen"><span></span></button><p id="trainStartHint">Tippe rhythmisch auf den Sack.</p></div>
       <button id="startTrainBtn" class="primary-btn full" type="button">Start</button>

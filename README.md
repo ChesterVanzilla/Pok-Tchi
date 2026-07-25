@@ -1,22 +1,15 @@
-# TamaPoke Family Web v0.2
+# TamaPoke Family Web v0.3
 
-Private, nicht kommerzielle iPhone-/iPad-PWA auf Grundlage der Spielmechanik von TamaPoke.
+## Neu in dieser Version
+- Typabhängiges Weltensystem als technische Grundlage
+- Pflanze: Kanto Wald in Tag- und Nachtvariante
+- Feuer: Vulkan-Ebene in Tag- und Nachtvariante
+- Wasser: Azurbucht in Tag- und Nachtvariante
+- Automatische Weltzeit oder manuelle Tag-/Nacht-Auswahl
+- Typabhängige UI-Akzentfarben und Pixelrahmen
+- Je Typ drei eigene Beeren und ein eigener Süßigkeitenskin
+- Je Typ eigenes Sammel-Minispiel mit positivem Objekt und Hindernis
+- Je Typ eigenes Krafttrainingsziel und passende Szene
+- Bestehende v0.1/v0.2-Spielstände werden übernommen
 
-## Installation über GitHub Pages
-
-1. Den Inhalt dieses Ordners direkt in das Repository hochladen.
-2. Unter **Settings → Pages** den Branch `main` und `/root` aktivieren.
-3. Nach dem Upload die Seite einmal vollständig neu laden.
-4. Auf iPhone oder iPad in Safari **Teilen → Zum Home-Bildschirm** wählen.
-
-## Bestehende Spielstände
-
-v0.2 verwendet denselben lokalen Speicherschlüssel wie v0.1. Vorhandene Spielstände werden automatisch um die neuen Felder ergänzt und bleiben erhalten.
-
-## Testhinweis
-
-Für schnelle Tests in den Einstellungen **Testtempo (5 Sekunden)** auswählen. Die Fluchtbedingung benötigt 60 Spielticks mit allen Werten auf null. Die mögliche Verabschiedung erscheint bei einer Endform nach drei Spieltagen.
-
-## Credits
-
-Siehe `CREDITS-TAMAPOKE.md` und `LICENSE-TAMAPOKE.txt`.
+Die nächsten Typwelten können über `js/worlds.js` und weitere SVG-Hintergründe ergänzt werden.
