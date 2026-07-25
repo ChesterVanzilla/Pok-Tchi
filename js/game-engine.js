@@ -15,6 +15,17 @@ export const PACE_MS = Object.freeze({
   test: 5_000
 });
 
+export const ENDING = Object.freeze({
+  NONE: 0,
+  FAREWELL: 1,
+  RUNAWAY: 2,
+  RELEASE: 3
+});
+
+export const CEREMONY_MS = 10_000;
+export const FAREWELL_AGE_MINUTES = 3 * 24 * 60;
+export const RUNAWAY_TICKS = 60;
+
 const MAX_OFFLINE_GAME_MINUTES = 14 * 24 * 60;
 const MINUTES_PER_LEVEL = 60;
 
@@ -42,7 +53,8 @@ export function createSlot(trainer, starterDex) {
     totalMedals: 0,
     gameHi: 0,
     strHi: 0,
-    lastEnd: 0,
+    lastEnd: ENDING.NONE,
+    history: [],
     pet: makeEgg(starterDex, Math.random() < (1 / 48))
   };
 }
@@ -78,6 +90,8 @@ function makeEgg(targetDex, shiny) {
     neglectTicks: 0,
     goodTicks: 0,
     evoDeclinedLv: 0,
+    farDeclinedAge: 0,
+    ceremony: null,
     lastMessage: 'Tippe dreimal auf das Ei.'
   };
 }
@@ -115,6 +129,7 @@ export function getSpeciesName(slot, speciesById) {
 }
 
 export function applyElapsed(slot, settings, speciesById, now = Date.now(), offline = true) {
+  if (slot.pet?.ceremony) return 0;
   if (!slot.lastRealMs || slot.lastRealMs > now) {
     slot.lastRealMs = now;
     return 0;
@@ -137,6 +152,7 @@ export function applyElapsed(slot, settings, speciesById, now = Date.now(), offl
 
 export function tick(slot, speciesById, offline = false) {
   const pet = slot.pet;
+  if (pet.ceremony) return;
   pet.ageMinutes += 1;
 
   if (isEgg(slot)) {
@@ -195,7 +211,7 @@ export function tick(slot, speciesById, offline = false) {
   }
 
   if ([pet.fullness, pet.joy, pet.energy, pet.hygiene].every((value) => value === 0)) {
-    pet.neglectTicks = Math.min(60, pet.neglectTicks + 1);
+    pet.neglectTicks = Math.min(RUNAWAY_TICKS, pet.neglectTicks + 1);
   } else {
     pet.neglectTicks = 0;
   }
@@ -281,6 +297,7 @@ export function clean(slot, speciesById) {
 export function toggleSleep(slot) {
   if (isEgg(slot)) return blocked(slot);
   slot.pet.sleeping = !slot.pet.sleeping;
+  slot.pet.neglectTicks = 0;
   slot.pet.lastMessage = slot.pet.sleeping ? 'Gute Nacht …' : 'Guten Morgen!';
   return { changed: true, animation: slot.pet.sleeping ? 3 : 9, message: slot.pet.lastMessage };
 }
@@ -351,6 +368,7 @@ function addBond(slot, amount) {
 
 function registerCare(slot, speciesById) {
   if (isEgg(slot)) return;
+  slot.pet.neglectTicks = 0;
   const day = todayNumber();
   if (day === slot.lastCareDay) return;
   if (slot.lastCareDay === 0 || day === slot.lastCareDay + 1) slot.streak += 1;
@@ -363,15 +381,26 @@ function registerCare(slot, speciesById) {
 }
 
 export function canEvolve(slot, speciesById) {
-  if (isEgg(slot) || slot.pet.sleeping) return false;
+  if (isEgg(slot) || slot.pet.sleeping || slot.pet.ceremony) return false;
   const species = getSpecies(slot, speciesById);
   if (!species?.evolvesTo) return false;
   return levelOf(slot) >= species.evolveLevel + slot.pet.careMistakes && lowestStat(slot) >= 40;
 }
 
+export function wantEvolvePrompt(slot, speciesById) {
+  return canEvolve(slot, speciesById) && levelOf(slot) > (slot.pet.evoDeclinedLv || 0);
+}
+
+export function declineEvolution(slot) {
+  if (isEgg(slot)) return;
+  slot.pet.evoDeclinedLv = levelOf(slot);
+  slot.pet.lastMessage = 'Es bleibt vorerst in seiner jetzigen Form.';
+}
+
 export function evolve(slot, speciesById) {
   if (!canEvolve(slot, speciesById)) return { changed: false, message: 'Die Bedingungen sind noch nicht erfüllt.' };
   const current = getSpecies(slot, speciesById);
+  const previousSpeciesId = slot.pet.speciesId;
   let next = current.evolvesTo;
   if (slot.pet.speciesId === 133) {
     const options = [134, 135, 136];
@@ -380,21 +409,109 @@ export function evolve(slot, speciesById) {
     next = pool[randomInt(pool.length)];
   }
   slot.pet.speciesId = next;
+  slot.pet.evoDeclinedLv = 0;
   registerSpecies(slot, next, slot.pet.shiny);
   checkMedals(slot, speciesById);
   const name = speciesById.get(next)?.nameDe || 'Pokémon';
   slot.pet.lastMessage = `Entwicklung zu ${name}!`;
-  return { changed: true, speciesId: next, animation: 7, message: slot.pet.lastMessage };
+  return { changed: true, previousSpeciesId, speciesId: next, animation: 7, message: slot.pet.lastMessage };
+}
+
+export function canFarewell(slot, speciesById) {
+  if (isEgg(slot) || slot.pet.sleeping || slot.pet.ceremony) return false;
+  const species = getSpecies(slot, speciesById);
+  return Boolean(species && species.evolvesTo === 0 && slot.pet.ageMinutes >= FAREWELL_AGE_MINUTES);
+}
+
+export function wantFarewellPrompt(slot, speciesById) {
+  return canFarewell(slot, speciesById) && slot.pet.ageMinutes >= (slot.pet.farDeclinedAge || 0);
+}
+
+export function declineFarewell(slot) {
+  if (isEgg(slot)) return;
+  slot.pet.farDeclinedAge = slot.pet.ageMinutes + 1440;
+  slot.pet.lastMessage = 'Ihr bleibt noch mindestens einen weiteren Tag zusammen.';
+}
+
+export function canRunaway(slot) {
+  return !isEgg(slot) && !slot.pet.sleeping && !slot.pet.ceremony && slot.pet.neglectTicks >= RUNAWAY_TICKS;
+}
+
+export function neglectProgress(slot) {
+  if (isEgg(slot)) return 0;
+  return Math.max(0, Math.min(100, Math.round((slot.pet.neglectTicks / RUNAWAY_TICKS) * 100)));
+}
+
+export function startCeremony(slot, type, speciesById, now = Date.now()) {
+  if (isEgg(slot) || slot.pet.ceremony) return { changed: false, message: 'Diese Szene kann gerade nicht gestartet werden.' };
+  if (![ENDING.FAREWELL, ENDING.RUNAWAY, ENDING.RELEASE].includes(type)) {
+    return { changed: false, message: 'Unbekannte Abschiedsart.' };
+  }
+  if (type === ENDING.FAREWELL && !canFarewell(slot, speciesById)) {
+    return { changed: false, message: 'Der gemeinsame Lebenszyklus ist noch nicht abgeschlossen.' };
+  }
+  if (type === ENDING.RUNAWAY && !canRunaway(slot)) {
+    return { changed: false, message: 'Du kannst dein Pokémon noch retten.' };
+  }
+
+  const displayName = getDisplayName(slot, speciesById);
+  slot.lastEnd = type;
+  slot.pet.ceremony = {
+    type,
+    startedAt: now,
+    endsAt: now + CEREMONY_MS,
+    speciesId: slot.pet.speciesId,
+    shiny: slot.pet.shiny,
+    displayName
+  };
+  slot.pet.lastMessage = type === ENDING.RUNAWAY
+    ? `${displayName} fühlt sich allein gelassen …`
+    : type === ENDING.FAREWELL
+      ? `${displayName} möchte sich bedanken.`
+      : `${displayName} verabschiedet sich.`;
+  return { changed: true, type, message: slot.pet.lastMessage, ceremony: slot.pet.ceremony };
+}
+
+export function ceremonyProgress(slot, now = Date.now()) {
+  const ceremony = slot?.pet?.ceremony;
+  if (!ceremony) return 0;
+  return Math.max(0, Math.min(1, (now - ceremony.startedAt) / Math.max(1, ceremony.endsAt - ceremony.startedAt)));
+}
+
+export function finishCeremony(slot, speciesById, now = Date.now()) {
+  const ceremony = slot?.pet?.ceremony;
+  if (!ceremony) return { changed: false };
+  const record = {
+    at: now,
+    type: ceremony.type,
+    speciesId: ceremony.speciesId,
+    shiny: ceremony.shiny,
+    name: ceremony.displayName,
+    level: levelOf(slot),
+    bond: slot.pet.bond,
+    medals: slot.pet.medals
+  };
+  if (!Array.isArray(slot.history)) slot.history = [];
+  slot.history.push(record);
+  slot.history = slot.history.slice(-20);
+
+  const target = pickEggSpecies(slot, speciesById);
+  const denominator = Math.max(8, (ceremony.type === ENDING.FAREWELL ? 24 : 48) - careBonus(slot));
+  const shiny = randomInt(denominator) === 0;
+  slot.pet = makeEgg(target, shiny);
+  slot.lastRealMs = now;
+  return { changed: true, target, shiny, record };
+}
+
+export function finishExpiredCeremony(slot, speciesById, now = Date.now()) {
+  if (!slot?.pet?.ceremony || slot.pet.ceremony.endsAt > now) return { changed: false };
+  return finishCeremony(slot, speciesById, now);
 }
 
 export function releaseAndCreateEgg(slot, speciesById) {
-  slot.lastEnd = 3;
-  const target = pickEggSpecies(slot, speciesById);
-  const denominator = Math.max(8, 48 - careBonus(slot));
-  const shiny = randomInt(denominator) === 0;
-  slot.pet = makeEgg(target, shiny);
-  slot.lastRealMs = Date.now();
-  return target;
+  const started = startCeremony(slot, ENDING.RELEASE, speciesById);
+  if (!started.changed) return null;
+  return started;
 }
 
 function careBonus(slot) {
@@ -416,11 +533,16 @@ function pickEggSpecies(slot, speciesById) {
 
   let tier = 1;
   const bonus = careBonus(slot);
-  const rareChance = 27 + bonus;
-  const legendaryChance = registeredCount(slot) >= 25 ? 3 + Math.floor(bonus / 3) : 0;
-  const roll = randomInt(100);
-  if (roll < legendaryChance) tier = 3;
-  else if (roll < legendaryChance + rareChance) tier = 2;
+  if (slot.lastEnd !== ENDING.RUNAWAY) {
+    const blessed = slot.lastEnd === ENDING.FAREWELL;
+    const rareChance = (blessed ? 45 : 27) + bonus;
+    const legendaryChance = registeredCount(slot) >= 25
+      ? (blessed ? 10 : 3) + Math.floor(bonus / 3)
+      : 0;
+    const roll = randomInt(100);
+    if (roll < legendaryChance) tier = 3;
+    else if (roll < legendaryChance + rareChance) tier = 2;
+  }
 
   for (let pass = 0; pass < 2; pass += 1) {
     for (let currentTier = tier; currentTier >= 1; currentTier -= 1) {
@@ -471,7 +593,9 @@ export function combatStats(slot, speciesById) {
 export function moodText(slot) {
   const pet = slot.pet;
   if (isEgg(slot)) return pet.lastMessage || 'Tippe dreimal auf das Ei.';
+  if (pet.ceremony) return pet.lastMessage || 'Auf Wiedersehen …';
   if (pet.sleeping) return 'Zzz …';
+  if (canRunaway(slot)) return 'Ich fühle mich ganz allein …';
   if (pet.fullness < 25) return 'Ich habe Hunger.';
   if (pet.hygiene < 25) return 'Ich brauche ein Bad.';
   if (pet.energy < 20) return 'Ich bin erschöpft.';

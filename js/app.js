@@ -19,8 +19,18 @@ import {
   caress,
   playResult,
   trainStrength,
-  canEvolve,
+  ENDING,
+  FAREWELL_AGE_MINUTES,
+  wantEvolvePrompt,
+  declineEvolution,
   evolve,
+  wantFarewellPrompt,
+  declineFarewell,
+  canRunaway,
+  neglectProgress,
+  startCeremony,
+  finishCeremony,
+  finishExpiredCeremony,
   releaseAndCreateEgg,
   combatStats,
   moodText,
@@ -45,14 +55,26 @@ let speciesById;
 let currentSlotIndex = null;
 let mainSprite;
 let detailSprite;
+let ceremonySprite;
+let miniPetSprite;
+let trainPetSprite;
 let starterPlayers = [];
 let slotPlayers = [];
 let toastTimer;
 let appTimer;
-let miniTimer;
+let bathTimer;
+let ceremonyTimer;
 let trainTimer;
+let miniRaf;
+let miniStartedAt = 0;
 let miniScore = 0;
+let miniMisses = 0;
+let miniBall = { x: 0.5, y: -0.08, vy: 0.34, lastAt: 0 };
+let miniPetX = 0.5;
 let trainHits = 0;
+let trainCombo = 0;
+let trainLastHitAt = 0;
+let actionLocked = false;
 
 const screens = {
   slots: $('#slotScreen'),
@@ -91,19 +113,30 @@ function showToast(message) {
 }
 
 function beep(kind = 'ok') {
-  if (!state.settings.sound || !window.AudioContext) return;
+  if (!state.settings.sound || !(window.AudioContext || window.webkitAudioContext)) return;
+  const patterns = {
+    ok: [[560,0,.12]], hatch: [[520,0,.10],[690,.11,.12],[860,.24,.20]],
+    evolve: [[420,0,.12],[540,.14,.12],[680,.28,.12],[860,.43,.30]],
+    food: [[440,0,.10],[520,.11,.10]], play: [[650,0,.07]],
+    clean: [[520,0,.09],[660,.10,.09],[780,.21,.14]],
+    sleep: [[430,0,.12],[350,.14,.18]], bye: [[620,0,.16],[520,.18,.16],[410,.36,.28]],
+    runaway: [[310,0,.18],[255,.22,.24],[205,.50,.30]], error: [[220,0,.18]]
+  };
   try {
-    const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    const frequencies = { ok: 560, hatch: 720, evolve: 820, food: 480, play: 650, clean: 590, sleep: 330, error: 220 };
-    oscillator.type = kind === 'error' ? 'square' : 'sine';
-    oscillator.frequency.setValueAtTime(frequencies[kind] || 560, context.currentTime);
-    gain.gain.setValueAtTime(0.055, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.18);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.19);
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const context = new AudioCtx();
+    (patterns[kind] || patterns.ok).forEach(([frequency, delay, duration], index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = kind === 'error' || kind === 'runaway' ? 'square' : index % 2 ? 'triangle' : 'sine';
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime + delay);
+      gain.gain.setValueAtTime(.055, context.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + delay + duration);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(context.currentTime + delay);
+      oscillator.stop(context.currentTime + delay + duration + .01);
+    });
+    setTimeout(() => context.close().catch(() => {}), 1200);
   } catch {}
 }
 
@@ -118,7 +151,10 @@ async function renderSlots() {
   list.innerHTML = '';
 
   state.slots.forEach((slot, index) => {
-    if (slot) applyElapsed(slot, state.settings, speciesById);
+    if (slot) {
+      finishExpiredCeremony(slot, speciesById);
+      applyElapsed(slot, state.settings, speciesById);
+    }
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'slot-card';
@@ -223,11 +259,14 @@ async function openGame(index) {
   currentSlotIndex = index;
   const slot = currentSlot();
   if (!slot) return;
+  const finished = finishExpiredCeremony(slot, speciesById);
   applyElapsed(slot, state.settings, speciesById);
   persist();
   showScreen('game');
   renderGame();
   await loadMainSprite();
+  if (finished.changed) showToast('Nach dem Abschied ist ein neues Ei erschienen.');
+  if (slot.pet.ceremony) resumeCeremonyScene();
 }
 
 async function loadMainSprite(action = null) {
@@ -286,7 +325,17 @@ function renderGame() {
 
   const poopRow = $('#poopRow');
   poopRow.textContent = isEgg(slot) ? '' : '💩'.repeat(pet.poops);
-  $('#evolveBanner').hidden = !canEvolve(slot, speciesById);
+  const evolveReady = wantEvolvePrompt(slot, speciesById);
+  const farewellReady = wantFarewellPrompt(slot, speciesById);
+  const runawayReady = canRunaway(slot);
+  $('#evolveBanner').hidden = !evolveReady || runawayReady;
+  $('#farewellBanner').hidden = !farewellReady || runawayReady;
+  $('#runawayBanner').hidden = !runawayReady;
+  if (!isEgg(slot)) {
+    $('#farewellBannerTitle').textContent = `${getDisplayName(slot, speciesById)} möchte dir etwas sagen`;
+    $('#runawayBannerTitle').textContent = `${getDisplayName(slot, speciesById)} fühlt sich verlassen`;
+  }
+  document.body.classList.toggle('action-locked', actionLocked || Boolean(pet.ceremony));
 }
 
 function updateMeter(key, value) {
@@ -318,6 +367,81 @@ async function touchPet() {
   processResult(result, result.hatched ? 'hatch' : 'ok');
   if (result.hatched) await loadMainSprite(ACTION.HOP);
 }
+
+
+function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+function createBathBubbles() {
+  const root = $('.bath-bubbles'); root.innerHTML = '';
+  for (let index = 0; index < 18; index += 1) {
+    const bubble = document.createElement('i');
+    bubble.style.setProperty('--x', `${8 + Math.random() * 84}%`);
+    bubble.style.setProperty('--y', `${38 + Math.random() * 52}%`);
+    bubble.style.setProperty('--size', `${12 + Math.random() * 26}px`);
+    bubble.style.setProperty('--delay', `${Math.random() * .8}s`);
+    root.appendChild(bubble);
+  }
+}
+
+async function startBathScene() {
+  const slot = currentSlot();
+  if (!slot || isEgg(slot) || slot.pet.sleeping || slot.pet.ceremony || actionLocked) {
+    processResult({ changed:false, message:slot?.pet?.sleeping ? 'Es schläft gerade.' : 'Ein Bad ist gerade nicht möglich.' }); return;
+  }
+  actionLocked = true; renderGame(); createBathBubbles();
+  const overlay = $('#bathOverlay'); overlay.hidden = false;
+  mainSprite.setAction(mainSprite.hasAction(ACTION.SIT) ? ACTION.SIT : ACTION.DEEP_BREATH);
+  beep('clean'); clearTimeout(bathTimer); bathTimer = setTimeout(() => {}, 0);
+  await delay(3000);
+  const result = clean(slot, speciesById); overlay.hidden = true; actionLocked = false;
+  processResult(result, 'clean');
+  if (result.changed) mainSprite.play(mainSprite.hasAction(ACTION.POSE) ? ACTION.POSE : ACTION.HOP);
+}
+
+function openEvolutionChoice() {
+  const slot=currentSlot(); if(!slot || !wantEvolvePrompt(slot,speciesById)) return;
+  const species=getSpecies(slot,speciesById);
+  const nextName=slot.pet.speciesId===133?'Aquana, Blitza oder Flamara':speciesById.get(species.evolvesTo)?.nameDe||'die nächste Form';
+  $('#evolutionChoiceTitle').textContent=`${getDisplayName(slot,speciesById)} entwickeln?`;
+  $('#evolutionChoiceText').textContent=`Die Bedingungen sind erfüllt. Die nächste Form ist ${nextName}.`;
+  openDialog($('#evolutionChoiceDialog'));
+}
+
+async function runEvolutionScene() {
+  const slot=currentSlot(); if(!slot || actionLocked) return;
+  closeDialog($('#evolutionChoiceDialog')); actionLocked=true;
+  const overlay=$('#evolutionOverlay'); overlay.hidden=false; $('#speechBubble').textContent='Was passiert gerade?';
+  mainSprite.setAction(ACTION.IDLE); beep('evolve'); renderGame(); await delay(1900);
+  const result=evolve(slot,speciesById);
+  if(!result.changed){overlay.hidden=true; actionLocked=false; processResult(result); return;}
+  persist(); renderGame(); await loadMainSprite(ACTION.POSE); $('#speechBubble').textContent=result.message; await delay(2300);
+  overlay.hidden=true; actionLocked=false; renderGame(); mainSprite.play(ACTION.POSE); showToast(result.message);
+}
+
+function configureCeremonyScene(type,name){
+  const scene=$('#ceremonyScene'); scene.className=`ceremony-scene ${type===ENDING.RUNAWAY?'runaway':type===ENDING.FAREWELL?'farewell':'release'}`;
+  if(type===ENDING.RUNAWAY){$('#ceremonyKicker').textContent='ZU SPÄT';$('#ceremonyTitle').textContent=`${name} läuft davon …`;$('#ceremonyText').textContent='Es fühlte sich zu lange allein. Beim nächsten Pokémon beginnt ein neuer Versuch.';}
+  else if(type===ENDING.FAREWELL){$('#ceremonyKicker').textContent='DANKE FÜR ALLES';$('#ceremonyTitle').textContent=`${name} verabschiedet sich`;$('#ceremonyText').textContent='Eure gute gemeinsame Zeit erhöht die Chance auf ein seltenes oder schillerndes Ei.';}
+  else{$('#ceremonyKicker').textContent='AUF WIEDERSEHEN';$('#ceremonyTitle').textContent=`${name} zieht weiter`;$('#ceremonyText').textContent='Du hast dich freiwillig für ein neues Ei entschieden.';}
+}
+
+async function resumeCeremonyScene(){
+  const slot=currentSlot(); const ceremony=slot?.pet?.ceremony; if(!ceremony) return;
+  actionLocked=true; configureCeremonyScene(ceremony.type,ceremony.displayName); openDialog($('#ceremonyDialog'));
+  const species=speciesById.get(ceremony.speciesId);
+  if(species){try{await ceremonySprite.load(ceremony.shiny?species.shinySprite:species.sprite);ceremonySprite.setMotion(state.settings.motion);ceremonySprite.setAction(ceremony.type===ENDING.RUNAWAY?ACTION.HURT:ACTION.POSE);}catch(error){console.error(error);}}
+  beep(ceremony.type===ENDING.RUNAWAY?'runaway':'bye'); clearInterval(ceremonyTimer);
+  ceremonyTimer=setInterval(async()=>{
+    const activeSlot=currentSlot(); const active=activeSlot?.pet?.ceremony; if(!active) return;
+    const total=Math.max(1,active.endsAt-active.startedAt); const progress=Math.max(0,Math.min(1,(Date.now()-active.startedAt)/total));
+    $('#ceremonyProgressBar').style.width=`${progress*100}%`;
+    if(progress>=1){clearInterval(ceremonyTimer);ceremonyTimer=null;finishCeremony(activeSlot,speciesById);persist();closeDialog($('#ceremonyDialog'));actionLocked=false;renderGame();await loadMainSprite();showToast('Ein neues Ei ist erschienen.');}
+  },80);
+}
+
+async function beginCeremony(type){const slot=currentSlot();if(!slot||actionLocked)return;const result=startCeremony(slot,type,speciesById);if(!result.changed)return processResult(result);persist();renderGame();await resumeCeremonyScene();}
+
+function openFarewellChoice(){const slot=currentSlot();if(!slot||!wantFarewellPrompt(slot,speciesById))return;const name=getDisplayName(slot,speciesById);$('#farewellChoiceTitle').textContent=`Mit ${name} Abschied nehmen?`;$('#farewellChoiceText').textContent='Der Lebenszyklus ist erfüllt. Ein dankbarer Abschied verbessert die Chancen des nächsten Eis. Ihr könnt aber auch zusammenbleiben.';openDialog($('#farewellChoiceDialog'));}
 
 function renderDex(query = '') {
   const slot = currentSlot();
@@ -420,6 +544,22 @@ function renderInfo() {
     combat.appendChild(item);
   });
 
+  const life = $('#lifeProgress');
+  life.innerHTML = '';
+  const level = levelOf(slot);
+  const evolutionNeeded = species.evolvesTo ? species.evolveLevel + pet.careMistakes : null;
+  const lifeItems = species.evolvesTo ? [
+    ['Nächste Entwicklung', level >= evolutionNeeded ? 'Bereit, wenn alle Werte mindestens 40 sind' : `Noch ${evolutionNeeded - level} Level`],
+    ['Pflegefehler', `${pet.careMistakes} · jeder Fehler verzögert um 1 Level`],
+    ['Abbruchstatus', pet.evoDeclinedLv >= level ? 'Bis zum nächsten Level verschoben' : 'Nicht verschoben']
+  ] : [
+    ['Endform', 'Erreicht'],
+    ['Lebenszyklus', `${Math.min(100, Math.floor(pet.ageMinutes / FAREWELL_AGE_MINUTES * 100))}% bis zur möglichen Verabschiedung`],
+    ['Gemeinsame Zeit', pet.ageMinutes >= FAREWELL_AGE_MINUTES ? 'Abschied möglich – oder ihr bleibt zusammen' : `${FAREWELL_AGE_MINUTES - pet.ageMinutes} Spielminuten verbleiben`]
+  ];
+  lifeItems.push(['Vernachlässigung', `${neglectProgress(slot)}% · jede Pflege setzt die Gefahr zurück`]);
+  lifeItems.forEach(([label, value]) => life.appendChild(metricNode(label, value)));
+
   const medals = $('#medalGrid');
   medals.innerHTML = '';
   MEDALS.forEach((medal) => {
@@ -446,247 +586,90 @@ function applyMotionSetting() {
   document.documentElement.classList.toggle('no-motion', !state.settings.motion);
   mainSprite?.setMotion(state.settings.motion);
   detailSprite?.setMotion(state.settings.motion);
+  ceremonySprite?.setMotion(state.settings.motion);
+  miniPetSprite?.setMotion(state.settings.motion);
+  trainPetSprite?.setMotion(state.settings.motion);
   starterPlayers.forEach((player) => player.setMotion(state.settings.motion));
   slotPlayers.forEach((player) => player.setMotion(state.settings.motion));
 }
 
-function positionMiniTarget() {
-  const arena = $('#miniArena');
-  const target = $('#miniTarget');
-  const width = Math.max(1, arena.clientWidth - target.offsetWidth - 12);
-  const height = Math.max(1, arena.clientHeight - target.offsetHeight - 12);
-  target.style.left = `${6 + Math.random() * width}px`;
-  target.style.top = `${6 + Math.random() * height}px`;
+function resetMiniBall(speedBoost = 0) {
+  miniBall.x = 0.12 + Math.random() * 0.76;
+  miniBall.y = -0.08;
+  miniBall.vy = 0.34 + speedBoost;
 }
+function placeMiniElements(){const ball=$('#miniBall');const pet=$('#miniPet');ball.style.left=`${miniBall.x*100}%`;ball.style.top=`${miniBall.y*100}%`;pet.style.left=`${miniPetX*100}%`;}
+function moveMiniPet(clientX){const arena=$('#miniArena');const rect=arena.getBoundingClientRect();const next=Math.max(.10,Math.min(.90,(clientX-rect.left)/Math.max(1,rect.width)));if(miniPetSprite){const action=next<miniPetX?ACTION.WALK_LEFT:ACTION.WALK_RIGHT;if(Math.abs(next-miniPetX)>.015)miniPetSprite.setAction(action);}miniPetX=next;$('#miniPet').style.left=`${miniPetX*100}%`;}
+function miniGameStep(now){if(!miniStartedAt)return;const elapsed=(now-miniStartedAt)/1000;const remaining=Math.max(0,20-elapsed);$('#miniTime').textContent=Math.ceil(remaining);const previous=miniBall.lastAt||now;const dt=Math.min(.04,(now-previous)/1000);miniBall.lastAt=now;miniBall.y+=miniBall.vy*dt;miniBall.vy+=.16*dt;if(miniBall.y>=.74){const caught=Math.abs(miniBall.x-miniPetX)<=.16;if(caught){miniScore+=1;$('#miniScore').textContent=miniScore;miniPetSprite?.play(ACTION.HOP);beep('play');}else{miniMisses+=1;$('#miniMisses').textContent=`${miniMisses}/3`;miniPetSprite?.play(ACTION.HURT);beep('error');}resetMiniBall(Math.min(.22,miniScore*.012));}placeMiniElements();if(remaining<=0||miniMisses>=3){finishMiniGame();return;}miniRaf=requestAnimationFrame(miniGameStep);}
+async function prepareMiniGame(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);try{await miniPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);miniPetSprite.setMotion(state.settings.motion);miniPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
+function startMiniGame(){cancelAnimationFrame(miniRaf);miniScore=0;miniMisses=0;miniPetX=.5;miniStartedAt=performance.now();miniBall.lastAt=miniStartedAt;resetMiniBall();$('#miniScore').textContent='0';$('#miniMisses').textContent='0/3';$('#miniTime').textContent='20';$('#miniStartHint').hidden=true;$('#miniBall').hidden=false;$('#startMiniBtn').disabled=true;placeMiniElements();miniRaf=requestAnimationFrame(miniGameStep);}
+function finishMiniGame(){if(!miniStartedAt)return;cancelAnimationFrame(miniRaf);miniRaf=null;miniStartedAt=0;$('#miniBall').hidden=true;$('#startMiniBtn').disabled=false;$('#startMiniBtn').textContent='Noch einmal';const hint=$('#miniStartHint');hint.hidden=false;hint.textContent=`${miniScore} Fänge · ${miniMisses} Fehler · Rekord ${Math.max(currentSlot().gameHi,miniScore)}`;processResult(playResult(currentSlot(),miniScore,speciesById),'play');}
+function cancelMiniGame(){cancelAnimationFrame(miniRaf);miniRaf=null;miniStartedAt=0;$('#miniBall').hidden=true;$('#startMiniBtn').disabled=false;miniPetSprite?.setAction(ACTION.IDLE);closeDialog($('#miniGameDialog'));}
 
-function startMiniGame() {
-  clearInterval(miniTimer);
-  miniScore = 0;
-  let remaining = 15;
-  $('#miniScore').textContent = miniScore;
-  $('#miniTime').textContent = remaining;
-  $('#miniStartHint').hidden = true;
-  $('#miniTarget').style.display = 'block';
-  $('#startMiniBtn').disabled = true;
-  positionMiniTarget();
-  const end = Date.now() + 15_000;
-  miniTimer = setInterval(() => {
-    remaining = Math.max(0, Math.ceil((end - Date.now()) / 1000));
-    $('#miniTime').textContent = remaining;
-    if (remaining <= 0) finishMiniGame();
-  }, 100);
-}
-
-function finishMiniGame() {
-  clearInterval(miniTimer);
-  miniTimer = null;
-  $('#miniTarget').style.display = 'none';
-  $('#startMiniBtn').disabled = false;
-  $('#startMiniBtn').textContent = 'Noch einmal';
-  const hint = $('#miniStartHint');
-  hint.hidden = false;
-  hint.textContent = `${miniScore} Punkte · Rekord ${Math.max(currentSlot().gameHi, miniScore)}`;
-  const result = playResult(currentSlot(), miniScore, speciesById);
-  processResult(result, 'play');
-}
-
-function cancelMiniGame() {
-  clearInterval(miniTimer);
-  miniTimer = null;
-  $('#miniTarget').style.display = 'none';
-  $('#startMiniBtn').disabled = false;
-  closeDialog($('#miniGameDialog'));
-}
-
-function startTraining() {
-  clearInterval(trainTimer);
-  trainHits = 0;
-  let remaining = 10;
-  $('#trainHits').textContent = trainHits;
-  $('#trainTime').textContent = remaining;
-  $('#trainStartHint').hidden = true;
-  $('#punchBag').style.display = 'block';
-  $('#startTrainBtn').disabled = true;
-  const end = Date.now() + 10_000;
-  trainTimer = setInterval(() => {
-    remaining = Math.max(0, Math.ceil((end - Date.now()) / 1000));
-    $('#trainTime').textContent = remaining;
-    if (remaining <= 0) finishTraining();
-  }, 100);
-}
-
-function finishTraining() {
-  clearInterval(trainTimer);
-  trainTimer = null;
-  $('#punchBag').style.display = 'none';
-  $('#startTrainBtn').disabled = false;
-  $('#startTrainBtn').textContent = 'Noch einmal';
-  const result = trainStrength(currentSlot(), trainHits, speciesById);
-  $('#trainStartHint').hidden = false;
-  $('#trainStartHint').textContent = `${trainHits} Treffer · Kraft +${result.gain || 0}`;
-  processResult(result, 'play');
-}
-
-function cancelTraining() {
-  clearInterval(trainTimer);
-  trainTimer = null;
-  $('#punchBag').style.display = 'none';
-  $('#startTrainBtn').disabled = false;
-  closeDialog($('#trainDialog'));
-}
+async function prepareTraining(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);try{await trainPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);trainPetSprite.setMotion(state.settings.motion);trainPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
+function startTraining(){clearInterval(trainTimer);trainHits=0;trainCombo=0;trainLastHitAt=0;let remaining=10;$('#trainHits').textContent=trainHits;$('#trainCombo').textContent=trainCombo;$('#trainTime').textContent=remaining;$('#trainStartHint').hidden=true;$('#punchBag').style.display='block';$('#startTrainBtn').disabled=true;trainPetSprite?.setAction(ACTION.IDLE);const end=Date.now()+10000;trainTimer=setInterval(()=>{remaining=Math.max(0,Math.ceil((end-Date.now())/1000));$('#trainTime').textContent=remaining;if(remaining<=0)finishTraining();},100);}
+function registerTrainingHit(){if(!trainTimer)return;const now=performance.now();trainCombo=now-trainLastHitAt<=650?trainCombo+1:1;trainLastHitAt=now;trainHits+=1;$('#trainHits').textContent=trainHits;$('#trainCombo').textContent=trainCombo;const bag=$('#punchBag');bag.classList.remove('hit');void bag.offsetWidth;bag.classList.add('hit');trainPetSprite?.play(ACTION.ATTACK);beep('play');}
+function finishTraining(){clearInterval(trainTimer);trainTimer=null;$('#punchBag').style.display='none';$('#startTrainBtn').disabled=false;$('#startTrainBtn').textContent='Noch einmal';trainPetSprite?.setAction(ACTION.POSE);const result=trainStrength(currentSlot(),trainHits,speciesById);$('#trainStartHint').hidden=false;$('#trainStartHint').textContent=`${trainHits} Treffer · beste Kombo ${trainCombo} · Kraft +${result.gain||0}`;processResult(result,'play');}
+function cancelTraining(){clearInterval(trainTimer);trainTimer=null;$('#punchBag').style.display='none';$('#startTrainBtn').disabled=false;trainPetSprite?.setAction(ACTION.IDLE);closeDialog($('#trainDialog'));}
 
 function bindEvents() {
-  $('[data-nav="slots"]').addEventListener('click', async () => {
-    await renderSlots();
-    showScreen('slots');
-  });
+  $('[data-nav="slots"]').addEventListener('click', async () => { if(actionLocked)return; await renderSlots(); showScreen('slots'); });
   $('[data-nav="game"]').addEventListener('click', () => showScreen('game'));
-  $('#backToSlotsBtn').addEventListener('click', async () => {
-    persist();
-    await renderSlots();
-    showScreen('slots');
-  });
-  $('#petTouchArea').addEventListener('click', touchPet);
+  $('#backToSlotsBtn').addEventListener('click', async () => { if(actionLocked)return; persist(); await renderSlots(); showScreen('slots'); });
+  $('#petTouchArea').addEventListener('click', () => { if(!actionLocked) touchPet(); });
   $('#openSettingsBtn').addEventListener('click', openSettings);
-  $('#openDexBtn').addEventListener('click', () => {
-    renderDex($('#dexSearch').value);
-    showScreen('dex');
-  });
+  $('#openDexBtn').addEventListener('click', () => { if(actionLocked)return; renderDex($('#dexSearch').value); showScreen('dex'); });
   $('#dexSearch').addEventListener('input', (event) => renderDex(event.target.value));
-
   $$('.close-dialog').forEach((button) => button.addEventListener('click', () => closeDialog(button.closest('dialog'))));
 
-  $$('[data-action]').forEach((button) => button.addEventListener('click', () => {
-    const action = button.dataset.action;
-    const slot = currentSlot();
-    if (!slot) return;
-    if (action === 'food') {
-      if (isEgg(slot) || slot.pet.sleeping) return processResult({ changed: false, message: slot.pet.sleeping ? 'Es schläft gerade.' : 'Erst muss das Ei schlüpfen.' });
+  $$('[data-action]').forEach((button) => button.addEventListener('click', async () => {
+    const action=button.dataset.action; const slot=currentSlot(); if(!slot||actionLocked||slot.pet.ceremony)return;
+    if(action==='food'){
+      if(isEgg(slot)||slot.pet.sleeping)return processResult({changed:false,message:slot.pet.sleeping?'Es schläft gerade.':'Erst muss das Ei schlüpfen.'});
       openDialog($('#foodDialog'));
-    } else if (action === 'play') {
-      if (isEgg(slot) || slot.pet.sleeping) return processResult({ changed: false, message: slot.pet.sleeping ? 'Es schläft gerade.' : 'Erst muss das Ei schlüpfen.' });
-      $('#miniTime').textContent = '15';
-      $('#miniScore').textContent = '0';
-      $('#miniStartHint').hidden = false;
-      $('#miniStartHint').textContent = 'Tippe auf Start und fange so viele Sterne wie möglich.';
-      $('#startMiniBtn').textContent = 'Start';
-      openDialog($('#miniGameDialog'));
-    } else if (action === 'train') {
-      if (isEgg(slot) || slot.pet.sleeping) return processResult({ changed: false, message: slot.pet.sleeping ? 'Es schläft gerade.' : 'Erst muss das Ei schlüpfen.' });
-      $('#trainTime').textContent = '10';
-      $('#trainHits').textContent = '0';
-      $('#trainStartHint').hidden = false;
-      $('#trainStartHint').textContent = 'Tippe schnell auf den Sack.';
-      $('#startTrainBtn').textContent = 'Start';
-      openDialog($('#trainDialog'));
-    } else if (action === 'clean') {
-      processResult(clean(slot, speciesById), 'clean');
-    } else if (action === 'sleep') {
-      const result = toggleSleep(slot);
-      processResult(result, 'sleep');
-      if (result.changed) mainSprite.setAction(slot.pet.sleeping ? ACTION.SLEEP : ACTION.IDLE);
-    } else if (action === 'info') {
-      if (renderInfo()) openDialog($('#infoDialog'));
-    }
+    }else if(action==='play'){
+      if(isEgg(slot)||slot.pet.sleeping)return processResult({changed:false,message:slot.pet.sleeping?'Es schläft gerade.':'Erst muss das Ei schlüpfen.'});
+      $('#miniTime').textContent='20';$('#miniScore').textContent='0';$('#miniMisses').textContent='0/3';$('#miniStartHint').hidden=false;$('#miniStartHint').textContent='Bewege dein Pokémon mit dem Finger und fange den Pokéball.';$('#startMiniBtn').textContent='Start';$('#miniBall').hidden=true;await prepareMiniGame();openDialog($('#miniGameDialog'));
+    }else if(action==='train'){
+      if(isEgg(slot)||slot.pet.sleeping)return processResult({changed:false,message:slot.pet.sleeping?'Es schläft gerade.':'Erst muss das Ei schlüpfen.'});
+      $('#trainTime').textContent='10';$('#trainHits').textContent='0';$('#trainCombo').textContent='0';$('#trainStartHint').hidden=false;$('#trainStartHint').textContent='Tippe rhythmisch auf den Sack.';$('#startTrainBtn').textContent='Start';await prepareTraining();openDialog($('#trainDialog'));
+    }else if(action==='clean') await startBathScene();
+    else if(action==='sleep'){const result=toggleSleep(slot);processResult(result,'sleep');if(result.changed)mainSprite.setAction(slot.pet.sleeping?ACTION.SLEEP:ACTION.IDLE);}
+    else if(action==='info'){if(renderInfo())openDialog($('#infoDialog'));}
   }));
 
-  $$('[data-berry]').forEach((button) => button.addEventListener('click', () => {
-    const result = feedBerry(currentSlot(), Number(button.dataset.berry), speciesById);
-    closeDialog($('#foodDialog'));
-    processResult(result, 'food');
-  }));
-  $('#candyBtn').addEventListener('click', () => {
-    const result = feedCandy(currentSlot(), speciesById);
-    closeDialog($('#foodDialog'));
-    processResult(result, 'food');
-  });
+  $$('[data-berry]').forEach((button)=>button.addEventListener('click',()=>{const result=feedBerry(currentSlot(),Number(button.dataset.berry),speciesById);closeDialog($('#foodDialog'));processResult(result,'food');}));
+  $('#candyBtn').addEventListener('click',()=>{const result=feedCandy(currentSlot(),speciesById);closeDialog($('#foodDialog'));processResult(result,'food');});
 
-  $('#evolveBanner').addEventListener('click', async () => {
-    const slot = currentSlot();
-    const species = getSpecies(slot, speciesById);
-    const nextName = speciesById.get(species.evolvesTo)?.nameDe || 'eine neue Form';
-    if (!confirm(`${getSpeciesName(slot, speciesById)} zu ${nextName} entwickeln?`)) return;
-    const result = evolve(slot, speciesById);
-    processResult(result, 'evolve');
-    if (result.changed) await loadMainSprite(ACTION.POSE);
-  });
+  $('#evolveBanner').addEventListener('click',openEvolutionChoice);
+  $('#acceptEvolutionBtn').addEventListener('click',runEvolutionScene);
+  $('#declineEvolutionBtn').addEventListener('click',()=>{declineEvolution(currentSlot());persist();closeDialog($('#evolutionChoiceDialog'));renderGame();showToast('Die Entwicklung wird beim nächsten Level erneut angeboten.');});
+  $('#farewellBanner').addEventListener('click',openFarewellChoice);
+  $('#acceptFarewellBtn').addEventListener('click',async()=>{closeDialog($('#farewellChoiceDialog'));await beginCeremony(ENDING.FAREWELL);});
+  $('#declineFarewellBtn').addEventListener('click',()=>{declineFarewell(currentSlot());persist();closeDialog($('#farewellChoiceDialog'));renderGame();showToast('Ihr bleibt zusammen. Die Frage kommt in einem Spieltag wieder.');});
+  $('#runawayBanner').addEventListener('click',()=>beginCeremony(ENDING.RUNAWAY));
 
-  $('#saveNicknameBtn').addEventListener('click', () => {
-    setNickname(currentSlot(), $('#nicknameInput').value);
-    persist();
-    renderGame();
-    renderInfo();
-    showToast('Spitzname gespeichert.');
-  });
-  $('#newEggBtn').addEventListener('click', async () => {
-    const slot = currentSlot();
-    if (!confirm(`${getDisplayName(slot, speciesById)} wirklich freilassen? Danach erhältst du ein neues, zufälliges Ei.`)) return;
-    releaseAndCreateEgg(slot, speciesById);
-    persist();
-    closeDialog($('#infoDialog'));
-    renderGame();
-    await loadMainSprite();
-    beep('hatch');
-    showToast('Ein neues Ei ist erschienen.');
-  });
+  $('#saveNicknameBtn').addEventListener('click',()=>{setNickname(currentSlot(),$('#nicknameInput').value);persist();renderGame();renderInfo();showToast('Spitzname gespeichert.');});
+  $('#newEggBtn').addEventListener('click',async()=>{const slot=currentSlot();if(!confirm(`${getDisplayName(slot,speciesById)} wirklich freiwillig freilassen? Danach beginnt eine Abschiedsszene und ein neues Ei erscheint.`))return;closeDialog($('#infoDialog'));const result=releaseAndCreateEgg(slot,speciesById);if(!result?.changed)return processResult(result||{changed:false,message:'Freilassen ist gerade nicht möglich.'});persist();renderGame();await resumeCeremonyScene();});
 
-  $('#paceSelect').addEventListener('change', (event) => {
-    state.slots.forEach((slot) => { if (slot) applyElapsed(slot, state.settings, speciesById); });
-    state.settings.pace = event.target.value;
-    const now = Date.now();
-    state.slots.forEach((slot) => { if (slot) slot.lastRealMs = now; });
-    persist();
-    showToast('Spieltempo geändert.');
-  });
-  $('#soundToggle').addEventListener('change', (event) => { state.settings.sound = event.target.checked; persist(); beep('ok'); });
-  $('#motionToggle').addEventListener('change', (event) => { state.settings.motion = event.target.checked; persist(); applyMotionSetting(); });
-  $('#resetAllBtn').addEventListener('click', async () => {
-    if (!confirm('Wirklich alle drei Spielstände unwiderruflich löschen?')) return;
-    clearState();
-    state = defaultState();
-    currentSlotIndex = null;
-    closeDialog($('#settingsDialog'));
-    applyMotionSetting();
-    await renderSlots();
-    showScreen('slots');
-    showToast('Alle Spielstände wurden gelöscht.');
-  });
+  $('#paceSelect').addEventListener('change',(event)=>{state.slots.forEach((slot)=>{if(slot)applyElapsed(slot,state.settings,speciesById);});state.settings.pace=event.target.value;const now=Date.now();state.slots.forEach((slot)=>{if(slot)slot.lastRealMs=now;});persist();showToast('Spieltempo geändert.');});
+  $('#soundToggle').addEventListener('change',(event)=>{state.settings.sound=event.target.checked;persist();beep('ok');});
+  $('#motionToggle').addEventListener('change',(event)=>{state.settings.motion=event.target.checked;persist();applyMotionSetting();});
+  $('#resetAllBtn').addEventListener('click',async()=>{if(!confirm('Wirklich alle drei Spielstände unwiderruflich löschen?'))return;clearState();state=defaultState();currentSlotIndex=null;closeDialog($('#settingsDialog'));applyMotionSetting();await renderSlots();showScreen('slots');showToast('Alle Spielstände wurden gelöscht.');});
 
-  $('#startMiniBtn').addEventListener('click', startMiniGame);
-  $('#cancelMiniBtn').addEventListener('click', cancelMiniGame);
-  $('#miniTarget').addEventListener('click', () => {
-    miniScore += 1;
-    $('#miniScore').textContent = miniScore;
-    positionMiniTarget();
-    beep('play');
-  });
+  $('#startMiniBtn').addEventListener('click',startMiniGame);$('#cancelMiniBtn').addEventListener('click',cancelMiniGame);
+  const miniArena=$('#miniArena');
+  miniArena.addEventListener('pointerdown',(event)=>{if(!miniStartedAt)return;miniArena.setPointerCapture?.(event.pointerId);moveMiniPet(event.clientX);});
+  miniArena.addEventListener('pointermove',(event)=>{if(!miniStartedAt||event.buttons===0)return;moveMiniPet(event.clientX);});
+  $('#startTrainBtn').addEventListener('click',startTraining);$('#cancelTrainBtn').addEventListener('click',cancelTraining);$('#punchBag').addEventListener('click',registerTrainingHit);
 
-  $('#startTrainBtn').addEventListener('click', startTraining);
-  $('#cancelTrainBtn').addEventListener('click', cancelTraining);
-  $('#punchBag').addEventListener('click', () => {
-    trainHits += 1;
-    $('#trainHits').textContent = trainHits;
-    const bag = $('#punchBag');
-    bag.classList.remove('hit');
-    void bag.offsetWidth;
-    bag.classList.add('hit');
-    beep('play');
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') {
-      persist();
-      return;
-    }
-    const slot = currentSlot();
-    if (slot) {
-      const ticks = applyElapsed(slot, state.settings, speciesById);
-      if (ticks) {
-        persist();
-        renderGame();
-        loadMainSprite();
-      }
-    }
+  document.addEventListener('visibilitychange',async()=>{
+    if(document.visibilityState!=='visible'){persist();return;}
+    const slot=currentSlot();if(!slot)return;
+    const finished=finishExpiredCeremony(slot,speciesById);
+    if(finished.changed){clearInterval(ceremonyTimer);ceremonyTimer=null;closeDialog($('#ceremonyDialog'));actionLocked=false;persist();renderGame();await loadMainSprite();showToast('Ein neues Ei ist erschienen.');return;}
+    if(slot.pet.ceremony){resumeCeremonyScene();return;}
+    const ticks=applyElapsed(slot,state.settings,speciesById);if(ticks){persist();renderGame();loadMainSprite();}
   });
 }
 
@@ -697,24 +680,33 @@ async function init() {
   speciesById = speciesMapFromData(data);
   mainSprite = new SpritePlayer($('#petCanvas'), { motion: state.settings.motion });
   detailSprite = new SpritePlayer($('#dexDetailCanvas'), { motion: state.settings.motion });
+  ceremonySprite = new SpritePlayer($('#ceremonyCanvas'), { motion: state.settings.motion });
+  miniPetSprite = new SpritePlayer($('#miniPetCanvas'), { motion: state.settings.motion });
+  trainPetSprite = new SpritePlayer($('#trainPetCanvas'), { motion: state.settings.motion });
   applyMotionSetting();
   bindEvents();
   await renderSlots();
   renderStarters();
   showScreen('slots');
 
-  appTimer = setInterval(() => {
+  appTimer = setInterval(async () => {
     const slot = currentSlot();
     if (!slot || !screens.game.classList.contains('active')) return;
+    if (slot.pet.ceremony) {
+      const finished = finishExpiredCeremony(slot, speciesById);
+      if (finished.changed) {
+        clearInterval(ceremonyTimer); ceremonyTimer = null; closeDialog($('#ceremonyDialog'));
+        actionLocked = false; persist(); renderGame(); await loadMainSprite(); showToast('Ein neues Ei ist erschienen.');
+      }
+      return;
+    }
     const ticks = applyElapsed(slot, state.settings, speciesById, Date.now(), false);
     if (ticks > 0) {
       persist();
       const wasEgg = $('#eggView').classList.contains('hidden') === false;
       renderGame();
       if (wasEgg && !isEgg(slot)) {
-        loadMainSprite(ACTION.HOP);
-        beep('hatch');
-        showToast(`${getSpeciesName(slot, speciesById)} ist geschlüpft!`);
+        loadMainSprite(ACTION.HOP); beep('hatch'); showToast(`${getSpeciesName(slot, speciesById)} ist geschlüpft!`);
       }
     }
   }, 1000);
