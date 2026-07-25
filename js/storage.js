@@ -2,11 +2,12 @@ const STORAGE_KEY = 'tamapoke-family-web-v01';
 
 export function defaultState() {
   return {
-    version: 2,
+    version: 3,
     settings: {
       pace: 'family',
       sound: true,
-      motion: true
+      motion: true,
+      worldTime: 'auto'
     },
     slots: [null, null, null]
   };
@@ -54,7 +55,7 @@ export function loadState() {
 
 export function saveState(state) {
   try {
-    const payload = { ...state, version: 2 };
+    const payload = { ...state, version: 3 };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     return true;
   } catch (error) {

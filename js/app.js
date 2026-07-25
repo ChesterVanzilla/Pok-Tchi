@@ -1,5 +1,6 @@
 import { loadState, saveState, clearState, defaultState } from './storage.js';
 import { SpritePlayer, ACTION } from './sprite-engine.js';
+import { themeForSpecies, resolveWorldPhase } from './worlds.js';
 import {
   MEDALS,
   createSlot,
@@ -69,7 +70,9 @@ let miniRaf;
 let miniStartedAt = 0;
 let miniScore = 0;
 let miniMisses = 0;
-let miniBall = { x: 0.5, y: -0.08, vy: 0.34, lastAt: 0 };
+let miniBall = { x: 0.5, y: -0.08, vy: 0.34, lastAt: 0, kind: 'collectible' };
+let activeTheme = null;
+let activePhase = 'day';
 let miniPetX = 0.5;
 let trainHits = 0;
 let trainCombo = 0;
@@ -85,6 +88,68 @@ const screens = {
 
 function currentSlot() {
   return Number.isInteger(currentSlotIndex) ? state.slots[currentSlotIndex] : null;
+}
+
+function themeSpecies(slot = currentSlot()) {
+  if (!slot) return null;
+  const id = isEgg(slot) ? slot.pet.eggTarget : slot.pet.speciesId;
+  return speciesById?.get(id) || null;
+}
+
+function getActiveTheme(slot = currentSlot()) {
+  return themeForSpecies(themeSpecies(slot));
+}
+
+function applyWorldTheme(slot = currentSlot()) {
+  const theme = getActiveTheme(slot);
+  const phase = resolveWorldPhase(state.settings);
+  activeTheme = theme;
+  activePhase = phase;
+
+  const habitat = $('#habitat');
+  if (habitat) habitat.className = `habitat theme-${theme.key} ${phase}`;
+  $('#worldName').textContent = theme.label;
+  $('#worldPhase').textContent = phase === 'night' ? 'NACHT' : 'TAG';
+  const symbol = $('#worldIcon');
+  symbol.className = `world-symbol symbol-${theme.icon}`;
+
+  const app = $('#app');
+  const rootStyle = document.documentElement.style;
+  [app.style, rootStyle].forEach((style) => {
+    style.setProperty('--accent', theme.accent);
+    style.setProperty('--accent-2', theme.accent2);
+    style.setProperty('--theme-panel', theme.panel);
+    style.setProperty('--theme-panel-2', theme.panel2);
+  });
+  document.documentElement.dataset.world = theme.key;
+  document.documentElement.dataset.phase = phase;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', phase === 'night' ? theme.panel : theme.panel2);
+  return theme;
+}
+
+function renderFoodTheme(theme = getActiveTheme()) {
+  $$('[data-berry]').forEach((button, index) => {
+    const berry = theme.berries[index];
+    if (!berry) return;
+    button.querySelector('.food-icon').className = `food-icon ${berry.className}`;
+    button.querySelector('strong').textContent = berry.name;
+    button.querySelector('small').textContent = berry.description;
+  });
+  const candy = $('#candyBtn');
+  candy.querySelector('.food-icon').className = `food-icon ${theme.candy.className}`;
+  candy.querySelector('strong').textContent = theme.candy.name;
+  candy.querySelector('small').textContent = theme.candy.description;
+}
+
+function prepareWorldActivities(theme = getActiveTheme()) {
+  $('#miniGameTitle').textContent = theme.mini.title;
+  $('#miniStartHint').textContent = theme.mini.hint;
+  $('#miniArena').className = `mini-arena themed-mini mini-${theme.key} ${activePhase}`;
+  $('#trainGameTitle').textContent = theme.training.title;
+  $('#trainStartHint').textContent = theme.training.hint;
+  $('#punchBag').className = `target-${theme.training.target}`;
+  $('.bag-arena').className = `bag-arena training-${theme.key} ${activePhase}`;
 }
 
 function showScreen(name) {
@@ -303,10 +368,9 @@ function renderGame() {
   $('#sleepActionLabel').textContent = pet.sleeping ? 'Wecken' : 'Schlafen';
   $('#shinyBadge').hidden = isEgg(slot) || !pet.shiny;
 
-  const habitat = $('#habitat');
-  const hour = new Date().getHours();
-  const night = hour < 7 || hour >= 20;
-  habitat.className = `habitat biome-${species?.biome ?? 0} ${night ? 'night' : 'day'}`;
+  const theme = applyWorldTheme(slot);
+  renderFoodTheme(theme);
+  prepareWorldActivities(theme);
 
   const egg = $('#eggView');
   egg.classList.toggle('hidden', !isEgg(slot));
@@ -579,6 +643,7 @@ function openSettings() {
   $('#paceSelect').value = state.settings.pace;
   $('#soundToggle').checked = state.settings.sound;
   $('#motionToggle').checked = state.settings.motion;
+  $('#worldTimeSelect').value = state.settings.worldTime || 'auto';
   openDialog($('#settingsDialog'));
 }
 
@@ -594,19 +659,50 @@ function applyMotionSetting() {
 }
 
 function resetMiniBall(speedBoost = 0) {
+  const theme = getActiveTheme();
   miniBall.x = 0.12 + Math.random() * 0.76;
   miniBall.y = -0.08;
   miniBall.vy = 0.34 + speedBoost;
+  miniBall.kind = Math.random() < Math.min(.32, .12 + miniScore * .015) ? 'hazard' : 'collectible';
+  const itemName = miniBall.kind === 'hazard' ? theme.mini.hazard : theme.mini.collectible;
+  const item = $('#miniBall');
+  item.className = `mini-ball mini-item ${miniBall.kind} item-${itemName}`;
+  item.setAttribute('aria-label', miniBall.kind === 'hazard' ? 'Hindernis' : 'Sammelobjekt');
 }
 function placeMiniElements(){const ball=$('#miniBall');const pet=$('#miniPet');ball.style.left=`${miniBall.x*100}%`;ball.style.top=`${miniBall.y*100}%`;pet.style.left=`${miniPetX*100}%`;}
 function moveMiniPet(clientX){const arena=$('#miniArena');const rect=arena.getBoundingClientRect();const next=Math.max(.10,Math.min(.90,(clientX-rect.left)/Math.max(1,rect.width)));if(miniPetSprite){const action=next<miniPetX?ACTION.WALK_LEFT:ACTION.WALK_RIGHT;if(Math.abs(next-miniPetX)>.015)miniPetSprite.setAction(action);}miniPetX=next;$('#miniPet').style.left=`${miniPetX*100}%`;}
-function miniGameStep(now){if(!miniStartedAt)return;const elapsed=(now-miniStartedAt)/1000;const remaining=Math.max(0,20-elapsed);$('#miniTime').textContent=Math.ceil(remaining);const previous=miniBall.lastAt||now;const dt=Math.min(.04,(now-previous)/1000);miniBall.lastAt=now;miniBall.y+=miniBall.vy*dt;miniBall.vy+=.16*dt;if(miniBall.y>=.74){const caught=Math.abs(miniBall.x-miniPetX)<=.16;if(caught){miniScore+=1;$('#miniScore').textContent=miniScore;miniPetSprite?.play(ACTION.HOP);beep('play');}else{miniMisses+=1;$('#miniMisses').textContent=`${miniMisses}/3`;miniPetSprite?.play(ACTION.HURT);beep('error');}resetMiniBall(Math.min(.22,miniScore*.012));}placeMiniElements();if(remaining<=0||miniMisses>=3){finishMiniGame();return;}miniRaf=requestAnimationFrame(miniGameStep);}
-async function prepareMiniGame(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);try{await miniPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);miniPetSprite.setMotion(state.settings.motion);miniPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
+function miniGameStep(now){
+  if(!miniStartedAt)return;
+  const elapsed=(now-miniStartedAt)/1000;
+  const remaining=Math.max(0,20-elapsed);
+  $('#miniTime').textContent=Math.ceil(remaining);
+  const previous=miniBall.lastAt||now;
+  const dt=Math.min(.04,(now-previous)/1000);
+  miniBall.lastAt=now;
+  miniBall.y+=miniBall.vy*dt;
+  miniBall.vy+=.16*dt;
+  if(miniBall.y>=.74){
+    const caught=Math.abs(miniBall.x-miniPetX)<=.16;
+    if(miniBall.kind==='collectible'){
+      if(caught){miniScore+=1;$('#miniScore').textContent=miniScore;miniPetSprite?.play(ACTION.HOP);beep('play');}
+      else{miniMisses+=1;$('#miniMisses').textContent=`${miniMisses}/3`;miniPetSprite?.play(ACTION.HURT);beep('error');}
+    }else if(caught){
+      miniMisses+=1;$('#miniMisses').textContent=`${miniMisses}/3`;miniPetSprite?.play(ACTION.HURT);beep('error');
+    }else{
+      miniPetSprite?.play(ACTION.POSE);
+    }
+    resetMiniBall(Math.min(.22,miniScore*.012));
+  }
+  placeMiniElements();
+  if(remaining<=0||miniMisses>=3){finishMiniGame();return;}
+  miniRaf=requestAnimationFrame(miniGameStep);
+}
+async function prepareMiniGame(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);prepareWorldActivities(getActiveTheme(slot));try{await miniPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);miniPetSprite.setMotion(state.settings.motion);miniPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
 function startMiniGame(){cancelAnimationFrame(miniRaf);miniScore=0;miniMisses=0;miniPetX=.5;miniStartedAt=performance.now();miniBall.lastAt=miniStartedAt;resetMiniBall();$('#miniScore').textContent='0';$('#miniMisses').textContent='0/3';$('#miniTime').textContent='20';$('#miniStartHint').hidden=true;$('#miniBall').hidden=false;$('#startMiniBtn').disabled=true;placeMiniElements();miniRaf=requestAnimationFrame(miniGameStep);}
-function finishMiniGame(){if(!miniStartedAt)return;cancelAnimationFrame(miniRaf);miniRaf=null;miniStartedAt=0;$('#miniBall').hidden=true;$('#startMiniBtn').disabled=false;$('#startMiniBtn').textContent='Noch einmal';const hint=$('#miniStartHint');hint.hidden=false;hint.textContent=`${miniScore} Fänge · ${miniMisses} Fehler · Rekord ${Math.max(currentSlot().gameHi,miniScore)}`;processResult(playResult(currentSlot(),miniScore,speciesById),'play');}
+function finishMiniGame(){if(!miniStartedAt)return;cancelAnimationFrame(miniRaf);miniRaf=null;miniStartedAt=0;$('#miniBall').hidden=true;$('#startMiniBtn').disabled=false;$('#startMiniBtn').textContent='Noch einmal';const theme=getActiveTheme();const hint=$('#miniStartHint');hint.hidden=false;hint.textContent=`${miniScore} ${theme.mini.resultWord} · ${miniMisses} Fehler · Rekord ${Math.max(currentSlot().gameHi,miniScore)}`;processResult(playResult(currentSlot(),miniScore,speciesById),'play');}
 function cancelMiniGame(){cancelAnimationFrame(miniRaf);miniRaf=null;miniStartedAt=0;$('#miniBall').hidden=true;$('#startMiniBtn').disabled=false;miniPetSprite?.setAction(ACTION.IDLE);closeDialog($('#miniGameDialog'));}
 
-async function prepareTraining(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);try{await trainPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);trainPetSprite.setMotion(state.settings.motion);trainPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
+async function prepareTraining(){const slot=currentSlot();if(!slot||isEgg(slot))return;const species=getSpecies(slot,speciesById);prepareWorldActivities(getActiveTheme(slot));try{await trainPetSprite.load(slot.pet.shiny?species.shinySprite:species.sprite);trainPetSprite.setMotion(state.settings.motion);trainPetSprite.setAction(ACTION.IDLE);}catch(error){console.error(error);}}
 function startTraining(){clearInterval(trainTimer);trainHits=0;trainCombo=0;trainLastHitAt=0;let remaining=10;$('#trainHits').textContent=trainHits;$('#trainCombo').textContent=trainCombo;$('#trainTime').textContent=remaining;$('#trainStartHint').hidden=true;$('#punchBag').style.display='block';$('#startTrainBtn').disabled=true;trainPetSprite?.setAction(ACTION.IDLE);const end=Date.now()+10000;trainTimer=setInterval(()=>{remaining=Math.max(0,Math.ceil((end-Date.now())/1000));$('#trainTime').textContent=remaining;if(remaining<=0)finishTraining();},100);}
 function registerTrainingHit(){if(!trainTimer)return;const now=performance.now();trainCombo=now-trainLastHitAt<=650?trainCombo+1:1;trainLastHitAt=now;trainHits+=1;$('#trainHits').textContent=trainHits;$('#trainCombo').textContent=trainCombo;const bag=$('#punchBag');bag.classList.remove('hit');void bag.offsetWidth;bag.classList.add('hit');trainPetSprite?.play(ACTION.ATTACK);beep('play');}
 function finishTraining(){clearInterval(trainTimer);trainTimer=null;$('#punchBag').style.display='none';$('#startTrainBtn').disabled=false;$('#startTrainBtn').textContent='Noch einmal';trainPetSprite?.setAction(ACTION.POSE);const result=trainStrength(currentSlot(),trainHits,speciesById);$('#trainStartHint').hidden=false;$('#trainStartHint').textContent=`${trainHits} Treffer · beste Kombo ${trainCombo} · Kraft +${result.gain||0}`;processResult(result,'play');}
@@ -629,10 +725,10 @@ function bindEvents() {
       openDialog($('#foodDialog'));
     }else if(action==='play'){
       if(isEgg(slot)||slot.pet.sleeping)return processResult({changed:false,message:slot.pet.sleeping?'Es schläft gerade.':'Erst muss das Ei schlüpfen.'});
-      $('#miniTime').textContent='20';$('#miniScore').textContent='0';$('#miniMisses').textContent='0/3';$('#miniStartHint').hidden=false;$('#miniStartHint').textContent='Bewege dein Pokémon mit dem Finger und fange den Pokéball.';$('#startMiniBtn').textContent='Start';$('#miniBall').hidden=true;await prepareMiniGame();openDialog($('#miniGameDialog'));
+      const theme=getActiveTheme(slot);prepareWorldActivities(theme);$('#miniTime').textContent='20';$('#miniScore').textContent='0';$('#miniMisses').textContent='0/3';$('#miniStartHint').hidden=false;$('#miniStartHint').textContent=theme.mini.hint;$('#startMiniBtn').textContent='Start';$('#miniBall').hidden=true;await prepareMiniGame();openDialog($('#miniGameDialog'));
     }else if(action==='train'){
       if(isEgg(slot)||slot.pet.sleeping)return processResult({changed:false,message:slot.pet.sleeping?'Es schläft gerade.':'Erst muss das Ei schlüpfen.'});
-      $('#trainTime').textContent='10';$('#trainHits').textContent='0';$('#trainCombo').textContent='0';$('#trainStartHint').hidden=false;$('#trainStartHint').textContent='Tippe rhythmisch auf den Sack.';$('#startTrainBtn').textContent='Start';await prepareTraining();openDialog($('#trainDialog'));
+      const theme=getActiveTheme(slot);prepareWorldActivities(theme);$('#trainTime').textContent='10';$('#trainHits').textContent='0';$('#trainCombo').textContent='0';$('#trainStartHint').hidden=false;$('#trainStartHint').textContent=theme.training.hint;$('#startTrainBtn').textContent='Start';await prepareTraining();openDialog($('#trainDialog'));
     }else if(action==='clean') await startBathScene();
     else if(action==='sleep'){const result=toggleSleep(slot);processResult(result,'sleep');if(result.changed)mainSprite.setAction(slot.pet.sleeping?ACTION.SLEEP:ACTION.IDLE);}
     else if(action==='info'){if(renderInfo())openDialog($('#infoDialog'));}
@@ -655,6 +751,7 @@ function bindEvents() {
   $('#paceSelect').addEventListener('change',(event)=>{state.slots.forEach((slot)=>{if(slot)applyElapsed(slot,state.settings,speciesById);});state.settings.pace=event.target.value;const now=Date.now();state.slots.forEach((slot)=>{if(slot)slot.lastRealMs=now;});persist();showToast('Spieltempo geändert.');});
   $('#soundToggle').addEventListener('change',(event)=>{state.settings.sound=event.target.checked;persist();beep('ok');});
   $('#motionToggle').addEventListener('change',(event)=>{state.settings.motion=event.target.checked;persist();applyMotionSetting();});
+  $('#worldTimeSelect').addEventListener('change',(event)=>{state.settings.worldTime=event.target.value;persist();if(currentSlot()){renderGame();loadMainSprite();}showToast('Weltzeit geändert.');});
   $('#resetAllBtn').addEventListener('click',async()=>{if(!confirm('Wirklich alle drei Spielstände unwiderruflich löschen?'))return;clearState();state=defaultState();currentSlotIndex=null;closeDialog($('#settingsDialog'));applyMotionSetting();await renderSlots();showScreen('slots');showToast('Alle Spielstände wurden gelöscht.');});
 
   $('#startMiniBtn').addEventListener('click',startMiniGame);$('#cancelMiniBtn').addEventListener('click',cancelMiniGame);
