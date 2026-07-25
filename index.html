@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family v0.3</title>
+  <title>TamaPoke Family v0.4</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -56,88 +56,111 @@
     </section>
 
     <section id="gameScreen" class="screen" aria-labelledby="petTitle">
-      <header class="game-topbar">
-        <button id="backToSlotsBtn" class="round-btn glass" type="button" aria-label="Spielstandauswahl">⌂</button>
-        <div class="game-title">
+      <div class="pixel-app-frame">
+        <header class="pixel-logo-header">
+          <button id="backToSlotsBtn" class="pixel-square-btn" type="button" aria-label="Spielstandauswahl">
+            <span class="menu-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+          <div class="pixel-brand" aria-label="TamaPoke Family">
+            <strong>TamaP<span class="brand-ball" aria-hidden="true"></span>ke</strong>
+            <span><i>♥</i> Family <i>♥</i></span>
+          </div>
+          <div class="bond-counter" aria-label="Bindung">
+            <span aria-hidden="true">♥</span>
+            <strong id="bondValue">0</strong>
+          </div>
+        </header>
+
+        <section id="habitat" class="habitat theme-meadow day" aria-label="Lebensraum deines Pokémon">
+          <div class="world-badge" aria-label="Aktuelle Pokémon-Welt">
+            <span id="worldIcon" class="world-symbol symbol-star"></span>
+            <span><strong id="worldName">Pokémon-Wiese</strong><small id="worldPhase">TAG · TAG 1</small></span>
+          </div>
+          <button class="scene-info-btn" type="button" data-action="info" aria-label="Pokémon-Pass öffnen"><span aria-hidden="true">▣</span></button>
+          <div class="world-pixel-overlay" aria-hidden="true"></div>
+          <div class="sky-decor" aria-hidden="true">
+            <span class="sun-moon"></span>
+            <span class="cloud cloud-one"></span>
+            <span class="cloud cloud-two"></span>
+            <span class="star star-one">✦</span>
+            <span class="star star-two">✧</span>
+          </div>
+          <div id="speechBubble" class="speech-bubble">Tippe auf das Ei.</div>
+          <button id="petTouchArea" class="pet-touch" type="button" aria-label="Pokémon berühren">
+            <canvas id="petCanvas" width="320" height="240" aria-label="Animiertes Pokémon"></canvas>
+            <div id="eggView" class="egg-view" aria-hidden="true">
+              <span class="egg-spot spot-a"></span><span class="egg-spot spot-b"></span><span class="egg-spot spot-c"></span>
+              <i id="eggCrackOne"></i><i id="eggCrackTwo"></i>
+            </div>
+          </button>
+          <div id="poopRow" class="poop-row" aria-label="Verschmutzungen"></div>
+          <div class="ground-shadow" aria-hidden="true"></div>
+          <span id="shinyBadge" class="shiny-badge" hidden>✦ SHINY</span>
+          <div id="bathOverlay" class="bath-overlay" hidden aria-hidden="true">
+            <div class="bath-tub">🛁</div><div class="bath-bubbles"></div><strong>Splish splash!</strong>
+          </div>
+          <div id="evolutionOverlay" class="evolution-overlay" hidden aria-hidden="true">
+            <div class="evolution-halo"></div><div class="evolution-rays"></div><strong>Entwicklung!</strong>
+          </div>
+        </section>
+
+        <div class="pet-nameplate">
           <span id="trainerLabel">Trainer</span>
           <strong id="petTitle">Ei</strong>
         </div>
-        <button id="openDexBtn" class="round-btn glass" type="button" aria-label="Pokédex öffnen">▦</button>
-      </header>
 
-      <section id="habitat" class="habitat theme-meadow day" aria-label="Lebensraum deines Pokémon">
-        <div class="world-badge" aria-label="Aktuelle Pokémon-Welt"><span id="worldIcon" class="world-symbol symbol-star"></span><span><strong id="worldName">Pokémon-Wiese</strong><small id="worldPhase">TAG</small></span></div>
-        <div class="world-pixel-overlay" aria-hidden="true"></div>
-        <div class="sky-decor" aria-hidden="true">
-          <span class="sun-moon"></span>
-          <span class="cloud cloud-one"></span>
-          <span class="cloud cloud-two"></span>
-          <span class="star star-one">✦</span>
-          <span class="star star-two">✧</span>
-        </div>
-        <div id="speechBubble" class="speech-bubble">Tippe auf das Ei.</div>
-        <button id="petTouchArea" class="pet-touch" type="button" aria-label="Pokémon berühren">
-          <canvas id="petCanvas" width="320" height="240" aria-label="Animiertes Pokémon"></canvas>
-          <div id="eggView" class="egg-view" aria-hidden="true">
-            <span class="egg-spot spot-a"></span><span class="egg-spot spot-b"></span><span class="egg-spot spot-c"></span>
-            <i id="eggCrackOne"></i><i id="eggCrackTwo"></i>
-          </div>
+        <button id="evolveBanner" class="event-banner evolve-banner" type="button" hidden>
+          <span>✨</span><span><strong>Entwicklung möglich</strong><small>Tippen, um zu entscheiden</small></span><span>›</span>
         </button>
-        <div id="poopRow" class="poop-row" aria-label="Verschmutzungen"></div>
-        <div class="ground-shadow" aria-hidden="true"></div>
-        <span id="shinyBadge" class="shiny-badge" hidden>✦ SHINY</span>
-        <div id="bathOverlay" class="bath-overlay" hidden aria-hidden="true">
-          <div class="bath-tub">🛁</div><div class="bath-bubbles"></div><strong>Splish splash!</strong>
-        </div>
-        <div id="evolutionOverlay" class="evolution-overlay" hidden aria-hidden="true">
-          <div class="evolution-halo"></div><div class="evolution-rays"></div><strong>Entwicklung!</strong>
-        </div>
-      </section>
+        <button id="farewellBanner" class="event-banner farewell-banner" type="button" hidden>
+          <span>💛</span><span><strong id="farewellBannerTitle">Dein Pokémon möchte dir etwas sagen</strong><small>Der gemeinsame Lebenszyklus ist abgeschlossen</small></span><span>›</span>
+        </button>
+        <button id="runawayBanner" class="event-banner runaway-banner" type="button" hidden>
+          <span>💧</span><span><strong id="runawayBannerTitle">Dein Pokémon fühlt sich verlassen</strong><small>Tippe, um die Szene zu öffnen</small></span><span>›</span>
+        </button>
 
-      <button id="evolveBanner" class="event-banner evolve-banner" type="button" hidden>
-        <span>✨</span><span><strong>Entwicklung möglich</strong><small>Tippen, um zu entscheiden</small></span><span>›</span>
-      </button>
-      <button id="farewellBanner" class="event-banner farewell-banner" type="button" hidden>
-        <span>💛</span><span><strong id="farewellBannerTitle">Dein Pokémon möchte dir etwas sagen</strong><small>Der gemeinsame Lebenszyklus ist abgeschlossen</small></span><span>›</span>
-      </button>
-      <button id="runawayBanner" class="event-banner runaway-banner" type="button" hidden>
-        <span>💧</span><span><strong id="runawayBannerTitle">Dein Pokémon fühlt sich verlassen</strong><small>Tippe, um die Szene zu öffnen</small></span><span>›</span>
-      </button>
+        <section class="status-board" aria-label="Pflegewerte">
+          <article class="status-card status-joy">
+            <div><span><b class="stat-symbol">♥</b> Glück</span><strong id="joyValue">80</strong></div>
+            <div class="meter"><span id="joyBar"></span></div>
+          </article>
+          <article class="status-card status-hunger">
+            <div><span><b class="stat-symbol">●</b> Hunger</span><strong id="fullnessValue">80</strong></div>
+            <div class="meter"><span id="fullnessBar"></span></div>
+          </article>
+          <article class="status-card status-clean">
+            <div><span><b class="stat-symbol">◆</b> Sauberkeit</span><strong id="hygieneValue">100</strong></div>
+            <div class="meter"><span id="hygieneBar"></span></div>
+          </article>
+          <article class="status-card status-energy">
+            <div><span><b class="stat-symbol">Zz</b> Energie</span><strong id="energyValue">80</strong></div>
+            <div class="meter"><span id="energyBar"></span></div>
+          </article>
+        </section>
 
-      <section class="status-grid" aria-label="Pflegewerte">
-        <article class="status-card">
-          <div><span>🍓 Sättigung</span><strong id="fullnessValue">80</strong></div>
-          <div class="meter"><span id="fullnessBar"></span></div>
-        </article>
-        <article class="status-card">
-          <div><span>♥ Freude</span><strong id="joyValue">80</strong></div>
-          <div class="meter"><span id="joyBar"></span></div>
-        </article>
-        <article class="status-card">
-          <div><span>⚡ Energie</span><strong id="energyValue">80</strong></div>
-          <div class="meter"><span id="energyBar"></span></div>
-        </article>
-        <article class="status-card">
-          <div><span>✦ Hygiene</span><strong id="hygieneValue">100</strong></div>
-          <div class="meter"><span id="hygieneBar"></span></div>
-        </article>
-      </section>
+        <section class="summary-strip" aria-label="Fortschritt">
+          <div><span>LEVEL</span><strong id="levelValue">1</strong></div>
+          <div><span>SERIE</span><strong id="streakValue">0</strong></div>
+          <div><span>ALTER</span><strong id="ageValue">0m</strong></div>
+        </section>
 
-      <section class="summary-strip" aria-label="Fortschritt">
-        <div><span>LEVEL</span><strong id="levelValue">1</strong></div>
-        <div><span>BINDUNG</span><strong id="bondValue">0</strong></div>
-        <div><span>SERIE</span><strong id="streakValue">0</strong></div>
-        <div><span>ALTER</span><strong id="ageValue">0m</strong></div>
-      </section>
+        <nav class="action-dock" aria-label="Pflegeaktionen">
+          <button class="action-feed" type="button" data-action="food"><span class="action-emoji">🍎</span><small>Füttern</small></button>
+          <button class="action-play" type="button" data-action="play"><span class="action-emoji">◉</span><small>Spielen</small></button>
+          <button class="action-wash" type="button" data-action="clean"><span class="action-emoji">🫧</span><small>Waschen</small></button>
+          <button class="action-train" type="button" data-action="train"><span class="action-emoji">🏋️</span><small>Trainieren</small></button>
+          <button class="action-sleep" type="button" data-action="sleep"><span class="action-emoji">☾</span><small id="sleepActionLabel">Schlafen</small></button>
+          <button class="action-care" type="button" data-action="care"><span class="action-emoji">♥</span><small>Pflegen</small></button>
+        </nav>
 
-      <nav class="action-dock" aria-label="Pflegeaktionen">
-        <button type="button" data-action="food"><span>🍓</span><small>Füttern</small></button>
-        <button type="button" data-action="play"><span>★</span><small>Spielen</small></button>
-        <button type="button" data-action="train"><span>🥊</span><small>Training</small></button>
-        <button type="button" data-action="clean"><span>🫧</span><small>Waschen</small></button>
-        <button type="button" data-action="sleep"><span>☾</span><small id="sleepActionLabel">Schlafen</small></button>
-        <button type="button" data-action="info"><span>ⓘ</span><small>Info</small></button>
-      </nav>
+        <nav class="bottom-tabs" aria-label="Hauptnavigation">
+          <button class="active" type="button"><span>⌂</span><small>Zuhause</small></button>
+          <button id="openDexBtn" type="button"><span>▤</span><small>Pokédex</small></button>
+          <button type="button" data-action="info"><span>◈</span><small>Pokémon</small></button>
+          <button type="button" data-action="info"><span>★</span><small>Erfolge</small></button>
+          <button id="gameSettingsBtn" type="button"><span>⚙</span><small>Einstellungen</small></button>
+        </nav>
+      </div>
     </section>
 
     <section id="dexScreen" class="screen" aria-labelledby="dexTitle">

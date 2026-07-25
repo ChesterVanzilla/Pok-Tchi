@@ -78,6 +78,8 @@ export class SpritePlayer {
     this.oneShot = false;
     this.running = true;
     this.frameCache = new Map();
+    this.loadSerial = 0;
+    this.abortController = null;
     this.raf = requestAnimationFrame((time) => this.loop(time));
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
@@ -85,13 +87,35 @@ export class SpritePlayer {
   }
 
   async load(url) {
+    const serial = ++this.loadSerial;
+    this.abortController?.abort();
+    this.abortController = new AbortController();
     this.url = url;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Sprite konnte nicht geladen werden (${response.status})`);
-    this.sprite = parseTpk2(await response.arrayBuffer());
+    this.sprite = null;
     this.frameCache.clear();
-    this.setAction(ACTION.IDLE);
-    this.draw();
+    this.clear();
+
+    try {
+      const response = await fetch(url, { signal: this.abortController.signal, cache: 'force-cache' });
+      if (!response.ok) throw new Error(`Sprite konnte nicht geladen werden (${response.status})`);
+      const parsed = parseTpk2(await response.arrayBuffer());
+      if (serial !== this.loadSerial) return false;
+      this.sprite = parsed;
+      this.frameCache.clear();
+      this.setAction(ACTION.IDLE);
+      this.draw();
+      return true;
+    } catch (error) {
+      if (error?.name === 'AbortError' || serial !== this.loadSerial) return false;
+      this.sprite = null;
+      this.frameCache.clear();
+      this.clear();
+      throw error;
+    }
+  }
+
+  clear() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   setMotion(enabled) {
@@ -206,6 +230,8 @@ export class SpritePlayer {
 
   destroy() {
     this.running = false;
+    this.abortController?.abort();
+    this.loadSerial += 1;
     cancelAnimationFrame(this.raf);
     this.resizeObserver.disconnect();
     this.frameCache.clear();

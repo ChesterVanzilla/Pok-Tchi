@@ -425,3 +425,400 @@ dialog::backdrop { background:rgba(3,7,17,.72); backdrop-filter:blur(8px); }
   .world-badge strong { font-size:10px; }
   .speech-bubble { top:49px; max-width:76%; }
 }
+
+/* ============================================================
+   v0.4 – Pixel-Masterdesign und robuste Sprite-Anzeige
+   ============================================================ */
+#gameScreen {
+  --wood-dark: #2a190f;
+  --wood: #5b3821;
+  --wood-light: #9a6635;
+  --cream: #fff0c7;
+  --cream-2: #e9c88d;
+  --ink: #24170f;
+  padding-bottom: 4px;
+}
+
+#gameScreen .pixel-app-frame {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 12px 0;
+  border: 4px solid #1d130d;
+  border-radius: 25px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.05), transparent 10%, transparent 90%, rgba(0,0,0,.18)),
+    repeating-linear-gradient(0deg, #4b2d1b 0 9px, #51331f 9px 17px, #442719 17px 25px);
+  box-shadow:
+    0 0 0 3px #9a6635,
+    0 0 0 7px #24160e,
+    0 18px 45px rgba(0,0,0,.38),
+    inset 0 0 0 2px rgba(255,220,145,.22);
+}
+#gameScreen .pixel-app-frame::before,
+#gameScreen .pixel-app-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 20;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  border-color: #d7a35c;
+  border-style: solid;
+}
+#gameScreen .pixel-app-frame::before { left: 5px; top: 5px; border-width: 4px 0 0 4px; }
+#gameScreen .pixel-app-frame::after { right: 5px; top: 5px; border-width: 4px 4px 0 0; }
+
+.pixel-logo-header {
+  position: relative;
+  z-index: 12;
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: 58px 1fr 58px;
+  align-items: start;
+  gap: 8px;
+  padding: 4px 2px 0;
+}
+.pixel-square-btn,
+.bond-counter,
+.scene-info-btn {
+  border: 3px solid #23160e;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #6b4429, #352116);
+  color: #fff1c6;
+  box-shadow: inset 0 0 0 2px #a97842, 3px 4px 0 rgba(20,12,8,.68);
+}
+.pixel-square-btn {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+}
+.menu-bars { width: 26px; display: grid; gap: 5px; }
+.menu-bars i { display: block; height: 4px; border-radius: 1px; background: #fff0bd; box-shadow: 2px 2px 0 #2a190f; }
+.pixel-brand {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  margin-top: -2px;
+  text-align: center;
+  filter: drop-shadow(4px 5px 0 rgba(22,13,8,.88));
+}
+.pixel-brand > strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff1c3;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: clamp(34px, 10vw, 58px);
+  font-weight: 1000;
+  letter-spacing: -0.09em;
+  line-height: .92;
+  -webkit-text-stroke: 3px #2a170d;
+  text-shadow: 0 4px 0 #b97531, 0 7px 0 #2a170d;
+}
+.brand-ball {
+  position: relative;
+  width: .62em;
+  height: .62em;
+  margin: 0 .02em 0 .03em;
+  flex: 0 0 auto;
+  border: .09em solid #27160e;
+  border-radius: 50%;
+  background: linear-gradient(#ef554f 0 43%, #27160e 44% 57%, #f6f0dc 58% 100%);
+}
+.brand-ball::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 27%; height: 27%;
+  transform: translate(-50%,-50%);
+  border: .07em solid #27160e;
+  border-radius: 50%;
+  background: #f6f0dc;
+}
+.pixel-brand > span {
+  position: relative;
+  min-width: 170px;
+  margin-top: 7px;
+  padding: 5px 26px 6px;
+  border: 3px solid #2a170d;
+  background: linear-gradient(#f5c77a, #d89445);
+  color: #3c2112;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: clamp(17px, 4.6vw, 25px);
+  font-weight: 950;
+  line-height: 1;
+  box-shadow: inset 0 0 0 2px rgba(255,241,188,.6);
+}
+.pixel-brand > span::before,
+.pixel-brand > span::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 22px;
+  height: 18px;
+  z-index: -1;
+  border: 3px solid #2a170d;
+  background: #b96f35;
+}
+.pixel-brand > span::before { left: -18px; transform: skewY(14deg); }
+.pixel-brand > span::after { right: -18px; transform: skewY(-14deg); }
+.pixel-brand i { color: #d84643; font-style: normal; text-shadow: 1px 1px 0 #fff0b4; }
+.bond-counter {
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0;
+}
+.bond-counter span { color: #ff6680; font-size: 24px; line-height: 1; text-shadow: 2px 2px 0 #6b2431; }
+.bond-counter strong { font-family: ui-monospace, monospace; font-size: 15px; }
+
+#gameScreen .habitat {
+  height: clamp(360px, 49svh, 520px);
+  margin-top: 3px;
+  overflow: hidden;
+  border: 4px solid #21150e;
+  border-radius: 15px 15px 4px 4px;
+  box-shadow: inset 0 0 0 3px #9f6b38, 0 5px 0 #1e130d;
+}
+#gameScreen .habitat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: inset 0 0 30px rgba(17,11,7,.34);
+}
+#gameScreen .world-pixel-overlay { opacity: .07; background-size: 5px 5px; }
+#gameScreen .world-badge {
+  left: 50%;
+  top: 18px;
+  min-width: 190px;
+  justify-content: center;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border: 3px solid #2a190f;
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(15,53,68,.94), rgba(10,35,49,.94));
+  box-shadow: inset 0 0 0 2px #a17241, 4px 5px 0 rgba(21,12,8,.52);
+  backdrop-filter: none;
+}
+#gameScreen .world-badge strong { font-size: 16px; text-align: center; font-family: ui-monospace, monospace; }
+#gameScreen .world-badge small { margin-top: 5px; font-size: 10px; color: #ffd169; text-align: center; }
+.scene-info-btn {
+  position: absolute;
+  z-index: 8;
+  right: 14px;
+  top: 92px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+}
+#gameScreen .speech-bubble {
+  top: 112px;
+  left: auto;
+  right: 74px;
+  max-width: 52%;
+  transform: none;
+  padding: 8px 11px;
+  border: 3px solid #2b1c13;
+  border-radius: 14px;
+  background: #fff9df;
+  color: #2b1b12;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  box-shadow: 3px 4px 0 rgba(28,17,11,.38);
+}
+#gameScreen .speech-bubble::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  bottom: -11px;
+  width: 15px;
+  height: 15px;
+  border-right: 3px solid #2b1c13;
+  border-bottom: 3px solid #2b1c13;
+  background: #fff9df;
+  transform: rotate(45deg);
+}
+#gameScreen .pet-touch { z-index: 4; inset: 110px 12% 18px; }
+#gameScreen .pet-touch canvas { width: 100%; height: 100%; image-rendering: pixelated; filter: drop-shadow(0 8px 0 rgba(24,47,25,.24)); }
+#gameScreen .pet-touch canvas.sprite-loading { opacity: .2; }
+#gameScreen .pet-touch canvas.sprite-error::after { content: "?"; }
+#gameScreen .ground-shadow { bottom: 26px; width: 43%; height: 22px; background: rgba(31,51,24,.32); }
+#gameScreen .poop-row { bottom: 27px; left: 24px; }
+
+.pet-nameplate {
+  width: min(72%, 420px);
+  margin: -12px auto 10px;
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 15px;
+  border: 3px solid #24160e;
+  border-radius: 10px;
+  background: linear-gradient(#17384d, #10293a);
+  box-shadow: inset 0 0 0 2px #a06d3b, 3px 4px 0 rgba(23,13,8,.45);
+  text-align: center;
+}
+.pet-nameplate span { color: #e7bd6e; font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.pet-nameplate strong { overflow: hidden; color: #fff5d6; font-family: ui-monospace, monospace; font-size: 17px; white-space: nowrap; text-overflow: ellipsis; }
+
+#gameScreen .event-banner { margin: 8px 4px; border-width: 2px; border-radius: 10px; background-color: rgba(31,22,15,.9); }
+
+.status-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 8px;
+  padding: 14px 10px 12px;
+  border: 4px solid #24160e;
+  border-radius: 15px;
+  background:
+    linear-gradient(rgba(255,255,255,.28), transparent 35%),
+    #f2d59d;
+  box-shadow: inset 0 0 0 3px #fff0c5, 0 5px 0 #2a190f;
+  color: var(--ink);
+}
+.status-board .status-card {
+  min-width: 0;
+  padding: 2px 9px;
+  border: 0;
+  border-right: 2px dotted rgba(89,54,26,.28);
+  border-radius: 0;
+  background: transparent;
+}
+.status-board .status-card:last-child { border-right: 0; }
+.status-board .status-card > div:first-child { display: grid; justify-items: center; gap: 3px; font-size: 10px; }
+.status-board .status-card span { min-width: 0; color: #332116; font-weight: 850; white-space: nowrap; }
+.status-board .status-card strong { font-family: ui-monospace, monospace; font-size: 11px; }
+.stat-symbol { display: inline-block; margin-right: 2px; font-size: 13px; }
+.status-joy .stat-symbol { color: #e83e73; }
+.status-hunger .stat-symbol { color: #d78626; }
+.status-clean .stat-symbol { color: #218bc5; }
+.status-energy .stat-symbol { color: #7043b1; }
+.status-board .meter {
+  height: 12px;
+  margin-top: 7px;
+  border: 2px solid #4a2d1b;
+  border-radius: 3px;
+  background: #aa8e62;
+  box-shadow: inset 0 2px 0 rgba(0,0,0,.16);
+}
+.status-board .meter span { border-radius: 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.24); }
+.status-joy .meter span { background: #ea477d !important; }
+.status-hunger .meter span { background: #efa630 !important; }
+.status-clean .meter span { background: #35aee3 !important; }
+.status-energy .meter span { background: #8a58ca !important; }
+
+#gameScreen .summary-strip {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: 7px 12px 0;
+  padding: 7px 10px;
+  border: 2px solid #24160e;
+  border-radius: 8px;
+  background: rgba(34,22,15,.88);
+}
+#gameScreen .summary-strip div { border-right: 1px solid rgba(255,224,166,.18); }
+#gameScreen .summary-strip div:last-child { border-right: 0; }
+#gameScreen .summary-strip span { color: #d4aa67; }
+#gameScreen .summary-strip strong { color: #fff0c4; font-family: ui-monospace, monospace; }
+
+#gameScreen .action-dock {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 11px;
+  margin: 12px 3px 13px;
+}
+#gameScreen .action-dock button {
+  min-height: 102px;
+  padding: 11px 5px 10px;
+  border: 3px solid #2a190f;
+  border-radius: 15px;
+  color: #25180f;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.28), 0 6px 0 #2b1a10;
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+}
+#gameScreen .action-dock button:active { transform: translateY(4px); box-shadow: inset 0 0 0 3px rgba(255,255,255,.22), 0 2px 0 #2b1a10; }
+#gameScreen .action-dock .action-feed { background: linear-gradient(#ffd97b, #e9a942); }
+#gameScreen .action-dock .action-play { background: linear-gradient(#b9e9c7, #70c89a); }
+#gameScreen .action-dock .action-wash { background: linear-gradient(#b9e4ff, #6eb7e8); }
+#gameScreen .action-dock .action-train { background: linear-gradient(#ffab91, #e76f5d); }
+#gameScreen .action-dock .action-sleep { background: linear-gradient(#d4b9ef, #a379cf); }
+#gameScreen .action-dock .action-care { background: linear-gradient(#f5b1c4, #df789a); }
+#gameScreen .action-dock .action-emoji { display: block; min-height: 43px; font-size: 36px; line-height: 1.05; filter: drop-shadow(2px 3px 0 rgba(42,25,15,.25)); }
+#gameScreen .action-dock small { margin-top: 7px; color: #24170f; font-family: ui-monospace, monospace; font-size: clamp(12px, 3.5vw, 17px); font-weight: 950; }
+
+.bottom-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 0 -12px;
+  padding: 10px 4px calc(8px + var(--safe-bottom));
+  border-top: 4px solid #21150e;
+  background: linear-gradient(#4b2f1e, #2e1c13);
+  box-shadow: inset 0 3px 0 #8a5b34;
+}
+.bottom-tabs button {
+  min-width: 0;
+  padding: 4px 1px;
+  border: 0;
+  border-right: 1px solid rgba(255,230,183,.12);
+  background: transparent;
+  color: #ceb78f;
+}
+.bottom-tabs button:last-child { border-right: 0; }
+.bottom-tabs button.active { color: #ffd866; }
+.bottom-tabs span { display: block; font-size: 25px; line-height: 1; text-shadow: 2px 2px 0 #1e130d; }
+.bottom-tabs small { display: block; margin-top: 5px; overflow: hidden; font-size: 9px; font-weight: 800; white-space: nowrap; text-overflow: ellipsis; }
+
+#gameScreen .action-locked .action-dock,
+.action-locked #gameScreen .action-dock,
+.action-locked #gameScreen .pixel-logo-header,
+.action-locked #gameScreen .bottom-tabs { pointer-events: none; filter: saturate(.45); opacity: .72; }
+
+/* Das Masterlayout gilt für alle Typwelten, nur Szene und Akzent wechseln. */
+html[data-world="forest"] #gameScreen .pixel-app-frame { --frame-accent: #78b55b; }
+html[data-world="volcano"] #gameScreen .pixel-app-frame { --frame-accent: #d86a36; }
+html[data-world="lagoon"] #gameScreen .pixel-app-frame { --frame-accent: #4ca9ca; }
+html[data-phase="night"] #gameScreen .pixel-logo-header { filter: brightness(.86) saturate(.9); }
+html[data-phase="night"] #gameScreen .status-board { background: linear-gradient(rgba(255,255,255,.18), transparent 35%), #d7bd8e; }
+
+@media (max-width: 520px) {
+  .app-shell { padding-left: 9px; padding-right: 9px; }
+  #gameScreen .pixel-app-frame { padding-left: 8px; padding-right: 8px; border-radius: 18px; }
+  .pixel-logo-header { grid-template-columns: 48px 1fr 48px; min-height: 92px; }
+  .pixel-square-btn { width: 46px; height: 46px; }
+  .bond-counter { min-height: 50px; }
+  .pixel-brand > strong { -webkit-text-stroke-width: 2px; }
+  .pixel-brand > span { min-width: 136px; padding-left: 18px; padding-right: 18px; }
+  #gameScreen .habitat { height: clamp(330px, 46svh, 430px); }
+  #gameScreen .world-badge { min-width: 160px; top: 14px; padding: 8px 12px; }
+  #gameScreen .world-badge strong { font-size: 13px; }
+  .scene-info-btn { top: 77px; right: 10px; width: 43px; height: 43px; }
+  #gameScreen .speech-bubble { top: 93px; right: 59px; font-size: 9px; }
+  #gameScreen .pet-touch { inset: 98px 8% 12px; }
+  .status-board { padding-left: 4px; padding-right: 4px; }
+  .status-board .status-card { padding-left: 4px; padding-right: 4px; }
+  .status-board .status-card > div:first-child { font-size: 8px; }
+  .status-board .status-card strong { font-size: 9px; }
+  .status-board .meter { height: 10px; }
+  #gameScreen .action-dock { gap: 8px; }
+  #gameScreen .action-dock button { min-height: 91px; }
+  #gameScreen .action-dock .action-emoji { min-height: 36px; font-size: 31px; }
+  .bottom-tabs { margin-left: -8px; margin-right: -8px; }
+  .bottom-tabs span { font-size: 22px; }
+  .bottom-tabs small { font-size: 8px; }
+}
+
+@media (min-width: 700px) {
+  #gameScreen .pixel-app-frame { padding-left: 18px; padding-right: 18px; }
+  #gameScreen .habitat { height: 540px; }
+  #gameScreen .action-dock button { min-height: 124px; }
+  .bottom-tabs { margin-left: -18px; margin-right: -18px; }
+}

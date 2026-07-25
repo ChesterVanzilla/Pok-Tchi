@@ -78,6 +78,7 @@ let trainHits = 0;
 let trainCombo = 0;
 let trainLastHitAt = 0;
 let actionLocked = false;
+let mainSpriteLoadKey = '';
 
 const screens = {
   slots: $('#slotScreen'),
@@ -336,23 +337,54 @@ async function openGame(index) {
 
 async function loadMainSprite(action = null) {
   const slot = currentSlot();
+  const canvas = $('#petCanvas');
   if (!slot || isEgg(slot)) {
-    $('#petCanvas').hidden = true;
+    mainSpriteLoadKey = '';
+    mainSprite?.clear();
+    delete canvas.dataset.spriteKey;
+    canvas.hidden = true;
     $('#eggView').classList.remove('hidden');
     return;
   }
+
   const species = getSpecies(slot, speciesById);
-  $('#petCanvas').hidden = false;
+  if (!species) {
+    mainSprite?.clear();
+    delete canvas.dataset.spriteKey;
+    showToast('Pokémon-Daten konnten nicht zugeordnet werden.');
+    return;
+  }
+
+  const shiny = Boolean(slot.pet.shiny);
+  const spriteUrl = shiny ? species.shinySprite : species.sprite;
+  const expectedSlot = currentSlotIndex;
+  const expectedSpeciesId = slot.pet.speciesId;
+  const loadKey = `${expectedSlot}:${expectedSpeciesId}:${shiny ? 's' : 'n'}:${spriteUrl}`;
+  mainSpriteLoadKey = loadKey;
+  canvas.hidden = false;
   $('#eggView').classList.add('hidden');
+  canvas.classList.add('sprite-loading');
+  delete canvas.dataset.spriteKey;
+
   try {
-    await mainSprite.load(slot.pet.shiny ? species.shinySprite : species.sprite);
+    const loaded = await mainSprite.load(spriteUrl);
+    const activeSlot = currentSlot();
+    if (!loaded || mainSpriteLoadKey !== loadKey || currentSlotIndex !== expectedSlot || !activeSlot || isEgg(activeSlot) || activeSlot.pet.speciesId !== expectedSpeciesId || Boolean(activeSlot.pet.shiny) !== shiny) return;
+    canvas.dataset.spriteKey = loadKey;
+    canvas.classList.remove('sprite-loading', 'sprite-error');
     mainSprite.setMotion(state.settings.motion);
-    if (slot.pet.sleeping) mainSprite.setAction(ACTION.SLEEP);
+    if (activeSlot.pet.sleeping) mainSprite.setAction(ACTION.SLEEP);
     else if (action !== null) mainSprite.play(action);
     else mainSprite.setAction(ACTION.IDLE);
   } catch (error) {
+    if (mainSpriteLoadKey !== loadKey) return;
     console.error(error);
-    showToast('Sprite konnte nicht geladen werden.');
+    canvas.classList.remove('sprite-loading');
+    canvas.classList.add('sprite-error');
+    mainSpriteLoadKey = '';
+    delete canvas.dataset.spriteKey;
+    mainSprite.clear();
+    showToast(`${species.nameDe} konnte nicht dargestellt werden.`);
   }
 }
 
@@ -371,12 +403,23 @@ function renderGame() {
   const theme = applyWorldTheme(slot);
   renderFoodTheme(theme);
   prepareWorldActivities(theme);
+  const worldDay = Math.max(1, Math.floor((Number(pet.ageMinutes) || 0) / 1440) + 1);
+  $('#worldPhase').textContent = `${activePhase === 'night' ? 'NACHT' : 'TAG'} · TAG ${worldDay}`;
 
   const egg = $('#eggView');
   egg.classList.toggle('hidden', !isEgg(slot));
   egg.classList.toggle('crack-1', isEgg(slot) && pet.eggTaps >= 1);
   egg.classList.toggle('crack-2', isEgg(slot) && pet.eggTaps >= 2);
   $('#petCanvas').hidden = isEgg(slot);
+  if (isEgg(slot)) {
+    mainSpriteLoadKey = '';
+    mainSprite?.clear();
+    delete $('#petCanvas').dataset.spriteKey;
+  } else {
+    const spriteUrl = pet.shiny ? species.shinySprite : species.sprite;
+    const desiredKey = `${currentSlotIndex}:${pet.speciesId}:${pet.shiny ? 's' : 'n'}:${spriteUrl}`;
+    if ($('#petCanvas').dataset.spriteKey !== desiredKey && mainSpriteLoadKey !== desiredKey) queueMicrotask(() => loadMainSprite());
+  }
 
   updateMeter('fullness', pet.fullness);
   updateMeter('joy', pet.joy);
@@ -714,6 +757,7 @@ function bindEvents() {
   $('#backToSlotsBtn').addEventListener('click', async () => { if(actionLocked)return; persist(); await renderSlots(); showScreen('slots'); });
   $('#petTouchArea').addEventListener('click', () => { if(!actionLocked) touchPet(); });
   $('#openSettingsBtn').addEventListener('click', openSettings);
+  $('#gameSettingsBtn').addEventListener('click', openSettings);
   $('#openDexBtn').addEventListener('click', () => { if(actionLocked)return; renderDex($('#dexSearch').value); showScreen('dex'); });
   $('#dexSearch').addEventListener('input', (event) => renderDex(event.target.value));
   $$('.close-dialog').forEach((button) => button.addEventListener('click', () => closeDialog(button.closest('dialog'))));
@@ -731,6 +775,7 @@ function bindEvents() {
       const theme=getActiveTheme(slot);prepareWorldActivities(theme);$('#trainTime').textContent='10';$('#trainHits').textContent='0';$('#trainCombo').textContent='0';$('#trainStartHint').hidden=false;$('#trainStartHint').textContent=theme.training.hint;$('#startTrainBtn').textContent='Start';await prepareTraining();openDialog($('#trainDialog'));
     }else if(action==='clean') await startBathScene();
     else if(action==='sleep'){const result=toggleSleep(slot);processResult(result,'sleep');if(result.changed)mainSprite.setAction(slot.pet.sleeping?ACTION.SLEEP:ACTION.IDLE);}
+    else if(action==='care'){const result=caress(slot,speciesById);processResult(result,'ok');if(result.changed&&!slot.pet.sleeping)mainSprite.play(mainSprite.hasAction(ACTION.POSE)?ACTION.POSE:ACTION.NOD);}
     else if(action==='info'){if(renderInfo())openDialog($('#infoDialog'));}
   }));
 

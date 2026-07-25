@@ -1,15 +1,17 @@
-# Portierungsstatus v0.3
+# Port-Status v0.4
 
-## Umgesetzt
-- Browserbasierter TamaPoke-Spielkern mit drei Profilen
-- TPK2-Spriteparser für normale und Shiny-Pokémon
-- Pflege, Zeitfortschritt, Entwicklung, Pokédex und Lebenszyklus
-- Bade-, Entwicklungs-, Abschieds-, Freilassungs- und Weglaufszenen
-- Typwelt-System mit Tag/Nacht, Beeren, Minispielen und Training
-- Vollständig ausgearbeitet für Pflanze, Feuer und Wasser
+## Enthalten
+- drei lokale Familienprofile
+- 151 normale und 151 Shiny-Spritepakete
+- Ei, Pflege, Entwicklung, Pokédex und Lebenszyklus
+- Baden, typabhängiges Sammelspiel und Training
+- freiwilliger Abschied, Freilassen und Weglaufen
+- Tag-/Nacht-Welten für Pflanze, Feuer und Wasser
+- Pixel-Masterdesign für die komplette Hauptansicht
+- Race-Condition- und Alt-Sprite-Schutz beim Pokémon-Wechsel
 
-## Nächste Ausbaustufe
-- Welten für Normal, Elektro, Käfer, Gift und weitere Gen-1-Typen
-- Zusätzliche eigenständige Minispielmechaniken
-- Typabhängige Soundkulissen und Partikeleffekte
-- Größere Pixel-UI-Überarbeitung der Profil- und Pokédexseiten
+## Nächste Ausbaustufen
+- weitere Typwelten
+- zusätzliche typabhängige Minispiele
+- umfangreichere Bade- und Entwicklungsinszenierungen
+- weitere Soundfolgen und optionale Musik

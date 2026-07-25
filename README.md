@@ -1,15 +1,17 @@
-# TamaPoke Family Web v0.3
+# TamaPoke Family Web v0.4
 
-## Neu in dieser Version
-- Typabhängiges Weltensystem als technische Grundlage
-- Pflanze: Kanto Wald in Tag- und Nachtvariante
-- Feuer: Vulkan-Ebene in Tag- und Nachtvariante
-- Wasser: Azurbucht in Tag- und Nachtvariante
-- Automatische Weltzeit oder manuelle Tag-/Nacht-Auswahl
-- Typabhängige UI-Akzentfarben und Pixelrahmen
-- Je Typ drei eigene Beeren und ein eigener Süßigkeitenskin
-- Je Typ eigenes Sammel-Minispiel mit positivem Objekt und Hindernis
-- Je Typ eigenes Krafttrainingsziel und passende Szene
-- Bestehende v0.1/v0.2-Spielstände werden übernommen
+Private, nicht kommerzielle iPhone-/iPad-PWA auf Basis der offenen TamaPoke-Struktur.
 
-Die nächsten Typwelten können über `js/worlds.js` und weitere SVG-Hintergründe ergänzt werden.
+## Neu in v0.4
+- vollständiges Pixel-Masterlayout nach dem Kanto-Wald-Entwurf
+- große Weltbühne, Pixelrahmen, Statusboard, 3×2-Aktionsfeld und untere Navigation
+- dasselbe Grundlayout für Wald-, Vulkan- und Wasserwelt sowie Tag/Nacht
+- neue Aktion „Pflegen“
+- stark verbesserter Kanto-Wald bei Tag und Nacht
+- robuster Sprite-Wechsel mit Abbruch veralteter Ladevorgänge
+- leere Anzeige während des Wechsels statt eines alten Pokémon
+- automatische Prüfung, ob dargestellte Sprite-ID, Shiny-Status und aktueller Spielstand zusammenpassen
+- neue PWA-Cache-Version
+
+## Update
+Den vollständigen Inhalt in das vorhandene GitHub-Pages-Repository kopieren und die alten Dateien ersetzen. Danach die Seite einmal direkt in Safari neu laden und die Home-Bildschirm-App vollständig schließen und erneut öffnen.
