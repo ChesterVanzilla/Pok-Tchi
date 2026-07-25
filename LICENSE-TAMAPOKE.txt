@@ -1,36 +1,40 @@
-MIT License
+# Credits
 
-Copyright (c) 2026 Quique Tortosa
+TamaPoke is a **non-commercial, personal-use** project. It does not sell or
+commercially redistribute any copyrighted material. Pokémon and all related
+names, designs and characters are trademarks and © of **Nintendo / Game Freak /
+The Pokémon Company**.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This project is not affiliated with or endorsed by any of those companies.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## Sprites and data
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+| Resource | Source | Use in the project |
+|---|---|---|
+| **All sprites** (idle, walk, sleep, eat, hurt, attack…) | [PMD Sprite Collaboration (PMDCollab/SpriteCollab)](https://github.com/PMDCollab/SpriteCollab) | Mystery-Dungeon-style animated sprites used everywhere: main screen, stat card, minigame, and the Pokédex grid + detail view |
+| **Gen 1 base stats** | [PokéAPI](https://pokeapi.co) | Real ATK/DEF/SPD/HP for each species |
 
----
+The **SpriteCollab** sprites are the work of its community of artists under their
+own terms (Creative Commons Attribution-NonCommercial 4.0). Per-species/per-author
+credit is in the original repository's
+[tracker.json](https://github.com/PMDCollab/SpriteCollab/blob/master/tracker.json).
+Huge thanks to that whole community for an enormous amount of work.
 
-NOTE — this MIT license covers ONLY the original source code of this repository
-(firmware and tooling). It does NOT cover:
+> **Important if you reuse this repo:** the packaged sprite files
+> (`tools/sdcard/mons/*.bin`) are derived from the sources above. Don't
+> redistribute them commercially. If you publish the project, the clean approach
+> is to distribute **only the code and scripts**, and have each user download and
+> package the sprites from the original sources with `tools/pack_*.py` (or the web
+> installer).
 
-  * Pokémon sprites and names — © Nintendo / Game Freak / The Pokémon Company.
-    Pixel art from PMD SpriteCollab (CC BY-NC 4.0).
-    Included here for personal, NON-COMMERCIAL use only.
+## Software / hardware
 
-  * The 3D-printed case — a remix of "Pokeball" by yoyothechicken
-    (https://makerworld.com/es/models/839922-pokeball), licensed
-    CC BY-NC-SA, and therefore shared under the same CC BY-NC-SA terms.
+| Component | Author / source |
+|---|---|
+| GFX Library for Arduino | [moononournation](https://github.com/moononournation/Arduino_GFX) |
+| SensorLib (CST9217 touch, PCF85063 RTC) | [Lewis He / lewisxhe](https://github.com/lewisxhe/SensorLib) |
+| XPowersLib (AXP2101 PMU) | [Lewis He / lewisxhe](https://github.com/lewisxhe/XPowersLib) |
+| Board and pinout | [Waveshare ESP32-S3-Touch-AMOLED-1.75](https://www.waveshare.com/wiki/ESP32-S3-Touch-AMOLED-1.75) |
+| Web installer | [ESP Web Tools](https://esphome.github.io/esp-web-tools/) (Nabu Casa) |
 
-See README and CREDITS.md for details.
+TamaPoke's own code (firmware and tools) is original work.

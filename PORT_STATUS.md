@@ -1,15 +1,25 @@
-# Portierungsstatus v0.3
-
-## Umgesetzt
-- Browserbasierter TamaPoke-Spielkern mit drei Profilen
-- TPK2-Spriteparser für normale und Shiny-Pokémon
-- Pflege, Zeitfortschritt, Entwicklung, Pokédex und Lebenszyklus
-- Bade-, Entwicklungs-, Abschieds-, Freilassungs- und Weglaufszenen
-- Typwelt-System mit Tag/Nacht, Beeren, Minispielen und Training
-- Vollständig ausgearbeitet für Pflanze, Feuer und Wasser
-
-## Nächste Ausbaustufe
-- Welten für Normal, Elektro, Käfer, Gift und weitere Gen-1-Typen
-- Zusätzliche eigenständige Minispielmechaniken
-- Typabhängige Soundkulissen und Partikeleffekte
-- Größere Pixel-UI-Überarbeitung der Profil- und Pokédexseiten
+{
+  "name": "TamaPoke Family – private Web-Version",
+  "short_name": "TamaPoke",
+  "description": "Private TamaPoke-Familienversion mit typabhängigen Pixelwelten für iPhone und iPad.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c1120",
+  "theme_color": "#13192b",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
