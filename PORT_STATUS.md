@@ -1,32 +1,29 @@
-# Portierungsstatus v0.1
+# Portierungsstatus v0.2
 
-## Direkt aus TamaPoke übernommen oder eng übertragen
+## Neu in v0.2
 
-- TPK2-Parser und Aktions-IDs 0–11
-- alle normalen und Shiny-Spritepakete
-- Gen-1-Pokédexdaten, Entwicklungen, Typen, Grundwerte, Seltenheiten und Biome
-- Pflegewerte und Minuten-Ticks
-- sanfte Offline-Absenkung mit Untergrenzen
-- Schlafregeln
-- Gewicht, Bonbons und Training
-- Lieblingsbeere nach `speciesId % 3`
-- Gene 90–110 %, Training 0–100
-- Bindung, Tagespflege-Serie und Medaillen
-- manuell ausgelöste Entwicklung und zufällige Evoli-Verzweigung
-- unvollständige Entwicklungsreihen werden bei neuen Eiern bevorzugt
+- Entwicklungsentscheidung: entwickeln oder Form behalten
+- abgelehnte Entwicklung erscheint erst beim nächsten Level erneut
+- sichtbare Entwicklungssequenz
+- freiwillige Freilassungszeremonie
+- erfüllter Abschied für Endformen nach drei Spieltagen
+- „Zusammenbleiben“ verschiebt die Abschiedsfrage um einen Spieltag
+- Fluchtmechanik nach 60 Spielminuten mit allen vier Bedürfnissen auf null
+- jede Pflegeaktion setzt die Fluchtgefahr sofort zurück
+- sichtbare traurige Fluchtszene; keine heimliche Flucht im Hintergrund
+- das Ende der vorherigen Aufzucht beeinflusst Seltenheit und Shiny-Chance des neuen Eis
+- Schaumbad-Szene
+- Pokéball-Fangspiel mit Fingersteuerung und echtem Pokémon-Sprite
+- Krafttraining mit Angriffsanimation und Komboanzeige
+- mehrstufige Retro-Soundfolgen
+- Fortschrittsanzeige für Entwicklung, Lebenszyklus und Vernachlässigung
+- Historie der letzten 20 Aufzuchten im Spielstand vorbereitet
+- automatische Migration bestehender v0.1-Spielstände
 
-## Web-spezifisch neu gebaut
+## Nächste größere Ausbaustufen
 
-- responsive iPhone-/iPad-Oberfläche
-- Canvas-Renderer für TPK2
-- drei Profile in `localStorage`
-- PWA-Manifest und Service Worker
-- Touch-Minispiele
-- deutscher Namenssatz für Gen 1
-
-## Bekannte Grenzen der ersten Version
-
-- Spielstände sind aktuell an den jeweiligen Browser/das jeweilige Gerät gebunden.
-- Safari kann Website-Daten entfernen, wenn Speicher manuell gelöscht wird.
-- Der erste Aufruf eines neuen Pokémon-Sprites braucht eine Internetverbindung; danach wird er gecacht.
-- SVG-App-Icons werden von modernen Safari-Versionen unterstützt. Für ältere Systeme können später PNG-Icons ergänzt werden.
+- typabhängige Hintergründe mit Tag- und Nachtvarianten
+- typabhängige Beeren und weitere Minispiele
+- Tagebuch-/Historienansicht
+- zusätzliche Sound- und Umgebungseffekte
+- Export/Import von Spielständen zwischen Geräten

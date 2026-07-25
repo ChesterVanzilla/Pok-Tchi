@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family</title>
+  <title>TamaPoke Family v0.2</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -84,12 +84,22 @@
         <div id="poopRow" class="poop-row" aria-label="Verschmutzungen"></div>
         <div class="ground-shadow" aria-hidden="true"></div>
         <span id="shinyBadge" class="shiny-badge" hidden>✦ SHINY</span>
+        <div id="bathOverlay" class="bath-overlay" hidden aria-hidden="true">
+          <div class="bath-tub">🛁</div><div class="bath-bubbles"></div><strong>Splish splash!</strong>
+        </div>
+        <div id="evolutionOverlay" class="evolution-overlay" hidden aria-hidden="true">
+          <div class="evolution-halo"></div><div class="evolution-rays"></div><strong>Entwicklung!</strong>
+        </div>
       </section>
 
-      <button id="evolveBanner" class="evolve-banner" type="button" hidden>
-        <span>✨</span>
-        <span><strong>Entwicklung möglich</strong><small>Tippen, um die Entwicklung zu starten</small></span>
-        <span>›</span>
+      <button id="evolveBanner" class="event-banner evolve-banner" type="button" hidden>
+        <span>✨</span><span><strong>Entwicklung möglich</strong><small>Tippen, um zu entscheiden</small></span><span>›</span>
+      </button>
+      <button id="farewellBanner" class="event-banner farewell-banner" type="button" hidden>
+        <span>💛</span><span><strong id="farewellBannerTitle">Dein Pokémon möchte dir etwas sagen</strong><small>Der gemeinsame Lebenszyklus ist abgeschlossen</small></span><span>›</span>
+      </button>
+      <button id="runawayBanner" class="event-banner runaway-banner" type="button" hidden>
+        <span>💧</span><span><strong id="runawayBannerTitle">Dein Pokémon fühlt sich verlassen</strong><small>Tippe, um die Szene zu öffnen</small></span><span>›</span>
       </button>
 
       <section class="status-grid" aria-label="Pflegewerte">
@@ -122,7 +132,7 @@
         <button type="button" data-action="food"><span>🍓</span><small>Füttern</small></button>
         <button type="button" data-action="play"><span>★</span><small>Spielen</small></button>
         <button type="button" data-action="train"><span>🥊</span><small>Training</small></button>
-        <button type="button" data-action="clean"><span>🫧</span><small>Sauber</small></button>
+        <button type="button" data-action="clean"><span>🫧</span><small>Waschen</small></button>
         <button type="button" data-action="sleep"><span>☾</span><small id="sleepActionLabel">Schlafen</small></button>
         <button type="button" data-action="info"><span>ⓘ</span><small>Info</small></button>
       </nav>
@@ -169,9 +179,11 @@
       <div id="infoMetrics" class="info-metrics"></div>
       <h3>Gene & Training</h3>
       <div id="combatStats" class="combat-grid"></div>
+      <h3>Fortschritt & Lebenszyklus</h3>
+      <div id="lifeProgress" class="life-progress"></div>
       <h3>Medaillen</h3>
       <div id="medalGrid" class="medal-grid"></div>
-      <button id="newEggBtn" class="secondary-btn" type="button">Aktuelles Pokémon freilassen und neues Ei erhalten</button>
+      <button id="newEggBtn" class="secondary-btn" type="button">Pokémon freiwillig freilassen</button>
     </div>
   </dialog>
 
@@ -182,6 +194,16 @@
       <div class="dex-detail-stage"><canvas id="dexDetailCanvas" width="260" height="190"></canvas><div id="dexLocked" class="dex-locked">?</div></div>
       <div id="dexDetailMeta" class="info-metrics"></div>
     </div>
+  </dialog>
+
+  <dialog id="evolutionChoiceDialog" class="choice-dialog">
+    <div class="choice-card"><span class="choice-icon">✨</span><p class="eyebrow">ENTWICKLUNG</p><h2 id="evolutionChoiceTitle">Entwickeln?</h2><p id="evolutionChoiceText">Dein Pokémon ist bereit.</p><button id="acceptEvolutionBtn" class="primary-btn full" type="button">Jetzt entwickeln</button><button id="declineEvolutionBtn" class="secondary-btn" type="button">Form vorerst behalten</button></div>
+  </dialog>
+  <dialog id="farewellChoiceDialog" class="choice-dialog">
+    <div class="choice-card farewell-choice"><span class="choice-icon">💛</span><p class="eyebrow">GEMEINSAMER WEG</p><h2 id="farewellChoiceTitle">Abschied nehmen?</h2><p id="farewellChoiceText">Nach einem erfüllten Lebenszyklus kann ein neues Ei erscheinen.</p><button id="acceptFarewellBtn" class="primary-btn full" type="button">Dankbar verabschieden</button><button id="declineFarewellBtn" class="secondary-btn" type="button">Noch zusammenbleiben</button></div>
+  </dialog>
+  <dialog id="ceremonyDialog" class="ceremony-dialog">
+    <div id="ceremonyScene" class="ceremony-scene"><div class="ceremony-particles" aria-hidden="true"></div><p id="ceremonyKicker" class="eyebrow">AUF WIEDERSEHEN</p><h2 id="ceremonyTitle">Danke für die gemeinsame Zeit</h2><canvas id="ceremonyCanvas" width="420" height="330" aria-label="Abschiedsszene"></canvas><p id="ceremonyText">Ein neues Abenteuer wartet.</p><div class="ceremony-progress"><span id="ceremonyProgressBar"></span></div></div>
   </dialog>
 
   <dialog id="settingsDialog" class="sheet-dialog">
@@ -200,19 +222,14 @@
   </dialog>
 
   <dialog id="miniGameDialog" class="game-dialog">
-    <div class="mini-card">
-      <div class="mini-head"><div><p class="eyebrow">MINISPIEL</p><h2>Fang den Stern</h2></div><button id="cancelMiniBtn" class="round-btn" type="button">✕</button></div>
-      <div class="mini-score"><span>Zeit <strong id="miniTime">15</strong></span><span>Punkte <strong id="miniScore">0</strong></span></div>
-      <div id="miniArena" class="mini-arena"><button id="miniTarget" type="button" aria-label="Stern fangen">★</button><p id="miniStartHint">Tippe auf Start und fange so viele Sterne wie möglich.</p></div>
-      <button id="startMiniBtn" class="primary-btn full" type="button">Start</button>
-    </div>
+    <div class="mini-card"><div class="mini-head"><div><p class="eyebrow">MINISPIEL</p><h2>Pokéball-Fangen</h2></div><button id="cancelMiniBtn" class="round-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="miniTime">20</strong></span><span>Punkte <strong id="miniScore">0</strong></span><span>Fehler <strong id="miniMisses">0/3</strong></span></div><div id="miniArena" class="mini-arena ball-game-arena"><div class="mini-sky-decor" aria-hidden="true"></div><div id="miniBall" class="mini-ball" hidden></div><div id="miniPet" class="mini-pet"><canvas id="miniPetCanvas" width="170" height="120"></canvas></div><p id="miniStartHint">Bewege dein Pokémon mit dem Finger und fange den Pokéball.</p></div><button id="startMiniBtn" class="primary-btn full" type="button">Start</button></div>
   </dialog>
 
   <dialog id="trainDialog" class="game-dialog">
     <div class="mini-card">
       <div class="mini-head"><div><p class="eyebrow">KRAFTTRAINING</p><h2>Trainingssack</h2></div><button id="cancelTrainBtn" class="round-btn" type="button">✕</button></div>
-      <div class="mini-score"><span>Zeit <strong id="trainTime">10</strong></span><span>Treffer <strong id="trainHits">0</strong></span></div>
-      <div class="bag-arena"><button id="punchBag" type="button" aria-label="Trainingssack schlagen"><span></span></button><p id="trainStartHint">Tippe schnell auf den Sack.</p></div>
+      <div class="mini-score"><span>Zeit <strong id="trainTime">10</strong></span><span>Treffer <strong id="trainHits">0</strong></span><span>Kombo <strong id="trainCombo">0</strong></span></div>
+      <div class="bag-arena"><div id="trainPet" class="train-pet"><canvas id="trainPetCanvas" width="190" height="150"></canvas></div><button id="punchBag" type="button" aria-label="Trainingssack schlagen"><span></span></button><p id="trainStartHint">Tippe rhythmisch auf den Sack.</p></div>
       <button id="startTrainBtn" class="primary-btn full" type="button">Start</button>
     </div>
   </dialog>

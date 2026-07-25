@@ -177,14 +177,14 @@ h3 { margin-top: 22px; margin-bottom: 10px; font-size: 15px; color: var(--muted)
 .poop-row { position: absolute; left: 22px; bottom: 26px; z-index: 4; display: flex; gap: 5px; font-size: 24px; }
 .shiny-badge { position: absolute; top: 18px; right: 16px; z-index: 5; padding: 6px 9px; border-radius: 999px; background: rgba(24,29,51,.74); color: #fff1a6; font-size: 10px; font-weight: 900; letter-spacing: .08em; }
 
-.evolve-banner {
+.event-banner {
   width: 100%; margin-top: 11px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
   padding: 13px 15px; border: 1px solid rgba(255,208,74,.35); border-radius: 18px;
   background: rgba(255,208,74,.1); color: var(--text); text-align: left;
 }
-.evolve-banner[hidden] { display: none; }
-.evolve-banner > span:first-child { font-size: 25px; }
-.evolve-banner strong,.evolve-banner small { display:block; }.evolve-banner small { margin-top: 3px; color: var(--muted); }
+.event-banner[hidden] { display: none; }
+.event-banner > span:first-child { font-size: 25px; }
+.event-banner strong,.event-banner small { display:block; }.event-banner small { margin-top: 3px; color: var(--muted); }
 
 .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 11px; }
 .status-card { padding: 12px; border: 1px solid var(--line); border-radius: 17px; background: var(--panel); }
@@ -242,6 +242,76 @@ dialog::backdrop { background:rgba(3,7,17,.72); backdrop-filter:blur(8px); }
 #punchBag::before { content:""; position:absolute; left:50%; top:-20px; width:5px; height:55px; transform:translateX(-50%); background:#8f98aa; }
 #punchBag.hit { animation:bagHit .12s ease; }
 @keyframes bagHit { 50% { transform:rotate(5deg) translateX(7px); } }
+
+
+
+/* v0.2 – Szenen, Entscheidungen und Minispiele */
+.event-banner { position: relative; overflow: hidden; }
+.event-banner::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.08),transparent 70%); transform:translateX(-100%); animation:eventShine 3s ease-in-out infinite; }
+.farewell-banner { border-color:rgba(255,202,80,.38); background:linear-gradient(145deg,rgba(255,202,80,.16),rgba(193,124,35,.08)); }
+.runaway-banner { border-color:rgba(113,134,171,.38); background:linear-gradient(145deg,rgba(70,83,112,.34),rgba(24,30,48,.46)); color:#d8e0ee; }
+.runaway-banner::after { display:none; }
+@keyframes eventShine { 0%,55%{transform:translateX(-110%)} 85%,100%{transform:translateX(110%)} }
+.action-locked .action-dock,.action-locked .game-topbar,.action-locked .event-banner { pointer-events:none; filter:saturate(.45); opacity:.7; }
+
+.bath-overlay,.evolution-overlay { position:absolute; inset:0; z-index:8; display:grid; place-items:center; pointer-events:none; overflow:hidden; }
+.bath-overlay[hidden],.evolution-overlay[hidden],.mini-ball[hidden] { display:none !important; }
+.bath-overlay { background:linear-gradient(rgba(95,190,226,.20),rgba(49,129,181,.32)); backdrop-filter:blur(1px); }
+.bath-overlay strong,.evolution-overlay strong { position:absolute; top:17%; padding:8px 14px; border-radius:999px; background:rgba(13,22,41,.72); color:#fff; font-size:15px; }
+.bath-tub { position:absolute; left:50%; bottom:18%; transform:translateX(-50%); font-size:84px; filter:drop-shadow(0 8px 9px rgba(0,0,0,.25)); }
+.bath-bubbles i { position:absolute; left:var(--x); top:var(--y); width:var(--size); height:var(--size); border-radius:50%; border:2px solid rgba(255,255,255,.82); background:rgba(193,237,255,.38); animation:bubbleFloat 1.7s ease-in-out var(--delay) infinite; }
+@keyframes bubbleFloat { 0%{transform:translateY(18px) scale(.7);opacity:0} 35%{opacity:1} 100%{transform:translateY(-95px) scale(1.1);opacity:0} }
+.evolution-overlay { background:radial-gradient(circle at center,rgba(255,255,255,.78),rgba(255,217,77,.22) 25%,rgba(97,103,231,.32) 62%,rgba(14,17,37,.55)); mix-blend-mode:screen; }
+.evolution-halo { width:90px; height:90px; border:5px solid white; border-radius:50%; box-shadow:0 0 0 22px rgba(255,255,255,.35),0 0 0 48px rgba(255,222,97,.22),0 0 50px 36px rgba(255,255,255,.75); animation:evoHalo 1.3s ease-in-out infinite; }
+.evolution-rays { position:absolute; inset:-20%; background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.72) 0deg 2deg,transparent 2deg 22deg); animation:evoSpin 2.6s linear infinite; }
+@keyframes evoHalo { 50%{transform:scale(2.4);opacity:.55} }
+@keyframes evoSpin { to{transform:rotate(360deg)} }
+
+.choice-dialog { width:min(100% - 28px,480px); padding:0; border:0; background:transparent; color:var(--text); }
+.choice-card { padding:24px; border:1px solid var(--line); border-radius:27px; background:linear-gradient(145deg,var(--panel-2),var(--panel)); text-align:center; }
+.choice-card .choice-icon { display:block; font-size:54px; margin-bottom:9px; }
+.choice-card h2 { margin-top:6px; }
+.choice-card p:not(.eyebrow) { margin:10px auto 20px; color:var(--muted); line-height:1.5; }
+.choice-card .secondary-btn { margin-top:10px; }
+.farewell-choice { background:linear-gradient(145deg,#3c3020,var(--panel)); }
+
+.ceremony-dialog { width:min(100% - 18px,760px); max-width:760px; padding:0; border:0; border-radius:30px; background:transparent; color:var(--text); }
+.ceremony-dialog::backdrop { background:rgba(2,5,13,.94); backdrop-filter:blur(12px); }
+.ceremony-scene { position:relative; min-height:min(83svh,690px); display:grid; grid-template-rows:auto auto 1fr auto auto; align-items:center; justify-items:center; overflow:hidden; padding:34px 20px calc(28px + var(--safe-bottom)); border:1px solid rgba(255,255,255,.12); border-radius:30px; text-align:center; background:radial-gradient(circle at 50% 42%,#51416b,#17192d 58%,#090c18); }
+.ceremony-scene.farewell { background:radial-gradient(circle at 50% 42%,#76613b,#2b2231 54%,#10121e); }
+.ceremony-scene.release { background:radial-gradient(circle at 50% 42%,#365f68,#1c2938 55%,#0b101c); }
+.ceremony-scene.runaway { background:radial-gradient(circle at 50% 42%,#364052,#171c29 58%,#080b13); }
+.ceremony-scene h2 { margin-top:8px; max-width:560px; }
+.ceremony-scene canvas { width:100%; max-width:520px; height:min(46svh,390px); image-rendering:pixelated; position:relative; z-index:2; }
+.ceremony-scene p:last-of-type { max-width:560px; color:#c2cade; line-height:1.5; }
+.ceremony-progress { width:min(86%,520px); height:8px; margin-top:18px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.11); }
+.ceremony-progress span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
+.ceremony-particles { position:absolute; inset:0; opacity:.7; background-image:radial-gradient(circle,#ffd977 0 2px,transparent 3px),radial-gradient(circle,#ff9eb6 0 2px,transparent 3px); background-size:73px 89px,107px 131px; animation:particlesRise 6s linear infinite; }
+.runaway .ceremony-particles { opacity:.3; filter:grayscale(1); }
+.farewell #ceremonyCanvas,.release #ceremonyCanvas { animation:ceremonyLeaveRight 10s ease-in forwards; }
+.runaway #ceremonyCanvas { animation:ceremonyLeaveLeft 10s ease-in forwards; filter:saturate(.55); }
+@keyframes particlesRise { to{background-position:0 -178px,0 -262px} }
+@keyframes ceremonyLeaveRight { 0%,40%{transform:translateX(0) scale(1)} 100%{transform:translateX(115%) scale(.72);opacity:.1} }
+@keyframes ceremonyLeaveLeft { 0%,28%{transform:translateX(0) scale(1)} 45%{transform:translateX(-3%) rotate(-2deg)} 100%{transform:translateX(-120%) scale(.68);opacity:.05} }
+
+.life-progress { display:grid; gap:8px; }
+.life-progress > div { padding:11px 13px; border:1px solid var(--line); border-radius:15px; background:var(--panel-2); }
+.life-progress span,.life-progress strong { display:block; }
+.life-progress span { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.08em; }
+.life-progress strong { margin-top:4px; font-size:13px; line-height:1.35; }
+
+.ball-game-arena { touch-action:none; background:linear-gradient(#5aa8d4 0 68%,#7cc06c 68% 100%); }
+.mini-sky-decor { position:absolute; inset:0; opacity:.34; background:radial-gradient(circle at 15% 18%,white 0 3px,transparent 4px),radial-gradient(circle at 80% 26%,white 0 2px,transparent 3px); background-size:90px 75px,120px 105px; }
+.mini-ball { position:absolute; z-index:3; width:45px; height:45px; margin-left:-22px; margin-top:-22px; border:5px solid #151923; border-radius:50%; background:linear-gradient(#e9535b 0 44%,#171b25 45% 56%,#f6f3e9 57% 100%); box-shadow:0 7px 12px rgba(0,0,0,.24); }
+.mini-ball::after { content:""; position:absolute; left:50%; top:50%; width:12px; height:12px; transform:translate(-50%,-50%); border:4px solid #171b25; border-radius:50%; background:#f6f3e9; }
+.mini-pet { position:absolute; z-index:2; left:50%; bottom:4%; width:130px; height:105px; transform:translateX(-50%); }
+.mini-pet canvas { width:100%; height:100%; image-rendering:pixelated; }
+.ball-game-arena::after { content:""; position:absolute; left:0; right:0; bottom:0; height:13%; background:repeating-linear-gradient(90deg,#4f8e45 0 20px,#579a4b 20px 40px); border-top:5px solid #387839; }
+
+.bag-arena { grid-template-columns:1fr 1fr; align-items:end; padding:24px 20px 36px; background:linear-gradient(#202a42 0 72%,#46392f 72% 100%); }
+.train-pet { width:100%; height:180px; align-self:end; }
+.train-pet canvas { width:100%; height:100%; image-rendering:pixelated; }
+#punchBag { align-self:end; }
 
 .toast { position:fixed; z-index:100; left:50%; bottom:calc(18px + var(--safe-bottom)); max-width:calc(100% - 32px); transform:translate(-50%,25px); opacity:0; pointer-events:none; padding:11px 16px; border-radius:999px; background:rgba(7,11,23,.94); color:#fff; font-size:13px; font-weight:700; text-align:center; transition:.22s ease; }.toast.show { opacity:1; transform:translate(-50%,0); }
 .no-motion *, .no-motion *::before, .no-motion *::after { animation:none !important; transition:none !important; }
