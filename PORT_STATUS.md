@@ -1,4 +1,4 @@
-# Portierungsstatus – v0.5
+# Portierungsstatus – v0.6a
 
 ## Fertig
 - Browser-PWA für iPhone und iPad

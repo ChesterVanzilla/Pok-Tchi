@@ -971,3 +971,305 @@ body::before {
 .egg-collection{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:14px;padding:12px;border:3px solid #5b3921;border-radius:8px;background:#422a1b}.theme-egg{position:relative;aspect-ratio:.78;border:3px solid #2d1b12;border-radius:52% 48% 47% 53%/62% 62% 38% 38%;background:#f3dfae;box-shadow:inset -7px -8px rgba(86,55,28,.14),0 4px #21140c}.theme-egg::before,.theme-egg::after{content:"";position:absolute;border-radius:50%}.egg-plant::before{width:35%;height:28%;left:17%;top:24%;background:#69a84c}.egg-plant::after{width:25%;height:24%;right:15%;bottom:23%;background:#80bd58}.egg-fire{background:#f2cf8d}.egg-fire::before{width:33%;height:30%;left:20%;top:18%;background:#d95e3d}.egg-fire::after{width:28%;height:25%;right:15%;bottom:20%;background:#f08a3e}.egg-water{background:#d7edf1}.egg-water::before{width:35%;height:27%;left:18%;top:22%;background:#4c99c8}.egg-water::after{width:27%;height:25%;right:17%;bottom:20%;background:#75c5df}.egg-electric{background:#f4dda1}.egg-electric::before{left:28%;top:17%;width:27%;height:55%;border-radius:0;background:#e5b83c;clip-path:polygon(50% 0,100% 42%,65% 50%,88% 100%,35% 70%,0 38%)}.egg-ghost{background:#d9c3df}.egg-ghost::before{width:36%;height:28%;left:18%;top:23%;background:#76518e}.egg-ghost::after{width:26%;height:24%;right:16%;bottom:21%;background:#9a70ad}.egg-fairy{background:#f3d0df}.egg-fairy::before{width:34%;height:28%;left:18%;top:22%;background:#df789f}.egg-fairy::after{width:24%;height:23%;right:16%;bottom:22%;background:#f09abc}
 .evolution-path{display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}.evolution-path::-webkit-scrollbar{display:none}.evo-stage{min-width:105px;display:grid;align-content:center;justify-items:center;padding:12px 8px;border:3px solid #5d3b22;border-radius:8px;background:#dfc28a;box-shadow:inset 0 0 0 2px #fff0c6;color:#2b1b12;text-align:center}.evo-stage.current{background:linear-gradient(#b9df83,#76ad59);box-shadow:inset 0 0 0 2px #effac7,0 0 0 3px #476a38}.evo-stage span{font-size:8px;color:#785438}.evo-stage strong{margin-top:4px;font-size:12px}.evo-stage small{margin-top:5px;font-size:8px;color:#765137}.evo-arrow{width:28px;height:28px;align-self:center;image-rendering:pixelated}
 @media(max-width:520px){.egg-collection{gap:4px;padding:8px}.nursery-hero{grid-template-columns:62px 1fr}.nursery-hero img{width:58px;height:58px}}
+
+
+/* ============================================================
+   v0.6a – Visual Match / Home First
+   Ziel: wärmer, detailreicher, näher an der Konzeptübersicht
+   ============================================================ */
+#gameScreen {
+  --wood-dark: #24150d;
+  --wood-mid: #4e2f1c;
+  --wood-light: #8d5a31;
+  --frame-gold: #c69356;
+  --frame-beige: #f5d8a1;
+  --nav-shadow: #1a100b;
+  --paper: #f0ddb2;
+  --paper-2: #ffefc9;
+}
+
+#gameScreen .pixel-app-frame {
+  padding: 12px 14px 0;
+  border: 4px solid var(--wood-dark);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255,231,167,.18), transparent 44%),
+    linear-gradient(90deg, rgba(255,255,255,.05), transparent 12%, transparent 88%, rgba(0,0,0,.16)),
+    repeating-linear-gradient(0deg, #4a2b1a 0 8px, #573521 8px 16px, #482a18 16px 24px);
+  box-shadow:
+    0 0 0 3px var(--wood-light),
+    0 0 0 7px var(--wood-dark),
+    0 20px 48px rgba(0,0,0,.4),
+    inset 0 0 0 2px rgba(255,228,161,.26);
+}
+#gameScreen .pixel-app-frame::before,
+#gameScreen .pixel-app-frame::after {
+  width: 28px; height: 28px; border-color: #e2b26f; border-width: 4px;
+}
+#gameScreen .pixel-app-frame::before { left: 6px; top: 6px; border-right: 0; border-bottom: 0; }
+#gameScreen .pixel-app-frame::after { right: 6px; top: 6px; border-left: 0; border-bottom: 0; }
+
+.pixel-logo-header {
+  min-height: 126px;
+  align-items: start;
+  padding-top: 6px;
+  padding-bottom: 10px;
+}
+.pixel-logo-header::after {
+  content: 'Liebe. Pflegen. Wachsen. Gemeinsam.';
+  position: absolute;
+  left: 0; right: 0; bottom: 2px;
+  text-align: center;
+  color: #f4d077;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  text-shadow: 2px 2px 0 #2a190f;
+}
+.pixel-brand > strong {
+  font-size: clamp(38px, 10.2vw, 58px);
+  text-shadow: 0 4px 0 #c07a36, 0 8px 0 #2a170d, 3px 9px 0 rgba(0,0,0,.22);
+}
+.pixel-brand > span {
+  min-width: 176px;
+  padding-top: 7px; padding-bottom: 7px;
+  background: linear-gradient(#f6d792, #e0a95b 55%, #c07c34 56%, #df9b4c);
+}
+.pixel-square-btn, .bond-counter, .scene-info-btn {
+  background: linear-gradient(180deg, #6d462b, #4d301d 60%, #311d12 61%, #472c1b);
+  box-shadow: inset 0 0 0 2px #b4824e, 3px 4px 0 rgba(20,12,8,.68);
+}
+.bond-counter {
+  gap: 4px;
+  min-height: 64px;
+}
+.bond-counter img, .scene-info-btn img, .pet-nameplate img, .bottom-tabs img, #gameScreen .action-dock .action-icon img, .status-board .status-card img {
+  image-rendering: pixelated;
+}
+.bond-counter img { width: 22px; height: 22px; }
+.bond-counter strong { font-size: 17px; color: #fff1cb; }
+
+#gameScreen .habitat {
+  height: clamp(378px, 50svh, 542px);
+  border-radius: 18px 18px 6px 6px;
+  box-shadow: inset 0 0 0 3px #a8733f, inset 0 0 32px rgba(17,11,7,.22), 0 6px 0 #1e130d;
+}
+#gameScreen .habitat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), transparent 16%, transparent 82%, rgba(0,0,0,.18));
+}
+#gameScreen .habitat.theme-forest.day::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent 18%, transparent 84%, rgba(0,0,0,.18)),
+    radial-gradient(circle at 18% 12%, rgba(150,210,80,.24), transparent 16%),
+    radial-gradient(circle at 82% 18%, rgba(255,226,124,.12), transparent 18%);
+}
+#gameScreen .habitat.theme-volcano.day::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 18%, transparent 84%, rgba(0,0,0,.22)),
+    radial-gradient(circle at 76% 15%, rgba(255,217,125,.16), transparent 18%);
+}
+#gameScreen .habitat.theme-lagoon.day::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent 16%, transparent 84%, rgba(0,0,0,.16)),
+    radial-gradient(circle at 80% 14%, rgba(255,245,167,.15), transparent 17%);
+}
+#gameScreen .world-badge {
+  top: 16px;
+  min-width: 205px;
+  padding: 10px 16px;
+  border-radius: 15px;
+  background: linear-gradient(180deg, rgba(20,60,80,.95), rgba(13,40,55,.97));
+  box-shadow: inset 0 0 0 2px #a87742, 4px 5px 0 rgba(21,12,8,.52);
+}
+#gameScreen .world-badge strong {
+  font-size: 18px;
+  color: #fff4db;
+}
+#gameScreen .world-badge small {
+  font-size: 11px;
+  color: #ffd577;
+}
+.scene-info-btn {
+  top: 108px; right: 16px;
+  width: 50px; height: 50px;
+}
+#gameScreen .speech-bubble {
+  top: 124px;
+  right: 76px;
+  max-width: 46%;
+  font-size: 12px;
+}
+#gameScreen .pet-touch {
+  inset: 118px 14% 16px;
+}
+#gameScreen .pet-touch canvas {
+  filter: drop-shadow(0 8px 0 rgba(24,47,25,.22)) drop-shadow(0 0 10px rgba(255,255,255,.08));
+}
+#gameScreen .ground-shadow {
+  width: 45%;
+  height: 24px;
+  bottom: 28px;
+  background: rgba(24,32,18,.24);
+}
+#gameScreen .poop-row { bottom: 30px; left: 26px; }
+.shiny-badge {
+  border: 3px solid #36210f;
+  border-radius: 10px;
+  background: linear-gradient(#fff0a3, #d0a336);
+  color: #4a2a10;
+  font-family: ui-monospace, monospace;
+  font-weight: 1000;
+  box-shadow: 3px 4px 0 rgba(30,18,11,.35);
+}
+
+.pet-nameplate {
+  width: min(78%, 460px);
+  margin: -13px auto 12px;
+  grid-template-columns: auto 1fr 40px;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(#123e56, #0f3043);
+  box-shadow: inset 0 0 0 2px #b27c45, 4px 5px 0 rgba(23,13,8,.48);
+}
+.pet-nameplate span {
+  display: block;
+  font-size: 10px;
+}
+.pet-nameplate strong {
+  font-size: clamp(17px, 4.5vw, 22px);
+}
+.pet-nameplate button {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border: 0; border-left: 1px solid rgba(255,239,190,.2); background: transparent;
+}
+.pet-nameplate img { width: 22px; height: 22px; }
+
+.status-board {
+  margin-top: 10px;
+  padding: 15px 12px 13px;
+  border-radius: 18px;
+  background: linear-gradient(rgba(255,255,255,.28), transparent 34%), var(--paper);
+  box-shadow: inset 0 0 0 3px var(--paper-2), 0 6px 0 #2a190f;
+}
+.status-board .status-card {
+  padding: 2px 10px;
+}
+.status-board .status-card > div:first-child {
+  gap: 4px;
+  font-size: 11px;
+}
+.status-board .status-card strong {
+  font-size: 12px;
+}
+.status-board .status-card img {
+  width: 17px; height: 17px;
+}
+.status-board .meter {
+  height: 14px;
+  border-radius: 4px;
+}
+
+#gameScreen .summary-strip {
+  margin: 9px 16px 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(49,31,20,.98), rgba(34,22,15,.95));
+  box-shadow: inset 0 1px 0 rgba(255,223,165,.24);
+}
+#gameScreen .summary-strip span { font-size: 10px; }
+#gameScreen .summary-strip strong { font-size: 19px; }
+
+#gameScreen .action-dock {
+  gap: 12px;
+  margin: 14px 5px 14px;
+}
+#gameScreen .action-dock button {
+  min-height: 110px;
+  padding: 12px 6px 11px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.30), 0 7px 0 #2b1a10;
+}
+#gameScreen .action-dock .action-icon {
+  display: grid; place-items: center; min-height: 50px;
+}
+#gameScreen .action-dock .action-icon img {
+  width: 48px; height: 48px;
+  filter: drop-shadow(2px 3px 0 rgba(42,25,15,.24));
+}
+#gameScreen .action-dock small {
+  margin-top: 8px;
+  font-size: clamp(13px, 3.7vw, 17px);
+  letter-spacing: -.02em;
+}
+
+.bottom-tabs {
+  margin: 0 -14px;
+  padding: 11px 4px calc(9px + var(--safe-bottom));
+  background: linear-gradient(#4b2f1e, #2d1b12);
+}
+.bottom-tabs button {
+  padding-top: 3px;
+}
+.bottom-tabs img {
+  width: 27px; height: 27px; display: block; margin: 0 auto; filter: drop-shadow(1px 2px 0 rgba(26,16,11,.8));
+}
+.bottom-tabs small {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 900;
+}
+.bottom-tabs button.active {
+  color: #ffe17c;
+  text-shadow: 0 0 8px rgba(255,231,121,.18);
+}
+
+/* Startmenü leicht näher an die Konzeptstimmung */
+.start-hero {
+  min-height: 200px;
+  background:
+    linear-gradient(180deg, rgba(24,61,35,.84), rgba(10,31,18,.86)),
+    radial-gradient(circle at 18% 40%, rgba(169,219,112,.18), transparent 22%),
+    radial-gradient(circle at 82% 30%, rgba(255,223,123,.14), transparent 25%);
+}
+.start-hero > p { font-size: 11px; }
+.start-landscape {
+  background:
+    linear-gradient(180deg, rgba(255,247,220,.05), transparent 18%),
+    linear-gradient(180deg, rgba(46,86,52,.95) 0 26%, rgba(87,141,92,.93) 26% 53%, rgba(194,231,172,.95) 53% 100%);
+}
+
+@media (max-width: 520px) {
+  .pixel-logo-header { min-height: 114px; }
+  .pixel-logo-header::after { font-size: 9px; bottom: 1px; }
+  .pixel-brand > strong { font-size: clamp(33px, 10.2vw, 48px); }
+  .pixel-brand > span { min-width: 140px; padding-left: 18px; padding-right: 18px; }
+  #gameScreen .habitat { height: clamp(350px, 48svh, 470px); }
+  #gameScreen .world-badge { min-width: 170px; top: 12px; padding: 8px 12px; }
+  #gameScreen .world-badge strong { font-size: 14px; }
+  #gameScreen .world-badge small { font-size: 10px; }
+  .scene-info-btn { top: 82px; right: 10px; width: 44px; height: 44px; }
+  #gameScreen .speech-bubble { top: 97px; right: 58px; max-width: 50%; font-size: 10px; }
+  #gameScreen .pet-touch { inset: 102px 8% 12px; }
+  .pet-nameplate { width: min(85%, 360px); grid-template-columns: auto 1fr 34px; }
+  .pet-nameplate strong { font-size: 16px; }
+  .status-board { padding-left: 6px; padding-right: 6px; }
+  .status-board .status-card { padding-left: 4px; padding-right: 4px; }
+  .status-board .status-card > div:first-child { font-size: 8px; }
+  .status-board .status-card strong { font-size: 9px; }
+  .status-board .meter { height: 11px; }
+  #gameScreen .summary-strip { margin-left: 10px; margin-right: 10px; }
+  #gameScreen .action-dock { gap: 9px; margin-left: 2px; margin-right: 2px; }
+  #gameScreen .action-dock button { min-height: 97px; }
+  #gameScreen .action-dock .action-icon img { width: 40px; height: 40px; }
+  .bottom-tabs { margin-left: -8px; margin-right: -8px; }
+  .bottom-tabs img { width: 23px; height: 23px; }
+  .bottom-tabs small { font-size: 8px; }
+}
