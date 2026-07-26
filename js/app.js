@@ -61,6 +61,8 @@ let miniPetSprite;
 let trainPetSprite;
 let starterPlayers = [];
 let slotPlayers = [];
+let familyPlayers = [];
+let screenHistory = [];
 let toastTimer;
 let appTimer;
 let bathTimer;
@@ -84,7 +86,12 @@ const screens = {
   slots: $('#slotScreen'),
   starter: $('#starterScreen'),
   game: $('#gameScreen'),
-  dex: $('#dexScreen')
+  dex: $('#dexScreen'),
+  worlds: $('#worldsScreen'),
+  journal: $('#journalScreen'),
+  friends: $('#friendsScreen'),
+  shop: $('#shopScreen'),
+  nursery: $('#nurseryScreen')
 };
 
 function currentSlot() {
@@ -154,8 +161,31 @@ function prepareWorldActivities(theme = getActiveTheme()) {
 }
 
 function showScreen(name) {
-  Object.entries(screens).forEach(([key, screen]) => screen.classList.toggle('active', key === name));
+  Object.entries(screens).forEach(([key, screen]) => screen?.classList.toggle('active', key === name));
   window.scrollTo(0, 0);
+}
+
+function openSubpage(name, from = null) {
+  const activeName = Object.entries(screens).find(([, screen]) => screen?.classList.contains('active'))?.[0] || 'game';
+  screenHistory.push(from || activeName);
+  if (name === 'dex') renderDex($('#dexSearch')?.value || '');
+  if (name === 'journal') renderJournal();
+  if (name === 'friends') renderFamily();
+  if (name === 'nursery') renderNursery();
+  showScreen(name);
+}
+
+function goBackScreen() {
+  const target = screenHistory.pop() || (currentSlot() ? 'game' : 'slots');
+  showScreen(target);
+}
+
+function firstFilledSlotIndex() {
+  return state.slots.findIndex(Boolean);
+}
+
+function firstEmptySlotIndex() {
+  return state.slots.findIndex((slot) => !slot);
 }
 
 function openDialog(dialog) {
@@ -246,7 +276,10 @@ async function renderSlots() {
       title.textContent = slot.trainer;
       const meta = document.createElement('span');
       if (isEgg(slot)) {
-        icon.textContent = '🥚';
+        const eggIcon = document.createElement('img');
+        eggIcon.src = 'assets/ui/egg.svg';
+        eggIcon.alt = 'Ei';
+        icon.appendChild(eggIcon);
         meta.textContent = `Ei · ${slot.pet.eggTaps}/3 Berührungen`;
       } else {
         const species = getSpecies(slot, speciesById);
@@ -322,6 +355,7 @@ function createNewGame(starterId) {
 }
 
 async function openGame(index) {
+  screenHistory = [];
   currentSlotIndex = index;
   const slot = currentSlot();
   if (!slot) return;
@@ -682,6 +716,138 @@ function renderInfo() {
   return true;
 }
 
+
+
+function renderNursery() {
+  const slot = currentSlot();
+  const hero = $('#nurseryHero');
+  const path = $('#evolutionPath');
+  if (!hero || !path) return;
+  path.innerHTML = '';
+  if (!slot) {
+    hero.innerHTML = '<img src="assets/ui/egg.svg" alt=""><div><strong>Noch kein Ei</strong><small>Wähle zuerst einen Spielstand.</small></div>';
+    path.innerHTML = '<div class="empty-state">Der Entwicklungsweg erscheint hier.</div>';
+    return;
+  }
+  if (isEgg(slot)) {
+    hero.innerHTML = `<img src="assets/ui/egg.svg" alt="Ei"><div><strong>Mysteriöses Ei</strong><small>${slot.pet.eggTaps}/3 Berührungen · ${slot.pet.ageMinutes}/3 Spielminuten bis zum automatischen Schlüpfen</small></div>`;
+    const eggStage = document.createElement('div');
+    eggStage.className = 'evo-stage current';
+    eggStage.innerHTML = '<img src="assets/ui/egg.svg" alt=""><strong>Ei</strong><small>Noch unbekannt</small>';
+    path.appendChild(eggStage);
+    return;
+  }
+  const species = getSpecies(slot, speciesById);
+  hero.innerHTML = `<img src="assets/ui/star.svg" alt="Entwicklung"><div><strong>${getDisplayName(slot, speciesById)}</strong><small>Level ${levelOf(slot)} · ${species.evolvesTo ? `nächste Entwicklung ab Level ${species.evolveLevel + slot.pet.careMistakes}` : 'Endform erreicht'}</small></div>`;
+
+  const chain = [];
+  let root = species;
+  for (let guard = 0; guard < 5; guard += 1) {
+    const previous = data.species.find((entry) => entry.evolvesTo === root.id && entry.id !== 133);
+    if (!previous) break;
+    root = previous;
+  }
+  let current = root;
+  for (let guard = 0; current && guard < 5; guard += 1) {
+    chain.push(current);
+    if (current.id === 133) {
+      [134,135,136].forEach((id) => chain.push(speciesById.get(id)));
+      break;
+    }
+    current = current.evolvesTo ? speciesById.get(current.evolvesTo) : null;
+  }
+  chain.filter(Boolean).forEach((entry, index) => {
+    const stage = document.createElement('div');
+    stage.className = `evo-stage${entry.id === slot.pet.speciesId ? ' current' : ''}${slot.dexReg[entry.id - 1] ? ' known' : ''}`;
+    stage.innerHTML = `<span>#${String(entry.id).padStart(3,'0')}</span><strong>${slot.dexReg[entry.id - 1] || entry.id === slot.pet.speciesId ? entry.nameDe : '???'}</strong><small>${entry.evolvesTo ? `Lv. ${entry.evolveLevel}` : 'Endform'}</small>`;
+    path.appendChild(stage);
+    if (index < chain.length - 1 && entry.id !== 133) {
+      const arrow = document.createElement('img');
+      arrow.className = 'evo-arrow';
+      arrow.src = 'assets/ui/arrow.svg';
+      arrow.alt = 'entwickelt sich zu';
+      path.appendChild(arrow);
+    }
+  });
+}
+
+function endingLabel(type) {
+  if (type === ENDING.FAREWELL) return 'Dankbarer Abschied';
+  if (type === ENDING.RUNAWAY) return 'Weggelaufen';
+  if (type === ENDING.RELEASE) return 'Freigelassen';
+  return 'Erinnerung';
+}
+
+function renderJournal() {
+  const slot = currentSlot();
+  const hero = $('#journalHero');
+  const list = $('#journalList');
+  if (!hero || !list) return;
+  list.innerHTML = '';
+  if (!slot) {
+    hero.innerHTML = '<strong>Noch kein Tagebuch</strong><span>Wähle zuerst einen Spielstand.</span>';
+    list.innerHTML = '<div class="empty-state">Deine gemeinsamen Erlebnisse erscheinen hier.</div>';
+    return;
+  }
+  const display = getDisplayName(slot, speciesById);
+  hero.innerHTML = `<strong>Tag ${Math.max(1, Math.floor((Date.now() - slot.createdAt) / 86_400_000) + 1)}</strong><span>${display} und ${slot.trainer} erleben ihr Abenteuer gemeinsam.</span>`;
+
+  const current = document.createElement('article');
+  current.className = 'journal-entry';
+  current.innerHTML = `<img src="assets/ui/heart.svg" alt=""><div><strong>Heute</strong><small>${slot.pet.lastMessage || moodText(slot)} · Bindung ${slot.pet.bond}/125 · Serie ${slot.streak}</small></div>`;
+  list.appendChild(current);
+
+  const records = Array.isArray(slot.history) ? [...slot.history].reverse() : [];
+  records.forEach((record) => {
+    const item = document.createElement('article');
+    item.className = 'journal-entry';
+    const icon = record.type === ENDING.RUNAWAY ? 'assets/ui/world.svg' : record.type === ENDING.FAREWELL ? 'assets/ui/star.svg' : 'assets/ui/egg.svg';
+    const date = new Date(record.at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    item.innerHTML = `<img src="${icon}" alt=""><div><strong>${record.name || 'Pokémon'} · ${endingLabel(record.type)}</strong><small>${date} · Level ${record.level || 1} · Bindung ${record.bond || 0}</small></div>`;
+    list.appendChild(item);
+  });
+  if (!records.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'Noch keine abgeschlossenen Lebenszyklen. Eure ersten Erinnerungen entstehen gerade.';
+    list.appendChild(empty);
+  }
+}
+
+async function renderFamily() {
+  destroyPlayers(familyPlayers);
+  const list = $('#familyList');
+  if (!list) return;
+  list.innerHTML = '';
+  state.slots.forEach((slot, index) => {
+    const card = document.createElement('article');
+    card.className = 'family-card';
+    if (!slot) {
+      card.innerHTML = `<div class="family-placeholder">＋</div><div><strong>Freier Familienplatz ${index + 1}</strong><small>Hier kann ein weiteres Abenteuer beginnen.</small></div>`;
+      list.appendChild(card);
+      return;
+    }
+    const visual = document.createElement('div');
+    const copy = document.createElement('div');
+    if (isEgg(slot)) {
+      visual.className = 'family-placeholder';
+      visual.innerHTML = '<img src="assets/ui/egg.svg" alt="Ei">';
+    } else {
+      const species = getSpecies(slot, speciesById);
+      const canvas = document.createElement('canvas');
+      canvas.width = 80; canvas.height = 80;
+      visual.appendChild(canvas);
+      const player = new SpritePlayer(canvas, { motion: state.settings.motion });
+      familyPlayers.push(player);
+      player.load(slot.pet.shiny ? species.shinySprite : species.sprite).catch(() => { visual.textContent = '?'; });
+    }
+    const name = isEgg(slot) ? 'Ei' : getDisplayName(slot, speciesById);
+    copy.innerHTML = `<strong>${slot.trainer} & ${name}</strong><small>Level ${levelOf(slot)} · Bindung ${slot.pet.bond}/125 · Pokédex ${registeredCount(slot)}/151</small>`;
+    card.append(visual, copy);
+    list.appendChild(card);
+  });
+}
+
 function openSettings() {
   $('#paceSelect').value = state.settings.pace;
   $('#soundToggle').checked = state.settings.sound;
@@ -752,13 +918,43 @@ function finishTraining(){clearInterval(trainTimer);trainTimer=null;$('#punchBag
 function cancelTraining(){clearInterval(trainTimer);trainTimer=null;$('#punchBag').style.display='none';$('#startTrainBtn').disabled=false;trainPetSprite?.setAction(ACTION.IDLE);closeDialog($('#trainDialog'));}
 
 function bindEvents() {
-  $('[data-nav="slots"]').addEventListener('click', async () => { if(actionLocked)return; await renderSlots(); showScreen('slots'); });
-  $('[data-nav="game"]').addEventListener('click', () => showScreen('game'));
-  $('#backToSlotsBtn').addEventListener('click', async () => { if(actionLocked)return; persist(); await renderSlots(); showScreen('slots'); });
+  $$('[data-nav="slots"]').forEach((button) => button.addEventListener('click', async () => { if(actionLocked)return; await renderSlots(); showScreen('slots'); }));
+  $$('[data-nav="game"]').forEach((button) => button.addEventListener('click', goBackScreen));
+  $('#backToSlotsBtn').addEventListener('click', () => { if(!actionLocked) openDialog($('#mainMenuDialog')); });
+  $('#menuSlotsBtn').addEventListener('click', async () => { closeDialog($('#mainMenuDialog')); persist(); screenHistory = []; await renderSlots(); showScreen('slots'); });
   $('#petTouchArea').addEventListener('click', () => { if(!actionLocked) touchPet(); });
   $('#openSettingsBtn').addEventListener('click', openSettings);
+  $('#startSettingsBtn').addEventListener('click', openSettings);
   $('#gameSettingsBtn').addEventListener('click', openSettings);
-  $('#openDexBtn').addEventListener('click', () => { if(actionLocked)return; renderDex($('#dexSearch').value); showScreen('dex'); });
+  $('#menuSettingsBtn').addEventListener('click', () => { closeDialog($('#mainMenuDialog')); openSettings(); });
+  $('#creditsBtn').addEventListener('click', () => openDialog($('#creditsDialog')));
+  $('#worldPreviewBtn').addEventListener('click', () => openSubpage('worlds', 'slots'));
+  $('#dexWorldBtn').addEventListener('click', () => openSubpage('worlds', 'dex'));
+  $('#sceneDexBtn').addEventListener('click', () => openSubpage('dex', 'game'));
+  $('#menuDexBtn').addEventListener('click', () => { closeDialog($('#mainMenuDialog')); openSubpage('dex', 'game'); });
+  $('#menuWorldsBtn').addEventListener('click', () => { closeDialog($('#mainMenuDialog')); openSubpage('worlds', 'game'); });
+  $('#menuJournalBtn').addEventListener('click', () => { closeDialog($('#mainMenuDialog')); openSubpage('journal', 'game'); });
+  $('#menuFriendsBtn').addEventListener('click', async () => { closeDialog($('#mainMenuDialog')); await renderFamily(); openSubpage('friends', 'game'); });
+  $('#menuEggBtn').addEventListener('click', () => { closeDialog($('#mainMenuDialog')); openSubpage('nursery', 'game'); });
+  $('#openJournalBtn').addEventListener('click', () => openSubpage('journal', 'game'));
+  $('#openShopBtn').addEventListener('click', () => openSubpage('shop', 'game'));
+  $('#openFriendsBtn').addEventListener('click', async () => { await renderFamily(); openSubpage('friends', 'game'); });
+  $('#startDexBtn').addEventListener('click', () => {
+    const index = firstFilledSlotIndex();
+    if(index < 0) return showToast('Lege zuerst einen Spielstand an.');
+    currentSlotIndex = index;
+    openSubpage('dex', 'slots');
+  });
+  $('#continueBtn').addEventListener('click', () => {
+    const index = Number.isInteger(currentSlotIndex) && state.slots[currentSlotIndex] ? currentSlotIndex : firstFilledSlotIndex();
+    if(index < 0) return showToast('Noch kein Spielstand vorhanden.');
+    openGame(index);
+  });
+  $('#newGameBtn').addEventListener('click', () => {
+    const index = firstEmptySlotIndex();
+    if(index < 0) return showToast('Alle drei Spielstände sind bereits belegt.');
+    openStarter(index);
+  });
   $('#dexSearch').addEventListener('input', (event) => renderDex(event.target.value));
   $$('.close-dialog').forEach((button) => button.addEventListener('click', () => closeDialog(button.closest('dialog'))));
 
