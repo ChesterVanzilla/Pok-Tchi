@@ -1,13 +1,13 @@
 {
   "name": "TamaPoke Family – private Web-Version",
   "short_name": "TamaPoke",
-  "description": "Private TamaPoke-Familienversion mit typabhängigen Pixelwelten für iPhone und iPad.",
+  "description": "Private TamaPoke-Familienversion im einheitlichen Pixel-Design für iPhone und iPad.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0c1120",
-  "theme_color": "#13192b",
+  "background_color": "#2b1b12",
+  "theme_color": "#3f2819",
   "icons": [
     {
       "src": "assets/icons/icon-192.png",
