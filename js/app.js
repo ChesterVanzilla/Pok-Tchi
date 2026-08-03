@@ -253,7 +253,8 @@ async function renderSlots() {
     }
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'slot-card';
+    button.className = `slot-card ${slot ? 'filled' : 'empty'}`;
+    button.dataset.slot = String(index + 1);
 
     const icon = document.createElement('div');
     icon.className = 'slot-icon';
@@ -277,7 +278,7 @@ async function renderSlots() {
       const meta = document.createElement('span');
       if (isEgg(slot)) {
         const eggIcon = document.createElement('img');
-        eggIcon.src = 'assets/ui/egg.svg';
+        eggIcon.src = 'assets/ui/egg.png';
         eggIcon.alt = 'Ei';
         icon.appendChild(eggIcon);
         meta.textContent = `Ei · ${slot.pet.eggTaps}/3 Berührungen`;
@@ -725,20 +726,20 @@ function renderNursery() {
   if (!hero || !path) return;
   path.innerHTML = '';
   if (!slot) {
-    hero.innerHTML = '<img src="assets/ui/egg.svg" alt=""><div><strong>Noch kein Ei</strong><small>Wähle zuerst einen Spielstand.</small></div>';
+    hero.innerHTML = '<img src="assets/ui/egg.png" alt=""><div><strong>Noch kein Ei</strong><small>Wähle zuerst einen Spielstand.</small></div>';
     path.innerHTML = '<div class="empty-state">Der Entwicklungsweg erscheint hier.</div>';
     return;
   }
   if (isEgg(slot)) {
-    hero.innerHTML = `<img src="assets/ui/egg.svg" alt="Ei"><div><strong>Mysteriöses Ei</strong><small>${slot.pet.eggTaps}/3 Berührungen · ${slot.pet.ageMinutes}/3 Spielminuten bis zum automatischen Schlüpfen</small></div>`;
+    hero.innerHTML = `<img src="assets/ui/egg.png" alt="Ei"><div><strong>Mysteriöses Ei</strong><small>${slot.pet.eggTaps}/3 Berührungen · ${slot.pet.ageMinutes}/3 Spielminuten bis zum automatischen Schlüpfen</small></div>`;
     const eggStage = document.createElement('div');
     eggStage.className = 'evo-stage current';
-    eggStage.innerHTML = '<img src="assets/ui/egg.svg" alt=""><strong>Ei</strong><small>Noch unbekannt</small>';
+    eggStage.innerHTML = '<img src="assets/ui/egg.png" alt=""><strong>Ei</strong><small>Noch unbekannt</small>';
     path.appendChild(eggStage);
     return;
   }
   const species = getSpecies(slot, speciesById);
-  hero.innerHTML = `<img src="assets/ui/star.svg" alt="Entwicklung"><div><strong>${getDisplayName(slot, speciesById)}</strong><small>Level ${levelOf(slot)} · ${species.evolvesTo ? `nächste Entwicklung ab Level ${species.evolveLevel + slot.pet.careMistakes}` : 'Endform erreicht'}</small></div>`;
+  hero.innerHTML = `<img src="assets/ui/star.png" alt="Entwicklung"><div><strong>${getDisplayName(slot, speciesById)}</strong><small>Level ${levelOf(slot)} · ${species.evolvesTo ? `nächste Entwicklung ab Level ${species.evolveLevel + slot.pet.careMistakes}` : 'Endform erreicht'}</small></div>`;
 
   const chain = [];
   let root = species;
@@ -764,7 +765,7 @@ function renderNursery() {
     if (index < chain.length - 1 && entry.id !== 133) {
       const arrow = document.createElement('img');
       arrow.className = 'evo-arrow';
-      arrow.src = 'assets/ui/arrow.svg';
+      arrow.src = 'assets/ui/arrow.png';
       arrow.alt = 'entwickelt sich zu';
       path.appendChild(arrow);
     }
@@ -794,14 +795,14 @@ function renderJournal() {
 
   const current = document.createElement('article');
   current.className = 'journal-entry';
-  current.innerHTML = `<img src="assets/ui/heart.svg" alt=""><div><strong>Heute</strong><small>${slot.pet.lastMessage || moodText(slot)} · Bindung ${slot.pet.bond}/125 · Serie ${slot.streak}</small></div>`;
+  current.innerHTML = `<img src="assets/ui/heart.png" alt=""><div><strong>Heute</strong><small>${slot.pet.lastMessage || moodText(slot)} · Bindung ${slot.pet.bond}/125 · Serie ${slot.streak}</small></div>`;
   list.appendChild(current);
 
   const records = Array.isArray(slot.history) ? [...slot.history].reverse() : [];
   records.forEach((record) => {
     const item = document.createElement('article');
     item.className = 'journal-entry';
-    const icon = record.type === ENDING.RUNAWAY ? 'assets/ui/world.svg' : record.type === ENDING.FAREWELL ? 'assets/ui/star.svg' : 'assets/ui/egg.svg';
+    const icon = record.type === ENDING.RUNAWAY ? 'assets/ui/world.png' : record.type === ENDING.FAREWELL ? 'assets/ui/star.png' : 'assets/ui/egg.png';
     const date = new Date(record.at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     item.innerHTML = `<img src="${icon}" alt=""><div><strong>${record.name || 'Pokémon'} · ${endingLabel(record.type)}</strong><small>${date} · Level ${record.level || 1} · Bindung ${record.bond || 0}</small></div>`;
     list.appendChild(item);
@@ -821,7 +822,7 @@ async function renderFamily() {
   list.innerHTML = '';
   state.slots.forEach((slot, index) => {
     const card = document.createElement('article');
-    card.className = 'family-card';
+    card.className = `family-card ${slot ? 'filled' : 'empty'}`;
     if (!slot) {
       card.innerHTML = `<div class="family-placeholder">＋</div><div><strong>Freier Familienplatz ${index + 1}</strong><small>Hier kann ein weiteres Abenteuer beginnen.</small></div>`;
       list.appendChild(card);
@@ -831,7 +832,7 @@ async function renderFamily() {
     const copy = document.createElement('div');
     if (isEgg(slot)) {
       visual.className = 'family-placeholder';
-      visual.innerHTML = '<img src="assets/ui/egg.svg" alt="Ei">';
+      visual.innerHTML = '<img src="assets/ui/egg.png" alt="Ei">';
     } else {
       const species = getSpecies(slot, speciesById);
       const canvas = document.createElement('canvas');

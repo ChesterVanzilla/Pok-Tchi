@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family v0.6a</title>
+  <title>TamaPoke Family v0.6b</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -18,7 +18,7 @@
       <div class="pixel-page-frame">
         <header class="start-hero">
           <button id="openSettingsBtn" class="pixel-corner-button left" type="button" aria-label="Einstellungen">
-            <img src="assets/ui/gear.svg" alt="">
+            <img src="assets/ui/gear.png" alt="">
           </button>
           <div class="forest-mascot" aria-hidden="true"><span>♥</span></div>
           <div class="master-logo" aria-label="TamaPoke Family">
@@ -26,7 +26,7 @@
             <span><i>♥</i> Family <i>♥</i></span>
           </div>
           <button id="worldPreviewBtn" class="pixel-corner-button right" type="button" aria-label="Welten ansehen">
-            <img src="assets/ui/world.svg" alt="">
+            <img src="assets/ui/world.png" alt="">
           </button>
           <p>Liebe. Pflegen. Wachsen. Gemeinsam.</p>
         </header>
@@ -42,15 +42,15 @@
           </div>
           <div id="slotList" class="slot-list" aria-live="polite"></div>
           <div class="start-primary-actions">
-            <button id="newGameBtn" class="pixel-button green" type="button"><img src="assets/ui/egg.svg" alt=""><span>Neues Spiel</span></button>
-            <button id="continueBtn" class="pixel-button blue" type="button"><img src="assets/ui/arrow.svg" alt=""><span>Fortsetzen</span></button>
+            <button id="newGameBtn" class="pixel-button green" type="button"><img src="assets/ui/egg.png" alt=""><span>Neues Spiel</span></button>
+            <button id="continueBtn" class="pixel-button blue" type="button"><img src="assets/ui/arrow.png" alt=""><span>Fortsetzen</span></button>
           </div>
         </section>
 
         <nav class="start-footer" aria-label="Startmenü">
-          <button id="startSettingsBtn" type="button"><img src="assets/ui/gear.svg" alt=""><span>Einstellungen</span></button>
-          <button id="creditsBtn" type="button"><img src="assets/ui/star.svg" alt=""><span>Credits</span></button>
-          <button id="startDexBtn" type="button"><img src="assets/ui/book.svg" alt=""><span>Pokédex</span></button>
+          <button id="startSettingsBtn" type="button"><img src="assets/ui/gear.png" alt=""><span>Einstellungen</span></button>
+          <button id="creditsBtn" type="button"><img src="assets/ui/star.png" alt=""><span>Credits</span></button>
+          <button id="startDexBtn" type="button"><img src="assets/ui/book.png" alt=""><span>Pokédex</span></button>
         </nav>
       </div>
       <footer class="legal-note">Inoffizielles, nicht kommerzielles Fanprojekt. TamaPoke-Port mit Sprites von PMD SpriteCollab.</footer>
@@ -84,7 +84,7 @@
             <strong>TamaP<span class="brand-ball" aria-hidden="true"></span>ke</strong>
             <span><i>♥</i> Family <i>♥</i></span>
           </div>
-          <div class="bond-counter" aria-label="Bindung"><img src="assets/ui/heart.svg" alt=""><strong id="bondValue">0</strong></div>
+          <div class="bond-counter" aria-label="Bindung"><img src="assets/ui/heart.png" alt=""><strong id="bondValue">0</strong></div>
         </header>
 
         <section id="habitat" class="habitat theme-meadow day" aria-label="Lebensraum deines Pokémon">
@@ -92,7 +92,7 @@
             <span id="worldIcon" class="world-symbol symbol-star"></span>
             <span><strong id="worldName">Pokémon-Wiese</strong><small id="worldPhase">TAG</small></span>
           </div>
-          <button id="sceneDexBtn" class="scene-info-btn" type="button" aria-label="Pokédex öffnen"><img src="assets/ui/camera.svg" alt=""></button>
+          <button id="sceneDexBtn" class="scene-info-btn" type="button" aria-label="Pokédex öffnen"><img src="assets/ui/camera.png" alt=""></button>
           <div class="world-pixel-overlay" aria-hidden="true"></div>
           <div class="sky-decor" aria-hidden="true"><span class="sun-moon"></span><span class="cloud cloud-one"></span><span class="cloud cloud-two"></span><span class="star star-one">✦</span><span class="star star-two">✧</span></div>
           <div id="speechBubble" class="speech-bubble">Tippe auf das Ei.</div>
@@ -103,47 +103,47 @@
           <div id="poopRow" class="poop-row" aria-label="Verschmutzungen"></div>
           <div class="ground-shadow" aria-hidden="true"></div>
           <span id="shinyBadge" class="shiny-badge" hidden>✦ SHINY</span>
-          <div id="bathOverlay" class="bath-overlay" hidden aria-hidden="true"><div class="pixel-bath-icon"><img src="assets/ui/bubbles.svg" alt=""></div><div class="bath-bubbles"></div><strong>Waschzeit!</strong></div>
+          <div id="bathOverlay" class="bath-overlay" hidden aria-hidden="true"><div class="pixel-bath-icon"><img src="assets/ui/bubbles.png" alt=""></div><div class="bath-bubbles"></div><strong>Waschzeit!</strong></div>
           <div id="evolutionOverlay" class="evolution-overlay" hidden aria-hidden="true"><div class="evolution-halo"></div><div class="evolution-rays"></div><strong>Entwicklung!</strong></div>
         </section>
 
-        <div class="pet-nameplate"><span id="trainerLabel">Trainer</span><strong id="petTitle">Ei</strong><button type="button" data-action="info" aria-label="Pokémon-Pass"><img src="assets/ui/book.svg" alt=""></button></div>
+        <div class="pet-nameplate"><span id="trainerLabel">Trainer</span><strong id="petTitle">Ei</strong><button type="button" data-action="info" aria-label="Pokémon-Pass"><img src="assets/ui/book.png" alt=""></button></div>
 
         <button id="evolveBanner" class="event-banner evolve-banner" type="button" hidden><span>✦</span><span><strong>Entwicklung möglich</strong><small>Tippen, um zu entscheiden</small></span><span>›</span></button>
         <button id="farewellBanner" class="event-banner farewell-banner" type="button" hidden><span>♥</span><span><strong id="farewellBannerTitle">Dein Pokémon möchte dir etwas sagen</strong><small>Der gemeinsame Lebenszyklus ist abgeschlossen</small></span><span>›</span></button>
         <button id="runawayBanner" class="event-banner runaway-banner" type="button" hidden><span>◆</span><span><strong id="runawayBannerTitle">Dein Pokémon fühlt sich verlassen</strong><small>Tippe, um die Szene zu öffnen</small></span><span>›</span></button>
 
         <section class="status-board" aria-label="Pflegewerte">
-          <article class="status-card status-joy"><div><span><img src="assets/ui/heart.svg" alt="">Glück</span><strong id="joyValue">80</strong></div><div class="meter"><span id="joyBar"></span></div></article>
-          <article class="status-card status-hunger"><div><span><img src="assets/ui/apple.svg" alt="">Hunger</span><strong id="fullnessValue">80</strong></div><div class="meter"><span id="fullnessBar"></span></div></article>
-          <article class="status-card status-clean"><div><span><img src="assets/ui/bubbles.svg" alt="">Sauberkeit</span><strong id="hygieneValue">100</strong></div><div class="meter"><span id="hygieneBar"></span></div></article>
-          <article class="status-card status-energy"><div><span><img src="assets/ui/moon.svg" alt="">Energie</span><strong id="energyValue">80</strong></div><div class="meter"><span id="energyBar"></span></div></article>
+          <article class="status-card status-joy"><div><span><img src="assets/ui/heart.png" alt="">Glück</span><strong id="joyValue">80</strong></div><div class="meter"><span id="joyBar"></span></div></article>
+          <article class="status-card status-hunger"><div><span><img src="assets/ui/apple.png" alt="">Hunger</span><strong id="fullnessValue">80</strong></div><div class="meter"><span id="fullnessBar"></span></div></article>
+          <article class="status-card status-clean"><div><span><img src="assets/ui/bubbles.png" alt="">Sauberkeit</span><strong id="hygieneValue">100</strong></div><div class="meter"><span id="hygieneBar"></span></div></article>
+          <article class="status-card status-energy"><div><span><img src="assets/ui/moon.png" alt="">Energie</span><strong id="energyValue">80</strong></div><div class="meter"><span id="energyBar"></span></div></article>
         </section>
 
         <section class="summary-strip" aria-label="Fortschritt"><div><span>LEVEL</span><strong id="levelValue">1</strong></div><div><span>SERIE</span><strong id="streakValue">0</strong></div><div><span>ALTER</span><strong id="ageValue">0m</strong></div></section>
 
         <nav class="action-dock" aria-label="Pflegeaktionen">
-          <button class="action-feed" type="button" data-action="food"><span class="action-icon"><img src="assets/ui/apple.svg" alt=""></span><small>Füttern</small></button>
-          <button class="action-play" type="button" data-action="play"><span class="action-icon"><img src="assets/ui/ball.svg" alt=""></span><small>Spielen</small></button>
-          <button class="action-wash" type="button" data-action="clean"><span class="action-icon"><img src="assets/ui/bubbles.svg" alt=""></span><small>Waschen</small></button>
-          <button class="action-train" type="button" data-action="train"><span class="action-icon"><img src="assets/ui/dumbbell.svg" alt=""></span><small>Trainieren</small></button>
-          <button class="action-sleep" type="button" data-action="sleep"><span class="action-icon"><img src="assets/ui/moon.svg" alt=""></span><small id="sleepActionLabel">Schlafen</small></button>
-          <button class="action-care" type="button" data-action="care"><span class="action-icon"><img src="assets/ui/brush.svg" alt=""></span><small>Pflegen</small></button>
+          <button class="action-feed" type="button" data-action="food"><span class="action-icon"><img src="assets/ui/apple.png" alt=""></span><small>Füttern</small></button>
+          <button class="action-play" type="button" data-action="play"><span class="action-icon"><img src="assets/ui/ball.png" alt=""></span><small>Spielen</small></button>
+          <button class="action-wash" type="button" data-action="clean"><span class="action-icon"><img src="assets/ui/bubbles.png" alt=""></span><small>Waschen</small></button>
+          <button class="action-train" type="button" data-action="train"><span class="action-icon"><img src="assets/ui/dumbbell.png" alt=""></span><small>Trainieren</small></button>
+          <button class="action-sleep" type="button" data-action="sleep"><span class="action-icon"><img src="assets/ui/moon.png" alt=""></span><small id="sleepActionLabel">Schlafen</small></button>
+          <button class="action-care" type="button" data-action="care"><span class="action-icon"><img src="assets/ui/brush.png" alt=""></span><small>Pflegen</small></button>
         </nav>
 
         <nav class="bottom-tabs" aria-label="Hauptnavigation">
-          <button class="active" type="button" data-screen="game"><img src="assets/ui/home.svg" alt=""><small>Zuhause</small></button>
-          <button id="openJournalBtn" type="button" data-screen="journal"><img src="assets/ui/book.svg" alt=""><small>Tagebuch</small></button>
-          <button id="openShopBtn" type="button" data-screen="shop"><img src="assets/ui/shop.svg" alt=""><small>Shop</small></button>
-          <button id="openFriendsBtn" type="button" data-screen="friends"><img src="assets/ui/friends.svg" alt=""><small>Freunde</small></button>
-          <button id="gameSettingsBtn" type="button"><img src="assets/ui/gear.svg" alt=""><small>Einstellungen</small></button>
+          <button class="active" type="button" data-screen="game"><img src="assets/ui/home.png" alt=""><small>Zuhause</small></button>
+          <button id="openJournalBtn" type="button" data-screen="journal"><img src="assets/ui/book.png" alt=""><small>Tagebuch</small></button>
+          <button id="openShopBtn" type="button" data-screen="shop"><img src="assets/ui/shop.png" alt=""><small>Shop</small></button>
+          <button id="openFriendsBtn" type="button" data-screen="friends"><img src="assets/ui/friends.png" alt=""><small>Freunde</small></button>
+          <button id="gameSettingsBtn" type="button"><img src="assets/ui/gear.png" alt=""><small>Einstellungen</small></button>
         </nav>
       </div>
     </section>
 
     <section id="dexScreen" class="screen pixel-page" aria-labelledby="dexTitle">
       <div class="pixel-page-frame compact-frame">
-        <header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game" aria-label="Zurück">←</button><div><p class="pixel-kicker">SAMMLUNG</p><h1 id="dexTitle">Pokédex <span id="dexCount">0/151</span></h1></div><button id="dexWorldBtn" class="pixel-square-btn" type="button" aria-label="Welten"><img src="assets/ui/world.svg" alt=""></button></header>
+        <header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game" aria-label="Zurück">←</button><div><p class="pixel-kicker">SAMMLUNG</p><h1 id="dexTitle">Pokédex <span id="dexCount">0/151</span></h1></div><button id="dexWorldBtn" class="pixel-square-btn" type="button" aria-label="Welten"><img src="assets/ui/world.png" alt=""></button></header>
         <section class="parchment-panel">
           <label class="search-box" for="dexSearch"><span>⌕</span><input id="dexSearch" type="search" placeholder="Name oder Nummer suchen"></label>
           <div id="dexGrid" class="dex-grid"></div>
@@ -184,12 +184,12 @@
 
     <section id="friendsScreen" class="screen pixel-page" aria-labelledby="friendsTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">LOKALE FAMILIE</p><h1 id="friendsTitle">Freunde & Profile</h1></div><span class="header-spacer"></span></header><section class="parchment-panel"><p class="page-intro">Hier erscheinen die drei lokalen Familienprofile. Eine echte Online-Freundesfunktion folgt später.</p><div id="familyList" class="family-list"></div></section></div></section>
 
-    <section id="shopScreen" class="screen pixel-page" aria-labelledby="shopTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BEEREN & FUTTER</p><h1 id="shopTitle">Tama-Laden</h1></div><div class="shop-wallet"><span><img src="assets/ui/coin.svg" alt="">1250</span><span><img src="assets/ui/gem.svg" alt="">85</span></div></header><section class="parchment-panel"><p class="page-intro">Die Gestaltung steht bereits. Käufe und eine verdienbare Spielwährung werden in einer späteren Version aktiviert.</p><div class="shop-grid"><article><span class="food-icon berry-forest"></span><strong>Waldpaket</strong><small>3 Pflanzenbeeren</small><b>200</b></article><article><span class="food-icon berry-ember"></span><strong>Glutpaket</strong><small>3 Feuerbeeren</small><b>200</b></article><article><span class="food-icon berry-wave"></span><strong>Wellenpaket</strong><small>3 Wasserbeeren</small><b>200</b></article><article><span class="food-icon candy-star"></span><strong>Sternbonbon</strong><small>Besonderes Leckerli</small><b>300</b></article></div></section></div></section>
+    <section id="shopScreen" class="screen pixel-page" aria-labelledby="shopTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BEEREN & FUTTER</p><h1 id="shopTitle">Tama-Laden</h1></div><div class="shop-wallet"><span><img src="assets/ui/coin.png" alt="">1250</span><span><img src="assets/ui/gem.png" alt="">85</span></div></header><section class="parchment-panel"><p class="page-intro">Die Gestaltung steht bereits. Käufe und eine verdienbare Spielwährung werden in einer späteren Version aktiviert.</p><div class="shop-grid"><article><span class="food-icon berry-forest"></span><strong>Waldpaket</strong><small>3 Pflanzenbeeren</small><b>200</b></article><article><span class="food-icon berry-ember"></span><strong>Glutpaket</strong><small>3 Feuerbeeren</small><b>200</b></article><article><span class="food-icon berry-wave"></span><strong>Wellenpaket</strong><small>3 Wasserbeeren</small><b>200</b></article><article><span class="food-icon candy-star"></span><strong>Sternbonbon</strong><small>Besonderes Leckerli</small><b>300</b></article></div></section></div></section>
 
     <section id="nurseryScreen" class="screen pixel-page" aria-labelledby="nurseryTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BRUTKASTEN</p><h1 id="nurseryTitle">Eier & Entwicklung</h1></div><span class="header-spacer"></span></header><section class="parchment-panel"><div id="nurseryHero" class="nursery-hero"></div><div class="egg-collection" aria-label="Ei-Designs"><span class="theme-egg egg-plant"></span><span class="theme-egg egg-fire"></span><span class="theme-egg egg-water"></span><span class="theme-egg egg-electric"></span><span class="theme-egg egg-ghost"></span><span class="theme-egg egg-fairy"></span></div><h3>Entwicklungsweg</h3><div id="evolutionPath" class="evolution-path"></div></section></div></section>
   </main>
 
-  <dialog id="mainMenuDialog" class="sheet-dialog pixel-dialog"><div class="sheet-card tall"><div class="sheet-head"><div><p class="pixel-kicker">SPIELMENÜ</p><h2>TamaPoke Family</h2></div><button class="pixel-square-btn close-dialog" type="button">✕</button></div><div class="menu-tile-grid"><button id="menuDexBtn" type="button"><img src="assets/ui/book.svg" alt=""><span>Pokédex</span></button><button id="menuWorldsBtn" type="button"><img src="assets/ui/world.svg" alt=""><span>Welten</span></button><button id="menuJournalBtn" type="button"><img src="assets/ui/star.svg" alt=""><span>Tagebuch</span></button><button id="menuFriendsBtn" type="button"><img src="assets/ui/friends.svg" alt=""><span>Freunde</span></button><button id="menuEggBtn" type="button"><img src="assets/ui/egg.svg" alt=""><span>Eier & Entwicklung</span></button><button id="menuSettingsBtn" type="button"><img src="assets/ui/gear.svg" alt=""><span>Einstellungen</span></button></div><button id="menuSlotsBtn" class="secondary-btn" type="button">Zur Spielstandauswahl</button></div></dialog>
+  <dialog id="mainMenuDialog" class="sheet-dialog pixel-dialog"><div class="sheet-card tall"><div class="sheet-head"><div><p class="pixel-kicker">SPIELMENÜ</p><h2>TamaPoke Family</h2></div><button class="pixel-square-btn close-dialog" type="button">✕</button></div><div class="menu-tile-grid"><button id="menuDexBtn" type="button"><img src="assets/ui/book.png" alt=""><span>Pokédex</span></button><button id="menuWorldsBtn" type="button"><img src="assets/ui/world.png" alt=""><span>Welten</span></button><button id="menuJournalBtn" type="button"><img src="assets/ui/star.png" alt=""><span>Tagebuch</span></button><button id="menuFriendsBtn" type="button"><img src="assets/ui/friends.png" alt=""><span>Freunde</span></button><button id="menuEggBtn" type="button"><img src="assets/ui/egg.png" alt=""><span>Eier & Entwicklung</span></button><button id="menuSettingsBtn" type="button"><img src="assets/ui/gear.png" alt=""><span>Einstellungen</span></button></div><button id="menuSlotsBtn" class="secondary-btn" type="button">Zur Spielstandauswahl</button></div></dialog>
 
   <dialog id="foodDialog" class="sheet-dialog pixel-dialog"><div class="sheet-card"><div class="sheet-head"><div><p class="pixel-kicker">FÜTTERN</p><h2>Was darf es sein?</h2></div><button class="pixel-square-btn close-dialog" type="button">✕</button></div><div class="food-grid"><button type="button" data-berry="0"><span class="food-icon berry-red"></span><strong>Rote Beere</strong><small>Kräftig und süß</small></button><button type="button" data-berry="1"><span class="food-icon berry-blue"></span><strong>Blaue Beere</strong><small>Frisch und saftig</small></button><button type="button" data-berry="2"><span class="food-icon berry-green"></span><strong>Grüne Beere</strong><small>Mild und knackig</small></button><button type="button" id="candyBtn"><span class="food-icon candy-star"></span><strong>Tama-Bonbon</strong><small>Viel Freude, mehr Gewicht</small></button></div></div></dialog>
 
