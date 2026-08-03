@@ -1,9 +1,9 @@
-# TamaPoke Family Web v0.6b – Design Foundation
+# TamaPoke Family Web v0.6c – Design Foundation
 
 Private, nicht kommerzielle iPhone-/iPad-PWA auf Basis der offenen TamaPoke-Struktur.
 
 ## Schwerpunkt dieser Version
-v0.6b führt das verbindliche, einheitliche Pixel-Masterdesign für die gesamte App ein. Die bestehende Spielmechanik und die lokalen Spielstände bleiben erhalten.
+v0.6c führt das verbindliche, einheitliche Pixel-Masterdesign für die gesamte App ein. Die bestehende Spielmechanik und die lokalen Spielstände bleiben erhalten.
 
 ## Neu gestaltet
 - vollständiges Startmenü mit TamaPoke-Family-Logo, drei Speicherplätzen, „Neues Spiel“ und „Fortsetzen“
@@ -18,7 +18,7 @@ v0.6b führt das verbindliche, einheitliche Pixel-Masterdesign für die gesamte 
 - visuelle Shop- und Futterübersicht als Grundlage für eine spätere Spielwährung
 - eigener Bereich „Eier & Entwicklung“ mit Ei-Designs und Entwicklungsweg
 - Pokédex, Dialoge, Einstellungen und Minispiele in der neuen Designsprache
-- PWA-Cache v0.6b mit allen neuen UI- und Weltgrafiken
+- PWA-Cache v0.6c mit allen neuen UI- und Weltgrafiken
 
 ## Bereits spielbar
 - alle bisherigen Pflege-, Zeit-, Entwicklungs- und Lebenszyklusfunktionen
@@ -40,3 +40,11 @@ v0.6b führt das verbindliche, einheitliche Pixel-Masterdesign für die gesamte 
 5. Die Home-Bildschirm-App vollständig schließen und neu starten.
 
 Bestehende Spielstände werden weiterhin unter demselben lokalen Speicherschlüssel übernommen.
+
+
+## v0.6c
+- Weltenübersicht mit 18 neuen Tag-/Nacht-Pixelvorschauen
+- Pokédex-Karten, Fortschrittsanzeige und typabhängige Detailbühnen
+- vollständige Typ-Eier-Galerie und neuer Brutkasten
+- überarbeitete Entwicklungswege
+- Minispiele und Training im gemeinsamen Holz-/Pergament-Pixelstil

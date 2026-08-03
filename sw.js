@@ -1,4 +1,4 @@
-const VERSION = 'tamapoke-family-v05-20260725';
+const VERSION = 'tamapoke-family-v06c-20260726';
 const CORE = [
   './',
   './index.html',

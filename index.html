@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family v0.6b</title>
+  <title>TamaPoke Family v0.6c</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -146,6 +146,11 @@
         <header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game" aria-label="Zurück">←</button><div><p class="pixel-kicker">SAMMLUNG</p><h1 id="dexTitle">Pokédex <span id="dexCount">0/151</span></h1></div><button id="dexWorldBtn" class="pixel-square-btn" type="button" aria-label="Welten"><img src="assets/ui/world.png" alt=""></button></header>
         <section class="parchment-panel">
           <label class="search-box" for="dexSearch"><span>⌕</span><input id="dexSearch" type="search" placeholder="Name oder Nummer suchen"></label>
+          <div class="dex-summary" aria-label="Pokédex-Fortschritt">
+            <div><img src="assets/ui/book.png" alt=""><span>Gefunden</span><strong id="dexRegistered">0</strong></div>
+            <div><img src="assets/ui/star.png" alt=""><span>Shiny</span><strong id="dexShiny">0</strong></div>
+            <div><img src="assets/ui/world.png" alt=""><span>Offen</span><strong id="dexRemaining">151</strong></div>
+          </div>
           <div id="dexGrid" class="dex-grid"></div>
         </section>
       </div>
@@ -155,26 +160,81 @@
       <div class="pixel-page-frame compact-frame">
         <header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game" aria-label="Zurück">←</button><div><p class="pixel-kicker">18 TYPWELTEN</p><h1 id="worldsTitle">Welten & Hintergründe</h1></div><span class="header-spacer"></span></header>
         <section class="parchment-panel">
-          <p class="page-intro">Jede Typwelt erhält eine helle Tag- und eine stimmungsvolle Nachtvariante. Pflanze, Feuer und Wasser sind bereits spielbar; die übrigen Karten zeigen den festgelegten Designstil.</p>
+          <p class="page-intro">Jede Typwelt besitzt eine helle Tag- und eine stimmungsvolle Nachtvariante. Die Karten bilden jetzt das verbindliche Welten-Designsystem.</p>
+          <div class="worlds-legend" aria-label="Legende"><span class="day">☀ Tag</span><span class="night">☾ Nacht</span><span class="ready">✓ Spielbar</span><span class="concept">◆ Konzept</span></div>
           <div class="world-grid">
-            <article class="world-card"><div><img src="assets/worlds/all/normal-day.svg" alt="Normal Tag"><img src="assets/worlds/all/normal-night.svg" alt="Normal Nacht"></div><strong>Normal</strong></article>
-            <article class="world-card active-world"><div><img src="assets/worlds/all/plant-day.svg" alt="Pflanze Tag"><img src="assets/worlds/all/plant-night.svg" alt="Pflanze Nacht"></div><strong>Pflanze</strong></article>
-            <article class="world-card active-world"><div><img src="assets/worlds/all/fire-day.svg" alt="Feuer Tag"><img src="assets/worlds/all/fire-night.svg" alt="Feuer Nacht"></div><strong>Feuer</strong></article>
-            <article class="world-card active-world"><div><img src="assets/worlds/all/water-day.svg" alt="Wasser Tag"><img src="assets/worlds/all/water-night.svg" alt="Wasser Nacht"></div><strong>Wasser</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/electric-day.svg" alt="Elektro Tag"><img src="assets/worlds/all/electric-night.svg" alt="Elektro Nacht"></div><strong>Elektro</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/ice-day.svg" alt="Eis Tag"><img src="assets/worlds/all/ice-night.svg" alt="Eis Nacht"></div><strong>Eis</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/bug-day.svg" alt="Käfer Tag"><img src="assets/worlds/all/bug-night.svg" alt="Käfer Nacht"></div><strong>Käfer</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/poison-day.svg" alt="Gift Tag"><img src="assets/worlds/all/poison-night.svg" alt="Gift Nacht"></div><strong>Gift</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/ground-day.svg" alt="Boden Tag"><img src="assets/worlds/all/ground-night.svg" alt="Boden Nacht"></div><strong>Boden</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/rock-day.svg" alt="Gestein Tag"><img src="assets/worlds/all/rock-night.svg" alt="Gestein Nacht"></div><strong>Gestein</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/flying-day.svg" alt="Flug Tag"><img src="assets/worlds/all/flying-night.svg" alt="Flug Nacht"></div><strong>Flug</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/psychic-day.svg" alt="Psycho Tag"><img src="assets/worlds/all/psychic-night.svg" alt="Psycho Nacht"></div><strong>Psycho</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/ghost-day.svg" alt="Geist Tag"><img src="assets/worlds/all/ghost-night.svg" alt="Geist Nacht"></div><strong>Geist</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/dark-day.svg" alt="Unlicht Tag"><img src="assets/worlds/all/dark-night.svg" alt="Unlicht Nacht"></div><strong>Unlicht</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/dragon-day.svg" alt="Drache Tag"><img src="assets/worlds/all/dragon-night.svg" alt="Drache Nacht"></div><strong>Drache</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/fairy-day.svg" alt="Fee Tag"><img src="assets/worlds/all/fairy-night.svg" alt="Fee Nacht"></div><strong>Fee</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/fighting-day.svg" alt="Kampf Tag"><img src="assets/worlds/all/fighting-night.svg" alt="Kampf Nacht"></div><strong>Kampf</strong></article>
-            <article class="world-card"><div><img src="assets/worlds/all/steel-day.svg" alt="Stahl Tag"><img src="assets/worlds/all/steel-night.svg" alt="Stahl Nacht"></div><strong>Stahl</strong></article>
+            <article class="world-card" data-world-type="normal">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/normal-day.svg" alt="Normal Tag"><img src="assets/worlds/all/normal-night.svg" alt="Normal Nacht"></div>
+              <footer><span class="world-type-mark">N</span><strong>Normal</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card active-world" data-world-type="plant">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/plant-day.svg" alt="Pflanze Tag"><img src="assets/worlds/all/plant-night.svg" alt="Pflanze Nacht"></div>
+              <footer><span class="world-type-mark">P</span><strong>Pflanze</strong><small>Spielbar</small></footer>
+            </article>
+            <article class="world-card active-world" data-world-type="fire">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fire-day.svg" alt="Feuer Tag"><img src="assets/worlds/all/fire-night.svg" alt="Feuer Nacht"></div>
+              <footer><span class="world-type-mark">F</span><strong>Feuer</strong><small>Spielbar</small></footer>
+            </article>
+            <article class="world-card active-world" data-world-type="water">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/water-day.svg" alt="Wasser Tag"><img src="assets/worlds/all/water-night.svg" alt="Wasser Nacht"></div>
+              <footer><span class="world-type-mark">W</span><strong>Wasser</strong><small>Spielbar</small></footer>
+            </article>
+            <article class="world-card" data-world-type="electric">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/electric-day.svg" alt="Elektro Tag"><img src="assets/worlds/all/electric-night.svg" alt="Elektro Nacht"></div>
+              <footer><span class="world-type-mark">E</span><strong>Elektro</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="ice">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ice-day.svg" alt="Eis Tag"><img src="assets/worlds/all/ice-night.svg" alt="Eis Nacht"></div>
+              <footer><span class="world-type-mark">I</span><strong>Eis</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="bug">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/bug-day.svg" alt="Käfer Tag"><img src="assets/worlds/all/bug-night.svg" alt="Käfer Nacht"></div>
+              <footer><span class="world-type-mark">K</span><strong>Käfer</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="poison">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/poison-day.svg" alt="Gift Tag"><img src="assets/worlds/all/poison-night.svg" alt="Gift Nacht"></div>
+              <footer><span class="world-type-mark">G</span><strong>Gift</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="ground">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ground-day.svg" alt="Boden Tag"><img src="assets/worlds/all/ground-night.svg" alt="Boden Nacht"></div>
+              <footer><span class="world-type-mark">B</span><strong>Boden</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="rock">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/rock-day.svg" alt="Gestein Tag"><img src="assets/worlds/all/rock-night.svg" alt="Gestein Nacht"></div>
+              <footer><span class="world-type-mark">R</span><strong>Gestein</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="flying">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/flying-day.svg" alt="Flug Tag"><img src="assets/worlds/all/flying-night.svg" alt="Flug Nacht"></div>
+              <footer><span class="world-type-mark">L</span><strong>Flug</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="psychic">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/psychic-day.svg" alt="Psycho Tag"><img src="assets/worlds/all/psychic-night.svg" alt="Psycho Nacht"></div>
+              <footer><span class="world-type-mark">Y</span><strong>Psycho</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="ghost">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ghost-day.svg" alt="Geist Tag"><img src="assets/worlds/all/ghost-night.svg" alt="Geist Nacht"></div>
+              <footer><span class="world-type-mark">H</span><strong>Geist</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="dark">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/dark-day.svg" alt="Unlicht Tag"><img src="assets/worlds/all/dark-night.svg" alt="Unlicht Nacht"></div>
+              <footer><span class="world-type-mark">U</span><strong>Unlicht</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="dragon">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/dragon-day.svg" alt="Drache Tag"><img src="assets/worlds/all/dragon-night.svg" alt="Drache Nacht"></div>
+              <footer><span class="world-type-mark">D</span><strong>Drache</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="fairy">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fairy-day.svg" alt="Fee Tag"><img src="assets/worlds/all/fairy-night.svg" alt="Fee Nacht"></div>
+              <footer><span class="world-type-mark">♥</span><strong>Fee</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="fighting">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fighting-day.svg" alt="Kampf Tag"><img src="assets/worlds/all/fighting-night.svg" alt="Kampf Nacht"></div>
+              <footer><span class="world-type-mark">K</span><strong>Kampf</strong><small>Konzept</small></footer>
+            </article>
+            <article class="world-card" data-world-type="steel">
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/steel-day.svg" alt="Stahl Tag"><img src="assets/worlds/all/steel-night.svg" alt="Stahl Nacht"></div>
+              <footer><span class="world-type-mark">S</span><strong>Stahl</strong><small>Konzept</small></footer>
+            </article>
           </div>
         </section>
       </div>
@@ -186,7 +246,19 @@
 
     <section id="shopScreen" class="screen pixel-page" aria-labelledby="shopTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BEEREN & FUTTER</p><h1 id="shopTitle">Tama-Laden</h1></div><div class="shop-wallet"><span><img src="assets/ui/coin.png" alt="">1250</span><span><img src="assets/ui/gem.png" alt="">85</span></div></header><section class="parchment-panel"><p class="page-intro">Die Gestaltung steht bereits. Käufe und eine verdienbare Spielwährung werden in einer späteren Version aktiviert.</p><div class="shop-grid"><article><span class="food-icon berry-forest"></span><strong>Waldpaket</strong><small>3 Pflanzenbeeren</small><b>200</b></article><article><span class="food-icon berry-ember"></span><strong>Glutpaket</strong><small>3 Feuerbeeren</small><b>200</b></article><article><span class="food-icon berry-wave"></span><strong>Wellenpaket</strong><small>3 Wasserbeeren</small><b>200</b></article><article><span class="food-icon candy-star"></span><strong>Sternbonbon</strong><small>Besonderes Leckerli</small><b>300</b></article></div></section></div></section>
 
-    <section id="nurseryScreen" class="screen pixel-page" aria-labelledby="nurseryTitle"><div class="pixel-page-frame compact-frame"><header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BRUTKASTEN</p><h1 id="nurseryTitle">Eier & Entwicklung</h1></div><span class="header-spacer"></span></header><section class="parchment-panel"><div id="nurseryHero" class="nursery-hero"></div><div class="egg-collection" aria-label="Ei-Designs"><span class="theme-egg egg-plant"></span><span class="theme-egg egg-fire"></span><span class="theme-egg egg-water"></span><span class="theme-egg egg-electric"></span><span class="theme-egg egg-ghost"></span><span class="theme-egg egg-fairy"></span></div><h3>Entwicklungsweg</h3><div id="evolutionPath" class="evolution-path"></div></section></div></section>
+    <section id="nurseryScreen" class="screen pixel-page" aria-labelledby="nurseryTitle">
+      <div class="pixel-page-frame compact-frame">
+        <header class="subpage-header"><button class="pixel-square-btn" type="button" data-nav="game">←</button><div><p class="pixel-kicker">BRUTKASTEN</p><h1 id="nurseryTitle">Eier & Entwicklung</h1></div><span class="header-spacer"></span></header>
+        <section class="parchment-panel nursery-panel">
+          <div class="nursery-section-label"><img src="assets/ui/egg.png" alt=""><span><strong>Aktueller Brutkasten</strong><small>Berühren, pflegen und gemeinsam wachsen</small></span></div>
+          <div id="nurseryHero" class="nursery-hero"></div>
+          <div class="nursery-section-label"><img src="assets/ui/world.png" alt=""><span><strong>Typ-Eier</strong><small>Jede Welt besitzt ihr eigenes Ei-Design</small></span></div>
+          <div class="egg-collection" aria-label="Ei-Designs"><article class="egg-card"><span class="theme-egg egg-normal"></span><small>Normal</small></article><article class="egg-card"><span class="theme-egg egg-plant"></span><small>Pflanze</small></article><article class="egg-card"><span class="theme-egg egg-fire"></span><small>Feuer</small></article><article class="egg-card"><span class="theme-egg egg-water"></span><small>Wasser</small></article><article class="egg-card"><span class="theme-egg egg-electric"></span><small>Elektro</small></article><article class="egg-card"><span class="theme-egg egg-ice"></span><small>Eis</small></article><article class="egg-card"><span class="theme-egg egg-bug"></span><small>Käfer</small></article><article class="egg-card"><span class="theme-egg egg-poison"></span><small>Gift</small></article><article class="egg-card"><span class="theme-egg egg-ground"></span><small>Boden</small></article><article class="egg-card"><span class="theme-egg egg-rock"></span><small>Gestein</small></article><article class="egg-card"><span class="theme-egg egg-flying"></span><small>Flug</small></article><article class="egg-card"><span class="theme-egg egg-psychic"></span><small>Psycho</small></article><article class="egg-card"><span class="theme-egg egg-ghost"></span><small>Geist</small></article><article class="egg-card"><span class="theme-egg egg-dark"></span><small>Unlicht</small></article><article class="egg-card"><span class="theme-egg egg-dragon"></span><small>Drache</small></article><article class="egg-card"><span class="theme-egg egg-fairy"></span><small>Fee</small></article><article class="egg-card"><span class="theme-egg egg-fighting"></span><small>Kampf</small></article><article class="egg-card"><span class="theme-egg egg-steel"></span><small>Stahl</small></article></div>
+          <div class="nursery-section-label"><img src="assets/ui/star.png" alt=""><span><strong>Entwicklungsweg</strong><small>Bekannte Formen und nächste Stufen</small></span></div>
+          <div id="evolutionPath" class="evolution-path"></div>
+        </section>
+      </div>
+    </section>
   </main>
 
   <dialog id="mainMenuDialog" class="sheet-dialog pixel-dialog"><div class="sheet-card tall"><div class="sheet-head"><div><p class="pixel-kicker">SPIELMENÜ</p><h2>TamaPoke Family</h2></div><button class="pixel-square-btn close-dialog" type="button">✕</button></div><div class="menu-tile-grid"><button id="menuDexBtn" type="button"><img src="assets/ui/book.png" alt=""><span>Pokédex</span></button><button id="menuWorldsBtn" type="button"><img src="assets/ui/world.png" alt=""><span>Welten</span></button><button id="menuJournalBtn" type="button"><img src="assets/ui/star.png" alt=""><span>Tagebuch</span></button><button id="menuFriendsBtn" type="button"><img src="assets/ui/friends.png" alt=""><span>Freunde</span></button><button id="menuEggBtn" type="button"><img src="assets/ui/egg.png" alt=""><span>Eier & Entwicklung</span></button><button id="menuSettingsBtn" type="button"><img src="assets/ui/gear.png" alt=""><span>Einstellungen</span></button></div><button id="menuSlotsBtn" class="secondary-btn" type="button">Zur Spielstandauswahl</button></div></dialog>
@@ -205,9 +277,9 @@
 
   <dialog id="creditsDialog" class="sheet-dialog pixel-dialog"><div class="sheet-card"><div class="sheet-head"><div><p class="pixel-kicker">DANKE</p><h2>Credits</h2></div><button class="pixel-square-btn close-dialog" type="button">✕</button></div><div class="credits-story"><p>TamaPoke Family ist eure private Browser-Portierung des offenen TamaPoke-Fanprojekts.</p><p><strong>Grundprojekt:</strong> Quique Tortosa / TamaPoke</p><p><strong>Sprites:</strong> PMD SpriteCollab</p><p><strong>Umsetzung:</strong> private Familienversion für iPhone und iPad</p></div></div></dialog>
 
-  <dialog id="miniGameDialog" class="game-dialog pixel-dialog"><div class="mini-card"><div class="mini-head"><div><p id="miniGameKicker" class="pixel-kicker">MINISPIEL</p><h2 id="miniGameTitle">Pokéball-Fangen</h2></div><button id="cancelMiniBtn" class="pixel-square-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="miniTime">20</strong></span><span>Punkte <strong id="miniScore">0</strong></span><span>Fehler <strong id="miniMisses">0/3</strong></span></div><div id="miniArena" class="mini-arena ball-game-arena"><div class="mini-sky-decor" aria-hidden="true"></div><div id="miniBall" class="mini-ball" hidden></div><div id="miniPet" class="mini-pet"><canvas id="miniPetCanvas" width="170" height="120"></canvas></div><p id="miniStartHint">Bewege dein Pokémon mit dem Finger und fange den Pokéball.</p></div><button id="startMiniBtn" class="primary-btn full" type="button">Start</button></div></dialog>
+  <dialog id="miniGameDialog" class="game-dialog pixel-dialog"><div class="mini-card"><div class="mini-head"><div><p id="miniGameKicker" class="pixel-kicker">MINISPIEL</p><span id="miniWorldTag" class="mini-world-tag">Pokémon-Wiese</span><h2 id="miniGameTitle">Pokéball-Fangen</h2></div><button id="cancelMiniBtn" class="pixel-square-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="miniTime">20</strong></span><span>Punkte <strong id="miniScore">0</strong></span><span>Fehler <strong id="miniMisses">0/3</strong></span></div><div id="miniArena" class="mini-arena ball-game-arena"><div class="mini-sky-decor" aria-hidden="true"></div><div id="miniBall" class="mini-ball" hidden></div><div id="miniPet" class="mini-pet"><canvas id="miniPetCanvas" width="170" height="120"></canvas></div><p id="miniStartHint">Bewege dein Pokémon mit dem Finger und fange den Pokéball.</p></div><button id="startMiniBtn" class="primary-btn full" type="button">Start</button></div></dialog>
 
-  <dialog id="trainDialog" class="game-dialog pixel-dialog"><div class="mini-card"><div class="mini-head"><div><p class="pixel-kicker">KRAFTTRAINING</p><h2 id="trainGameTitle">Trainingssack</h2></div><button id="cancelTrainBtn" class="pixel-square-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="trainTime">10</strong></span><span>Treffer <strong id="trainHits">0</strong></span><span>Kombo <strong id="trainCombo">0</strong></span></div><div class="bag-arena"><div id="trainPet" class="train-pet"><canvas id="trainPetCanvas" width="190" height="150"></canvas></div><button id="punchBag" type="button" aria-label="Trainingsziel"><span></span></button><p id="trainStartHint">Tippe rhythmisch auf das Ziel.</p></div><button id="startTrainBtn" class="primary-btn full" type="button">Start</button></div></dialog>
+  <dialog id="trainDialog" class="game-dialog pixel-dialog"><div class="mini-card"><div class="mini-head"><div><p id="trainGameKicker" class="pixel-kicker">KRAFTTRAINING</p><span id="trainWorldTag" class="mini-world-tag">Pokémon-Wiese</span><h2 id="trainGameTitle">Trainingssack</h2></div><button id="cancelTrainBtn" class="pixel-square-btn" type="button">✕</button></div><div class="mini-score"><span>Zeit <strong id="trainTime">10</strong></span><span>Treffer <strong id="trainHits">0</strong></span><span>Kombo <strong id="trainCombo">0</strong></span></div><div class="bag-arena"><div id="trainPet" class="train-pet"><canvas id="trainPetCanvas" width="190" height="150"></canvas></div><button id="punchBag" type="button" aria-label="Trainingsziel"><span></span></button><p id="trainStartHint">Tippe rhythmisch auf das Ziel.</p></div><button id="startTrainBtn" class="primary-btn full" type="button">Start</button></div></dialog>
 
   <div id="toast" class="toast" aria-live="polite"></div>
   <script type="module" src="js/app.js"></script>

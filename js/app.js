@@ -45,7 +45,8 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const TYPE_LABELS = {
   normal: 'Normal', fuego: 'Feuer', agua: 'Wasser', planta: 'Pflanze', electrico: 'Elektro',
   hielo: 'Eis', lucha: 'Kampf', veneno: 'Gift', tierra: 'Boden', psiquico: 'Psycho',
-  bicho: 'Käfer', roca: 'Gestein', fantasma: 'Geist', dragon: 'Drache'
+  bicho: 'Käfer', roca: 'Gestein', fantasma: 'Geist', dragon: 'Drache',
+  volador: 'Flug', hada: 'Fee', siniestro: 'Unlicht', acero: 'Stahl'
 };
 const BIOMES = ['Wiese', 'Strand', 'Wald', 'Vulkan', 'Berge', 'Schnee'];
 const STARTERS = [1, 4, 7];
@@ -152,12 +153,18 @@ function renderFoodTheme(theme = getActiveTheme()) {
 
 function prepareWorldActivities(theme = getActiveTheme()) {
   $('#miniGameTitle').textContent = theme.mini.title;
+  $('#miniGameKicker').textContent = `${theme.label.toUpperCase()} · MINISPIEL`;
+  $('#miniWorldTag').textContent = theme.label;
   $('#miniStartHint').textContent = theme.mini.hint;
   $('#miniArena').className = `mini-arena themed-mini mini-${theme.key} ${activePhase}`;
+  $('#miniGameDialog').dataset.world = theme.key;
+  $('#trainGameKicker').textContent = `${theme.label.toUpperCase()} · TRAINING`;
+  $('#trainWorldTag').textContent = theme.label;
   $('#trainGameTitle').textContent = theme.training.title;
   $('#trainStartHint').textContent = theme.training.hint;
   $('#punchBag').className = `target-${theme.training.target}`;
   $('.bag-arena').className = `bag-arena training-${theme.key} ${activePhase}`;
+  $('#trainDialog').dataset.world = theme.key;
 }
 
 function showScreen(name) {
@@ -591,20 +598,42 @@ function renderDex(query = '') {
   const normalized = query.trim().toLocaleLowerCase('de');
   const grid = $('#dexGrid');
   grid.innerHTML = '';
-  $('#dexCount').textContent = `${registeredCount(slot)}/151`;
+  const registered = registeredCount(slot);
+  const shinyCount = slot.dexShinyReg.filter(Boolean).length;
+  $('#dexCount').textContent = `${registered}/151`;
+  $('#dexRegistered').textContent = registered;
+  $('#dexShiny').textContent = shinyCount;
+  $('#dexRemaining').textContent = 151 - registered;
 
   data.species
     .filter((species) => !normalized || species.nameDe.toLocaleLowerCase('de').includes(normalized) || species.nameEn.toLocaleLowerCase('de').includes(normalized) || String(species.id).includes(normalized))
     .forEach((species) => {
-      const registered = slot.dexReg[species.id - 1];
+      const isRegistered = slot.dexReg[species.id - 1];
+      const isShiny = slot.dexShinyReg[species.id - 1];
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = `dex-entry${registered ? '' : ' locked'}`;
-      const number = document.createElement('span');
+      button.dataset.type = species.type;
+      button.className = `dex-entry${isRegistered ? '' : ' locked'}${isShiny ? ' shiny-known' : ''}`;
+      button.setAttribute('aria-label', isRegistered ? `${species.nameDe}, Nummer ${species.id}` : `Unbekanntes Pokémon, Nummer ${species.id}`);
+
+      const top = document.createElement('span');
+      top.className = 'dex-entry-top';
+      const number = document.createElement('b');
       number.textContent = `#${String(species.id).padStart(3, '0')}`;
+      const type = document.createElement('i');
+      type.textContent = TYPE_LABELS[species.type] || species.type;
+      top.append(number, type);
+
+      const silhouette = document.createElement('span');
+      silhouette.className = 'dex-silhouette';
+      silhouette.textContent = isRegistered ? (isShiny ? '✦' : '●') : '?';
+
       const name = document.createElement('strong');
-      name.textContent = registered ? species.nameDe : '???';
-      button.append(number, name);
+      name.textContent = isRegistered ? species.nameDe : '???';
+      const status = document.createElement('small');
+      status.textContent = isRegistered ? (isShiny ? 'Shiny entdeckt' : 'Registriert') : 'Noch unbekannt';
+
+      button.append(top, silhouette, name, status);
       button.addEventListener('click', () => openDexDetail(species));
       grid.appendChild(button);
     });
@@ -617,6 +646,9 @@ async function openDexDetail(species) {
   $('#dexDetailName').textContent = registered ? species.nameDe : 'Unbekannt';
   $('#dexLocked').hidden = registered;
   $('#dexDetailCanvas').hidden = !registered;
+  const detailStage = $('.dex-detail-stage');
+  detailStage.dataset.type = species.type;
+  detailStage.className = `dex-detail-stage type-${species.type}${registered ? ' registered' : ' locked-stage'}`;
   const meta = $('#dexDetailMeta');
   meta.innerHTML = '';
 
@@ -725,21 +757,32 @@ function renderNursery() {
   const path = $('#evolutionPath');
   if (!hero || !path) return;
   path.innerHTML = '';
+  hero.removeAttribute('data-type');
+
   if (!slot) {
-    hero.innerHTML = '<img src="assets/ui/egg.png" alt=""><div><strong>Noch kein Ei</strong><small>Wähle zuerst einen Spielstand.</small></div>';
+    hero.className = 'nursery-hero empty-incubator';
+    hero.innerHTML = '<div class="incubator-pod"><img src="assets/ui/egg.png" alt=""><span class="incubator-glow"></span></div><div class="nursery-copy"><span class="nursery-status">LEER</span><strong>Noch kein Ei</strong><small>Wähle zuerst einen Spielstand.</small></div>';
     path.innerHTML = '<div class="empty-state">Der Entwicklungsweg erscheint hier.</div>';
     return;
   }
+
   if (isEgg(slot)) {
-    hero.innerHTML = `<img src="assets/ui/egg.png" alt="Ei"><div><strong>Mysteriöses Ei</strong><small>${slot.pet.eggTaps}/3 Berührungen · ${slot.pet.ageMinutes}/3 Spielminuten bis zum automatischen Schlüpfen</small></div>`;
+    const target = speciesById.get(slot.pet.eggTarget);
+    const progress = Math.min(100, Math.max(slot.pet.eggTaps / 3 * 100, slot.pet.ageMinutes / 3 * 100));
+    hero.className = 'nursery-hero egg-active';
+    hero.dataset.type = target?.type || 'normal';
+    hero.innerHTML = `<div class="incubator-pod"><img src="assets/ui/egg.png" alt="Ei"><span class="incubator-glow"></span><i class="incubator-ring"></i></div><div class="nursery-copy"><span class="nursery-status">BRÜTET</span><strong>Mysteriöses Ei</strong><small>${slot.pet.eggTaps}/3 Berührungen · ${slot.pet.ageMinutes}/3 Spielminuten</small><div class="hatch-progress"><span style="width:${progress}%"></span></div></div>`;
     const eggStage = document.createElement('div');
-    eggStage.className = 'evo-stage current';
-    eggStage.innerHTML = '<img src="assets/ui/egg.png" alt=""><strong>Ei</strong><small>Noch unbekannt</small>';
+    eggStage.className = 'evo-stage current egg-stage';
+    eggStage.innerHTML = '<span class="evo-orb"><img src="assets/ui/egg.png" alt=""></span><b>#???</b><strong>Ei</strong><small>Noch unbekannt</small>';
     path.appendChild(eggStage);
     return;
   }
+
   const species = getSpecies(slot, speciesById);
-  hero.innerHTML = `<img src="assets/ui/star.png" alt="Entwicklung"><div><strong>${getDisplayName(slot, speciesById)}</strong><small>Level ${levelOf(slot)} · ${species.evolvesTo ? `nächste Entwicklung ab Level ${species.evolveLevel + slot.pet.careMistakes}` : 'Endform erreicht'}</small></div>`;
+  hero.className = 'nursery-hero pet-active';
+  hero.dataset.type = species.type;
+  hero.innerHTML = `<div class="incubator-pod pet-pod"><img src="assets/ui/star.png" alt="Entwicklung"><span class="incubator-glow"></span></div><div class="nursery-copy"><span class="nursery-status">PARTNER</span><strong>${getDisplayName(slot, speciesById)}</strong><small>Level ${levelOf(slot)} · ${species.evolvesTo ? `nächste Entwicklung ab Level ${species.evolveLevel + slot.pet.careMistakes}` : 'Endform erreicht'}</small></div>`;
 
   const chain = [];
   let root = species;
@@ -759,8 +802,10 @@ function renderNursery() {
   }
   chain.filter(Boolean).forEach((entry, index) => {
     const stage = document.createElement('div');
+    stage.dataset.type = entry.type;
     stage.className = `evo-stage${entry.id === slot.pet.speciesId ? ' current' : ''}${slot.dexReg[entry.id - 1] ? ' known' : ''}`;
-    stage.innerHTML = `<span>#${String(entry.id).padStart(3,'0')}</span><strong>${slot.dexReg[entry.id - 1] || entry.id === slot.pet.speciesId ? entry.nameDe : '???'}</strong><small>${entry.evolvesTo ? `Lv. ${entry.evolveLevel}` : 'Endform'}</small>`;
+    const visible = slot.dexReg[entry.id - 1] || entry.id === slot.pet.speciesId;
+    stage.innerHTML = `<span class="evo-orb">${visible ? '✦' : '?'}</span><b>#${String(entry.id).padStart(3,'0')}</b><strong>${visible ? entry.nameDe : '???'}</strong><small>${entry.evolvesTo ? `Lv. ${entry.evolveLevel}` : 'Endform'}</small>`;
     path.appendChild(stage);
     if (index < chain.length - 1 && entry.id !== 133) {
       const arrow = document.createElement('img');
