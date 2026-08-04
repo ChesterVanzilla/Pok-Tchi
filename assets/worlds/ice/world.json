@@ -1,0 +1,84 @@
+{
+  "id": "ice",
+  "name": "Eis",
+  "displayName": "Frosttal",
+  "version": "1.0.0",
+  "sceneKey": "ice",
+  "icon": "snow",
+  "typeAliases": [
+    "hielo",
+    "ice"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#a9e7f6",
+    "accent2": "#e8fbff",
+    "panel": "#28465c",
+    "panel2": "#47738b"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Frostbeere",
+      "description": "Kühl und angenehm frisch",
+      "className": "berry-wave"
+    },
+    {
+      "name": "Schneebeere",
+      "description": "Weich wie Pulverschnee",
+      "className": "berry-pearl"
+    },
+    {
+      "name": "Polaribeere",
+      "description": "Süß mit eisigem Nachklang",
+      "className": "berry-blue"
+    }
+  ],
+  "candy": {
+    "name": "Eiskristall",
+    "description": "Knuspert wie gefrorener Zucker",
+    "className": "candy-shell"
+  },
+  "mini": {
+    "title": "Eisrutsche",
+    "hint": "Sammle Kristalle auf der glatten Eisbahn.",
+    "collectible": "bubble",
+    "hazard": "rock",
+    "resultWord": "Kristalle"
+  },
+  "training": {
+    "title": "Eisblock-Training",
+    "hint": "Brich den Eisblock mit gleichmäßigen Treffern.",
+    "target": "obsidian"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

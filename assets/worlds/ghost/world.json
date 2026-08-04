@@ -1,0 +1,84 @@
+{
+  "id": "ghost",
+  "name": "Geist",
+  "displayName": "Nebelwald",
+  "version": "1.0.0",
+  "sceneKey": "ghost",
+  "icon": "moon",
+  "typeAliases": [
+    "fantasma",
+    "ghost"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#9e83d6",
+    "accent2": "#c7d1f1",
+    "panel": "#2a2947",
+    "panel2": "#49466b"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Nebelbeere",
+      "description": "Fast schwerelos und kühl",
+      "className": "berry-blue"
+    },
+    {
+      "name": "Irrlichtfrucht",
+      "description": "Leuchtet wie eine kleine Flamme",
+      "className": "berry-lava"
+    },
+    {
+      "name": "Mondbeere",
+      "description": "Süß und nur nachts ganz reif",
+      "className": "berry-pearl"
+    }
+  ],
+  "candy": {
+    "name": "Spukbonbon",
+    "description": "Verschwindet kurz auf der Zunge",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Schattenjagd",
+    "hint": "Fange Irrlichter und meide falsche Schatten.",
+    "collectible": "spark",
+    "hazard": "smoke",
+    "resultWord": "Irrlichter"
+  },
+  "training": {
+    "title": "Geisterlaternen-Training",
+    "hint": "Triff die flackernde Laterne.",
+    "target": "bag"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "id": "fire",
+  "name": "Feuer",
+  "displayName": "Vulkan-Ebene",
+  "version": "1.0.0",
+  "sceneKey": "volcano",
+  "icon": "flame",
+  "typeAliases": [
+    "fuego",
+    "fire"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#ff9d46",
+    "accent2": "#ffdf72",
+    "panel": "#3b2020",
+    "panel2": "#653026"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Glutbeere",
+      "description": "Warm, würzig und leicht rauchig",
+      "className": "berry-ember"
+    },
+    {
+      "name": "Funkenbeere",
+      "description": "Prickelt angenehm auf der Zunge",
+      "className": "berry-spark"
+    },
+    {
+      "name": "Lavabeere",
+      "description": "Sehr scharf und voller Energie",
+      "className": "berry-lava"
+    }
+  ],
+  "candy": {
+    "name": "Karamellkohle",
+    "description": "Knusprig-süß – macht glücklich und schwerer",
+    "className": "candy-coal"
+  },
+  "mini": {
+    "title": "Funkenfänger",
+    "hint": "Sammle goldene Funken und meide Rauchwolken.",
+    "collectible": "spark",
+    "hazard": "smoke",
+    "resultWord": "Funken"
+  },
+  "training": {
+    "title": "Glutstein-Training",
+    "hint": "Zertrümmere den heißen Obsidianblock.",
+    "target": "obsidian"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

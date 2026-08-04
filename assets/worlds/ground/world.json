@@ -1,0 +1,84 @@
+{
+  "id": "ground",
+  "name": "Boden",
+  "displayName": "Sonnen-Canyon",
+  "version": "1.0.0",
+  "sceneKey": "ground",
+  "icon": "star",
+  "typeAliases": [
+    "tierra",
+    "ground"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#d29a5d",
+    "accent2": "#f4d58a",
+    "panel": "#4a3223",
+    "panel2": "#725039"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Wüstenbeere",
+      "description": "Trocken, aber nahrhaft",
+      "className": "berry-sun"
+    },
+    {
+      "name": "Kaktusfrucht",
+      "description": "Saftig hinter stacheliger Schale",
+      "className": "berry-green"
+    },
+    {
+      "name": "Sandbeere",
+      "description": "Herzhaft und kräftig",
+      "className": "berry-red"
+    }
+  ],
+  "candy": {
+    "name": "Karamellstein",
+    "description": "Süß und überraschend knusprig",
+    "className": "candy-coal"
+  },
+  "mini": {
+    "title": "Canyonlauf",
+    "hint": "Sammle Früchte und weiche Geröll aus.",
+    "collectible": "berry",
+    "hazard": "rock",
+    "resultWord": "Früchte"
+  },
+  "training": {
+    "title": "Felsen-Training",
+    "hint": "Zerbrich den Sandsteinblock.",
+    "target": "obsidian"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

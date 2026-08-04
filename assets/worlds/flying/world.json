@@ -1,0 +1,84 @@
+{
+  "id": "flying",
+  "name": "Flug",
+  "displayName": "Wolkeninseln",
+  "version": "1.0.0",
+  "sceneKey": "flying",
+  "icon": "star",
+  "typeAliases": [
+    "volador",
+    "flying"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#a9d9ef",
+    "accent2": "#fff1af",
+    "panel": "#31506a",
+    "panel2": "#547893"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Wolkenbeere",
+      "description": "Leicht und luftig",
+      "className": "berry-pearl"
+    },
+    {
+      "name": "Federbeere",
+      "description": "Mild mit feinem Aroma",
+      "className": "berry-wave"
+    },
+    {
+      "name": "Himmelsfrucht",
+      "description": "Süß wie klare Höhenluft",
+      "className": "berry-sun"
+    }
+  ],
+  "candy": {
+    "name": "Sternenwatte",
+    "description": "Zergeht beinahe auf der Zunge",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Wolkenflug",
+    "hint": "Fliege durch Ringe und sammle Federn.",
+    "collectible": "bubble",
+    "hazard": "cloud",
+    "resultWord": "Federn"
+  },
+  "training": {
+    "title": "Wind-Training",
+    "hint": "Halte das Ziel gegen die Böen.",
+    "target": "buoy"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "id": "fighting",
+  "name": "Kampf",
+  "displayName": "Bambus-Dojo",
+  "version": "1.0.0",
+  "sceneKey": "fighting",
+  "icon": "star",
+  "typeAliases": [
+    "lucha",
+    "fighting"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#d76c58",
+    "accent2": "#f0c471",
+    "panel": "#492b25",
+    "panel2": "#6f4437"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Kraftbeere",
+      "description": "Herzhaft und energiereich",
+      "className": "berry-red"
+    },
+    {
+      "name": "Bambusfrucht",
+      "description": "Knackig und frisch",
+      "className": "berry-green"
+    },
+    {
+      "name": "Siegerbeere",
+      "description": "Süß nach hartem Training",
+      "className": "berry-sun"
+    }
+  ],
+  "candy": {
+    "name": "Proteinriegel",
+    "description": "Stärkt nach einer Trainingseinheit",
+    "className": "candy-coal"
+  },
+  "mini": {
+    "title": "Dojo-Training",
+    "hint": "Reagiere schnell auf die Trainingszeichen.",
+    "collectible": "ball",
+    "hazard": "rock",
+    "resultWord": "Treffer"
+  },
+  "training": {
+    "title": "Sandsack-Training",
+    "hint": "Triff den Sandsack im richtigen Takt.",
+    "target": "bag"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

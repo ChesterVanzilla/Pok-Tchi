@@ -1,0 +1,84 @@
+{
+  "id": "grass",
+  "name": "Pflanze",
+  "displayName": "Kanto Wald",
+  "version": "1.0.0",
+  "sceneKey": "forest",
+  "icon": "leaf",
+  "typeAliases": [
+    "planta",
+    "grass"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#8bd36b",
+    "accent2": "#ffd36a",
+    "panel": "#183425",
+    "panel2": "#245039"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Waldbeere",
+      "description": "Süß, weich und frisch gepflückt",
+      "className": "berry-forest"
+    },
+    {
+      "name": "Blattbeere",
+      "description": "Knackig mit einem Hauch Minze",
+      "className": "berry-leaf"
+    },
+    {
+      "name": "Sonnenbeere",
+      "description": "Warm, golden und besonders saftig",
+      "className": "berry-sun"
+    }
+  ],
+  "candy": {
+    "name": "Honigbonbon",
+    "description": "Sehr süß – macht glücklich und schwerer",
+    "className": "candy-honey"
+  },
+  "mini": {
+    "title": "Beerenregen",
+    "hint": "Fange reife Beeren und weiche Dornenkugeln aus.",
+    "collectible": "berry",
+    "hazard": "thorn",
+    "resultWord": "Beeren"
+  },
+  "training": {
+    "title": "Ranken-Training",
+    "hint": "Triff den umrankten Holzstamm im richtigen Rhythmus.",
+    "target": "vine"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}
