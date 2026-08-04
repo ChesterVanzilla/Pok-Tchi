@@ -2354,3 +2354,95 @@ body::before {
   .mini-head h2 { font-size:18px; }
   .mini-arena,.bag-arena { height:min(48svh,390px); }
 }
+
+
+/* ============================================================
+   v0.7 – World Engine v1: vier austauschbare PNG-Ebenen
+   ============================================================ */
+.habitat.world-engine {
+  --world-object-position: 50% 50%;
+  background-image: none !important;
+  background-color: #6f9b65;
+  isolation: isolate;
+}
+.habitat.world-engine .world-layers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.habitat.world-engine .world-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--world-object-position);
+  image-rendering: pixelated;
+  opacity: 1;
+  transition: opacity .24s ease;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.habitat.world-engine .world-layer-loading { opacity: 0; }
+.habitat.world-engine .world-background { z-index: 0; }
+.habitat.world-engine .world-midground { z-index: 1; }
+.habitat.world-engine .world-foreground { z-index: 5; }
+.habitat.world-engine .world-overlay { z-index: 7; }
+.habitat.world-engine .sky-decor { display: none !important; }
+.habitat.world-engine .world-pixel-overlay { z-index: 2; }
+.habitat.world-engine .pet-touch { z-index: 4; }
+.habitat.world-engine .ground-shadow { z-index: 3; }
+.habitat.world-engine .poop-row { z-index: 6; }
+.habitat.world-engine .world-badge,
+.habitat.world-engine .scene-info-btn,
+.habitat.world-engine .speech-bubble,
+.habitat.world-engine .shiny-badge { z-index: 9; }
+.habitat.world-engine .bath-overlay,
+.habitat.world-engine .evolution-overlay { z-index: 12; }
+html.no-motion .habitat.world-engine .world-layer { transition: none; }
+html:not(.no-motion) .habitat.world-engine .world-overlay {
+  animation: world-overlay-drift 12s ease-in-out infinite alternate;
+}
+@keyframes world-overlay-drift {
+  from { transform: translate3d(-.35%, 0, 0) scale(1.008); }
+  to { transform: translate3d(.35%, -.25%, 0) scale(1.008); }
+}
+
+/* Zusätzliche Typ-Symbole für World Engine */
+.symbol-bolt::before {
+  content: "";
+  position: absolute;
+  inset: 1px 5px 2px 6px;
+  background: #ffe15f;
+  clip-path: polygon(48% 0, 100% 0, 66% 40%, 94% 40%, 26% 100%, 42% 55%, 10% 55%);
+  box-shadow: 3px 3px 0 #735b20;
+}
+.symbol-snow::before {
+  content: "✦";
+  color: #dff8ff;
+  font-size: 25px;
+  line-height: 25px;
+  text-shadow: 2px 2px 0 #477b99;
+}
+.symbol-moon::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #f3e5a4;
+  box-shadow: 3px 3px 0 #55477b;
+}
+.symbol-moon::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 1px;
+  right: 1px;
+  border-radius: 50%;
+  background: #17384d;
+}

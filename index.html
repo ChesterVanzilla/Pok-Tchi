@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TamaPoke Family">
-  <title>TamaPoke Family v0.6c</title>
+  <title>TamaPoke Family v0.7 – World Engine</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -87,7 +87,13 @@
           <div class="bond-counter" aria-label="Bindung"><img src="assets/ui/heart.png" alt=""><strong id="bondValue">0</strong></div>
         </header>
 
-        <section id="habitat" class="habitat theme-meadow day" aria-label="Lebensraum deines Pokémon">
+        <section id="habitat" class="habitat world-engine theme-meadow day" aria-label="Lebensraum deines Pokémon">
+          <div class="world-layers" aria-hidden="true">
+            <img class="world-layer world-background" data-world-layer="background" alt="">
+            <img class="world-layer world-midground" data-world-layer="midground" alt="">
+            <img class="world-layer world-foreground" data-world-layer="foreground" alt="">
+            <img class="world-layer world-overlay" data-world-layer="overlay" alt="">
+          </div>
           <div class="world-badge" aria-label="Aktuelle Pokémon-Welt">
             <span id="worldIcon" class="world-symbol symbol-star"></span>
             <span><strong id="worldName">Pokémon-Wiese</strong><small id="worldPhase">TAG</small></span>
@@ -164,75 +170,75 @@
           <div class="worlds-legend" aria-label="Legende"><span class="day">☀ Tag</span><span class="night">☾ Nacht</span><span class="ready">✓ Spielbar</span><span class="concept">◆ Konzept</span></div>
           <div class="world-grid">
             <article class="world-card" data-world-type="normal">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/normal-day.svg" alt="Normal Tag"><img src="assets/worlds/all/normal-night.svg" alt="Normal Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/normal/day/background.png" alt="Normal Tag"><img src="assets/worlds/normal/night/background.png" alt="Normal Nacht"></div>
               <footer><span class="world-type-mark">N</span><strong>Normal</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card active-world" data-world-type="plant">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/plant-day.svg" alt="Pflanze Tag"><img src="assets/worlds/all/plant-night.svg" alt="Pflanze Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/grass/day/background.png" alt="Pflanze Tag"><img src="assets/worlds/grass/night/background.png" alt="Pflanze Nacht"></div>
               <footer><span class="world-type-mark">P</span><strong>Pflanze</strong><small>Spielbar</small></footer>
             </article>
             <article class="world-card active-world" data-world-type="fire">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fire-day.svg" alt="Feuer Tag"><img src="assets/worlds/all/fire-night.svg" alt="Feuer Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/fire/day/background.png" alt="Feuer Tag"><img src="assets/worlds/fire/night/background.png" alt="Feuer Nacht"></div>
               <footer><span class="world-type-mark">F</span><strong>Feuer</strong><small>Spielbar</small></footer>
             </article>
             <article class="world-card active-world" data-world-type="water">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/water-day.svg" alt="Wasser Tag"><img src="assets/worlds/all/water-night.svg" alt="Wasser Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/water/day/background.png" alt="Wasser Tag"><img src="assets/worlds/water/night/background.png" alt="Wasser Nacht"></div>
               <footer><span class="world-type-mark">W</span><strong>Wasser</strong><small>Spielbar</small></footer>
             </article>
             <article class="world-card" data-world-type="electric">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/electric-day.svg" alt="Elektro Tag"><img src="assets/worlds/all/electric-night.svg" alt="Elektro Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/electric/day/background.png" alt="Elektro Tag"><img src="assets/worlds/electric/night/background.png" alt="Elektro Nacht"></div>
               <footer><span class="world-type-mark">E</span><strong>Elektro</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="ice">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ice-day.svg" alt="Eis Tag"><img src="assets/worlds/all/ice-night.svg" alt="Eis Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/ice/day/background.png" alt="Eis Tag"><img src="assets/worlds/ice/night/background.png" alt="Eis Nacht"></div>
               <footer><span class="world-type-mark">I</span><strong>Eis</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="bug">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/bug-day.svg" alt="Käfer Tag"><img src="assets/worlds/all/bug-night.svg" alt="Käfer Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/bug/day/background.png" alt="Käfer Tag"><img src="assets/worlds/bug/night/background.png" alt="Käfer Nacht"></div>
               <footer><span class="world-type-mark">K</span><strong>Käfer</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="poison">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/poison-day.svg" alt="Gift Tag"><img src="assets/worlds/all/poison-night.svg" alt="Gift Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/poison/day/background.png" alt="Gift Tag"><img src="assets/worlds/poison/night/background.png" alt="Gift Nacht"></div>
               <footer><span class="world-type-mark">G</span><strong>Gift</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="ground">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ground-day.svg" alt="Boden Tag"><img src="assets/worlds/all/ground-night.svg" alt="Boden Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/ground/day/background.png" alt="Boden Tag"><img src="assets/worlds/ground/night/background.png" alt="Boden Nacht"></div>
               <footer><span class="world-type-mark">B</span><strong>Boden</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="rock">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/rock-day.svg" alt="Gestein Tag"><img src="assets/worlds/all/rock-night.svg" alt="Gestein Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/rock/day/background.png" alt="Gestein Tag"><img src="assets/worlds/rock/night/background.png" alt="Gestein Nacht"></div>
               <footer><span class="world-type-mark">R</span><strong>Gestein</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="flying">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/flying-day.svg" alt="Flug Tag"><img src="assets/worlds/all/flying-night.svg" alt="Flug Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/flying/day/background.png" alt="Flug Tag"><img src="assets/worlds/flying/night/background.png" alt="Flug Nacht"></div>
               <footer><span class="world-type-mark">L</span><strong>Flug</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="psychic">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/psychic-day.svg" alt="Psycho Tag"><img src="assets/worlds/all/psychic-night.svg" alt="Psycho Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/psychic/day/background.png" alt="Psycho Tag"><img src="assets/worlds/psychic/night/background.png" alt="Psycho Nacht"></div>
               <footer><span class="world-type-mark">Y</span><strong>Psycho</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="ghost">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/ghost-day.svg" alt="Geist Tag"><img src="assets/worlds/all/ghost-night.svg" alt="Geist Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/ghost/day/background.png" alt="Geist Tag"><img src="assets/worlds/ghost/night/background.png" alt="Geist Nacht"></div>
               <footer><span class="world-type-mark">H</span><strong>Geist</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="dark">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/dark-day.svg" alt="Unlicht Tag"><img src="assets/worlds/all/dark-night.svg" alt="Unlicht Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/dark/day/background.png" alt="Unlicht Tag"><img src="assets/worlds/dark/night/background.png" alt="Unlicht Nacht"></div>
               <footer><span class="world-type-mark">U</span><strong>Unlicht</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="dragon">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/dragon-day.svg" alt="Drache Tag"><img src="assets/worlds/all/dragon-night.svg" alt="Drache Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/dragon/day/background.png" alt="Drache Tag"><img src="assets/worlds/dragon/night/background.png" alt="Drache Nacht"></div>
               <footer><span class="world-type-mark">D</span><strong>Drache</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="fairy">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fairy-day.svg" alt="Fee Tag"><img src="assets/worlds/all/fairy-night.svg" alt="Fee Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/fairy/day/background.png" alt="Fee Tag"><img src="assets/worlds/fairy/night/background.png" alt="Fee Nacht"></div>
               <footer><span class="world-type-mark">♥</span><strong>Fee</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="fighting">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/fighting-day.svg" alt="Kampf Tag"><img src="assets/worlds/all/fighting-night.svg" alt="Kampf Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/fighting/day/background.png" alt="Kampf Tag"><img src="assets/worlds/fighting/night/background.png" alt="Kampf Nacht"></div>
               <footer><span class="world-type-mark">K</span><strong>Kampf</strong><small>Konzept</small></footer>
             </article>
             <article class="world-card" data-world-type="steel">
-              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/all/steel-day.svg" alt="Stahl Tag"><img src="assets/worlds/all/steel-night.svg" alt="Stahl Nacht"></div>
+              <div class="world-preview"><span class="world-time day">TAG</span><span class="world-time night">NACHT</span><img src="assets/worlds/steel/day/background.png" alt="Stahl Tag"><img src="assets/worlds/steel/night/background.png" alt="Stahl Nacht"></div>
               <footer><span class="world-type-mark">S</span><strong>Stahl</strong><small>Konzept</small></footer>
             </article>
           </div>

@@ -1,3 +1,17 @@
+# TamaPoke Family Web v0.7 – World Engine v1
+
+Diese Version führt die neue austauschbare Vier-Ebenen-Weltarchitektur ein.
+
+- 18 getrennte Typordner
+- Tag und Nacht
+- Background, Midground, Foreground und Overlay als PNG
+- `world.json` pro Typ
+- Normal-Tag nutzt bereits die neue hochauflösende Pixelwelt
+- Weltdateien können ohne Änderung am JavaScript ersetzt werden
+- Weltassets werden netzwerkbevorzugt aktualisiert und danach offline gespeichert
+
+Alle Produktionsvorgaben stehen in `WELTEN-ASSET-LEITFADEN.md`.
+
 # TamaPoke Family Web v0.6c – Design Foundation
 
 Private, nicht kommerzielle iPhone-/iPad-PWA auf Basis der offenen TamaPoke-Struktur.

@@ -1,6 +1,6 @@
 import { loadState, saveState, clearState, defaultState } from './storage.js';
 import { SpritePlayer, ACTION } from './sprite-engine.js';
-import { themeForSpecies, resolveWorldPhase } from './worlds.js';
+import { initWorldEngine, themeForSpecies, resolveWorldPhase, applyWorldLayers } from './worlds.js';
 import {
   MEDALS,
   createSlot,
@@ -116,7 +116,10 @@ function applyWorldTheme(slot = currentSlot()) {
   activePhase = phase;
 
   const habitat = $('#habitat');
-  if (habitat) habitat.className = `habitat theme-${theme.key} ${phase}`;
+  if (habitat) {
+    habitat.className = `habitat world-engine theme-${theme.key} ${phase}`;
+    applyWorldLayers(habitat, theme, phase);
+  }
   $('#worldName').textContent = theme.label;
   $('#worldPhase').textContent = phase === 'night' ? 'NACHT' : 'TAG';
   const symbol = $('#worldIcon');
@@ -1062,6 +1065,7 @@ async function init() {
   if (!response.ok) throw new Error('Pokédex-Daten konnten nicht geladen werden.');
   data = await response.json();
   speciesById = speciesMapFromData(data);
+  await initWorldEngine();
   mainSprite = new SpritePlayer($('#petCanvas'), { motion: state.settings.motion });
   detailSprite = new SpritePlayer($('#dexDetailCanvas'), { motion: state.settings.motion });
   ceremonySprite = new SpritePlayer($('#ceremonyCanvas'), { motion: state.settings.motion });
