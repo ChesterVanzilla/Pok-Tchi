@@ -1,0 +1,84 @@
+{
+  "id": "steel",
+  "name": "Stahl",
+  "displayName": "Stahlwerk",
+  "version": "1.0.0",
+  "sceneKey": "steel",
+  "icon": "star",
+  "typeAliases": [
+    "acero",
+    "steel"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#9eb5bf",
+    "accent2": "#f2c76b",
+    "panel": "#334049",
+    "panel2": "#53656e"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Metallbeere",
+      "description": "Fest und mineralreich",
+      "className": "berry-blue"
+    },
+    {
+      "name": "Zahnradfrucht",
+      "description": "Knackig mit süßem Kern",
+      "className": "berry-sun"
+    },
+    {
+      "name": "Chrombeere",
+      "description": "Glänzt wie poliert",
+      "className": "berry-pearl"
+    }
+  ],
+  "candy": {
+    "name": "Magnetbonbon",
+    "description": "Zieht kleine Krümel magisch an",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Zahnradwerk",
+    "hint": "Ordne Zahnräder und sammle Energie.",
+    "collectible": "spark",
+    "hazard": "rock",
+    "resultWord": "Energie"
+  },
+  "training": {
+    "title": "Amboss-Training",
+    "hint": "Triff den Amboss mit sauberem Rhythmus.",
+    "target": "obsidian"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

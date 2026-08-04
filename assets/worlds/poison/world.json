@@ -1,0 +1,84 @@
+{
+  "id": "poison",
+  "name": "Gift",
+  "displayName": "Nebelsumpf",
+  "version": "1.0.0",
+  "sceneKey": "poison",
+  "icon": "drop",
+  "typeAliases": [
+    "veneno",
+    "poison"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#b778d0",
+    "accent2": "#79e6b0",
+    "panel": "#3a2548",
+    "panel2": "#60406e"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Sumpfbeere",
+      "description": "Herb mit süßem Kern",
+      "className": "berry-green"
+    },
+    {
+      "name": "Nebelbeere",
+      "description": "Kühl und geheimnisvoll",
+      "className": "berry-blue"
+    },
+    {
+      "name": "Pilzfrucht",
+      "description": "Leuchtet schwach im Dunkeln",
+      "className": "berry-lava"
+    }
+  ],
+  "candy": {
+    "name": "Leuchtpilz",
+    "description": "Ein ungewöhnliches, aber beliebtes Leckerli",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Sumpfsprung",
+    "hint": "Springe über Pfützen und sammle Leuchtpunkte.",
+    "collectible": "bubble",
+    "hazard": "seaweed",
+    "resultWord": "Lichtpunkte"
+  },
+  "training": {
+    "title": "Schilf-Training",
+    "hint": "Triff das bewegliche Schilfbündel.",
+    "target": "vine"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

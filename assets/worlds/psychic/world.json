@@ -1,0 +1,84 @@
+{
+  "id": "psychic",
+  "name": "Psycho",
+  "displayName": "Traumgarten",
+  "version": "1.0.0",
+  "sceneKey": "psychic",
+  "icon": "star",
+  "typeAliases": [
+    "psiquico",
+    "psychic"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#ec8fc2",
+    "accent2": "#a794ef",
+    "panel": "#452d58",
+    "panel2": "#6b4b7d"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Traumbeere",
+      "description": "Sanft und beruhigend",
+      "className": "berry-blue"
+    },
+    {
+      "name": "Sternfrucht",
+      "description": "Funkelt beim Reinbeißen",
+      "className": "berry-sun"
+    },
+    {
+      "name": "Runenbeere",
+      "description": "Schmeckt jedes Mal ein wenig anders",
+      "className": "berry-lava"
+    }
+  ],
+  "candy": {
+    "name": "Gedankenbonbon",
+    "description": "Leuchtet in wechselnden Farben",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Mustertraum",
+    "hint": "Merke dir Symbole und finde die richtige Folge.",
+    "collectible": "spark",
+    "hazard": "cloud",
+    "resultWord": "Symbole"
+  },
+  "training": {
+    "title": "Fokus-Training",
+    "hint": "Triff das Ziel nur im richtigen Moment.",
+    "target": "bag"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

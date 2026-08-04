@@ -1,0 +1,83 @@
+{
+  "id": "normal",
+  "name": "Normal",
+  "displayName": "Grüne Wiesen",
+  "version": "1.0.0",
+  "sceneKey": "meadow",
+  "icon": "star",
+  "typeAliases": [
+    "normal"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#e4b85c",
+    "accent2": "#8acb73",
+    "panel": "#39412c",
+    "panel2": "#607344"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Wiesenbeere",
+      "description": "Mild, süß und besonders vertraut",
+      "className": "berry-green"
+    },
+    {
+      "name": "Apfelbeere",
+      "description": "Knackig und saftig",
+      "className": "berry-red"
+    },
+    {
+      "name": "Honigbeere",
+      "description": "Goldgelb und angenehm süß",
+      "className": "berry-sun"
+    }
+  ],
+  "candy": {
+    "name": "Herzkeks",
+    "description": "Ein kleines Leckerli für jeden Begleiter",
+    "className": "candy-honey"
+  },
+  "mini": {
+    "title": "Wiesenlauf",
+    "hint": "Sammle Früchte und weiche kleinen Steinen aus.",
+    "collectible": "berry",
+    "hazard": "rock",
+    "resultWord": "Früchte"
+  },
+  "training": {
+    "title": "Park-Training",
+    "hint": "Triff den Trainingspfosten im richtigen Rhythmus.",
+    "target": "bag"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

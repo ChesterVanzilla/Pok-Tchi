@@ -1,0 +1,84 @@
+{
+  "id": "water",
+  "name": "Wasser",
+  "displayName": "Azurbucht",
+  "version": "1.0.0",
+  "sceneKey": "lagoon",
+  "icon": "drop",
+  "typeAliases": [
+    "agua",
+    "water"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#65d5ef",
+    "accent2": "#b7f3ff",
+    "panel": "#163449",
+    "panel2": "#215875"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Wellenbeere",
+      "description": "Saftig und angenehm erfrischend",
+      "className": "berry-wave"
+    },
+    {
+      "name": "Perlenbeere",
+      "description": "Mild, glatt und leicht süß",
+      "className": "berry-pearl"
+    },
+    {
+      "name": "Korallenbeere",
+      "description": "Fruchtig mit einer salzigen Note",
+      "className": "berry-coral"
+    }
+  ],
+  "candy": {
+    "name": "Muschelbonbon",
+    "description": "Zuckersüß – macht glücklich und schwerer",
+    "className": "candy-shell"
+  },
+  "mini": {
+    "title": "Blasenjagd",
+    "hint": "Fange schimmernde Blasen und weiche Seegras aus.",
+    "collectible": "bubble",
+    "hazard": "seaweed",
+    "resultWord": "Blasen"
+  },
+  "training": {
+    "title": "Wellen-Training",
+    "hint": "Halte die Trainingsboje in Bewegung.",
+    "target": "buoy"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}
