@@ -1,0 +1,84 @@
+{
+  "id": "bug",
+  "name": "Käfer",
+  "displayName": "Mooswald",
+  "version": "1.0.0",
+  "sceneKey": "bug",
+  "icon": "leaf",
+  "typeAliases": [
+    "bicho",
+    "bug"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#9bc65b",
+    "accent2": "#f0d874",
+    "panel": "#2d4326",
+    "panel2": "#4f6638"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Moosbeere",
+      "description": "Mild und erdig",
+      "className": "berry-forest"
+    },
+    {
+      "name": "Pilzbeere",
+      "description": "Weich und überraschend süß",
+      "className": "berry-red"
+    },
+    {
+      "name": "Taufrucht",
+      "description": "Frisch vom Waldboden",
+      "className": "berry-wave"
+    }
+  ],
+  "candy": {
+    "name": "Blütenhonig",
+    "description": "Duftet nach Waldblüten",
+    "className": "candy-honey"
+  },
+  "mini": {
+    "title": "Blätterlabyrinth",
+    "hint": "Finde den Weg zwischen Blättern und Ästen.",
+    "collectible": "berry",
+    "hazard": "thorn",
+    "resultWord": "Blätter"
+  },
+  "training": {
+    "title": "Käferstamm-Training",
+    "hint": "Triff den alten Baumstamm.",
+    "target": "vine"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

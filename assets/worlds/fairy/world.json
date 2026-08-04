@@ -1,0 +1,84 @@
+{
+  "id": "fairy",
+  "name": "Fee",
+  "displayName": "Feenlichtung",
+  "version": "1.0.0",
+  "sceneKey": "fairy",
+  "icon": "star",
+  "typeAliases": [
+    "hada",
+    "fairy"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#f0a8cc",
+    "accent2": "#fff0a8",
+    "panel": "#563650",
+    "panel2": "#7b5573"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Feenbeere",
+      "description": "Süß und glitzernd",
+      "className": "berry-pearl"
+    },
+    {
+      "name": "Blütenfrucht",
+      "description": "Duftet nach Frühlingsblumen",
+      "className": "berry-red"
+    },
+    {
+      "name": "Sternbeere",
+      "description": "Funkelt in Pastellfarben",
+      "className": "berry-sun"
+    }
+  ],
+  "candy": {
+    "name": "Glitzerkeks",
+    "description": "Ein besonders hübsches Leckerli",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Sternenstaub",
+    "hint": "Sammle Sterne und meide dunkle Wolken.",
+    "collectible": "spark",
+    "hazard": "cloud",
+    "resultWord": "Sterne"
+  },
+  "training": {
+    "title": "Zauberband-Training",
+    "hint": "Triff die schwebenden Bänder.",
+    "target": "buoy"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

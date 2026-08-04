@@ -1,0 +1,83 @@
+{
+  "id": "dragon",
+  "name": "Drache",
+  "displayName": "Drachenruinen",
+  "version": "1.0.0",
+  "sceneKey": "dragon",
+  "icon": "flame",
+  "typeAliases": [
+    "dragon"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#817bd5",
+    "accent2": "#e7b765",
+    "panel": "#312b51",
+    "panel2": "#504878"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Drachenfrucht",
+      "description": "Kräftig und exotisch",
+      "className": "berry-lava"
+    },
+    {
+      "name": "Runenbeere",
+      "description": "Reift zwischen alten Steinen",
+      "className": "berry-blue"
+    },
+    {
+      "name": "Glutkern",
+      "description": "Warm und besonders nahrhaft",
+      "className": "berry-ember"
+    }
+  ],
+  "candy": {
+    "name": "Kristallbonbon",
+    "description": "Hart, süß und selten",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Ruinenflug",
+    "hint": "Sammle Runen zwischen alten Säulen.",
+    "collectible": "spark",
+    "hazard": "rock",
+    "resultWord": "Runen"
+  },
+  "training": {
+    "title": "Drachenstein-Training",
+    "hint": "Triff den uralten Runenstein.",
+    "target": "obsidian"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}

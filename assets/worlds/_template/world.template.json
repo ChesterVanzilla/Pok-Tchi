@@ -1,0 +1,40 @@
+{
+  "id": "folder-name",
+  "name": "Typname",
+  "displayName": "Name der Welt",
+  "version": "1.0.0",
+  "sceneKey": "folder-name",
+  "icon": "star",
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#ffd04a",
+    "accent2": "#66ccff",
+    "panel": "#1c2743",
+    "panel2": "#253253"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  }
+}

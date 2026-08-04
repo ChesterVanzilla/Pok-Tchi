@@ -1,0 +1,84 @@
+{
+  "id": "electric",
+  "name": "Elektro",
+  "displayName": "Gewitterstadt",
+  "version": "1.0.0",
+  "sceneKey": "electric",
+  "icon": "bolt",
+  "typeAliases": [
+    "electrico",
+    "electric"
+  ],
+  "canvas": {
+    "width": 1365,
+    "height": 1152,
+    "aspectRatio": "455:384"
+  },
+  "layout": {
+    "objectPosition": "50% 50%",
+    "petSafeArea": {
+      "x": 0.28,
+      "y": 0.43,
+      "width": 0.44,
+      "height": 0.47
+    }
+  },
+  "colors": {
+    "accent": "#f4d84f",
+    "accent2": "#75cbff",
+    "panel": "#30304f",
+    "panel2": "#4b4d74"
+  },
+  "day": {
+    "background": "day/background.png",
+    "midground": "day/midground.png",
+    "foreground": "day/foreground.png",
+    "overlay": "day/overlay.png"
+  },
+  "night": {
+    "background": "night/background.png",
+    "midground": "night/midground.png",
+    "foreground": "night/foreground.png",
+    "overlay": "night/overlay.png"
+  },
+  "berries": [
+    {
+      "name": "Voltbeere",
+      "description": "Prickelnd und voller Energie",
+      "className": "berry-spark"
+    },
+    {
+      "name": "Blitzbeere",
+      "description": "Süß mit einem elektrischen Kribbeln",
+      "className": "berry-sun"
+    },
+    {
+      "name": "Neonbeere",
+      "description": "Leuchtet geheimnisvoll im Dunkeln",
+      "className": "berry-wave"
+    }
+  ],
+  "candy": {
+    "name": "Energiebonbon",
+    "description": "Ein kräftiger Energieschub",
+    "className": "candy-star"
+  },
+  "mini": {
+    "title": "Energiepfad",
+    "hint": "Verbinde Lichtimpulse und meide Kurzschlüsse.",
+    "collectible": "spark",
+    "hazard": "smoke",
+    "resultWord": "Impulse"
+  },
+  "training": {
+    "title": "Generator-Training",
+    "hint": "Lade den Generator mit rhythmischen Treffern.",
+    "target": "bag"
+  },
+  "audio": {
+    "day": null,
+    "night": null,
+    "ambientDay": null,
+    "ambientNight": null
+  }
+}
